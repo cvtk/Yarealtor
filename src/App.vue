@@ -3,11 +3,8 @@
 <div id="#app" class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
   <header class="app-header mdl-layout__header mdl-color--blue-grey-800">
     <div class="mdl-layout__header-row">
-      <!-- Title -->
       <span class="header-logo mdl-layout-title mdl-color-text--blue-grey-100 mdl-layout--small-screen-only"><span class="_hl">Я</span>СР</span>
-      <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
-      <!-- Navigation. We hide it in small screens. -->
       <button id="user-menu" class="user-dropdown mdl-button mdl-js-button mdl-color-text--blue-grey-100 mdl-layout--large-screen-only">
         <img src="/static/users/default-2.svg" alt="Пользователь" class="avatar">
         <span class="name ">Иван Петров</span>
@@ -22,7 +19,6 @@
   </header>
 
   <div class="app-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
-    
     <header class="drawer-header">
       <span class="header-logo mdl-layout-title mdl-color-text--blue-grey-100 mdl-layout--large-screen-only"><span class="_hl">Я</span>СР</span>
       <div class="user-menu mdl-layout--small-screen-only">
@@ -42,24 +38,29 @@
     </header>
 
     <nav class="drawer-navigation mdl-navigation mdl-color--blue-grey-800">
-      <a class="link mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-50 material-icons" role="presentation">home</i>Home</a>
-      <a class="link mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">inbox</i>Inbox</a>
-      <a class="link mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">delete</i>Trash</a>
-      <a class="link mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">report</i>Spam</a>
-      <a class="link mdl-navigation__link" href=""><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">forum</i>Forums</a>
+      <router-link to="/" class="link mdl-navigation__link mdl-color-text--blue-grey-100" exact><img src="/static/newspaper.svg" alt="Новости" class="icon">Новости</router-link>
+      <router-link to="/offers" class="link mdl-navigation__link mdl-color-text--blue-grey-100"><img src="/static/house.svg" alt="Новости" class="icon">Предложения</router-link>
+      <router-link to="/requests" class="link mdl-navigation__link mdl-color-text--blue-grey-100"><img src="/static/market.svg" alt="Новости" class="icon">Спрос</router-link>
+      <router-link to="/companies" class="link mdl-navigation__link mdl-color-text--blue-grey-100"><img src="/static/teamwork.svg" alt="Новости" class="icon">Компании</router-link>
       <div class="mdl-layout-spacer"></div>
+    </nav>      
+    <div class="info-menu">
       <router-link tag="button" :to="{ name: 'list'}" id="tt1" class="mdl-button mdl-js-button mdl-button--icon mdl-color-text--blue-grey-100">
         <i class="material-icons">help_outline</i>
       </router-link>
       <router-link tag="button" :to="{ name: 'root'}" id="tt2" class="mdl-button mdl-js-button mdl-button--icon mdl-color-text--blue-grey-100">
         <i class="material-icons">report</i>
       </router-link>
-      <div class="mdl-tooltip" data-mdl-for="tt1">Информация по работе с системой</div>
-      <div class="mdl-tooltip" data-mdl-for="tt2">Кодекс риэлтора</div>
-    </nav>
+      <router-link tag="button" :to="{ name: 'root'}" id="tt3" class="mdl-button mdl-js-button mdl-button--icon mdl-color-text--blue-grey-100">
+        <i class="material-icons">stars</i>
+      </router-link>
+      <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="tt1">Информация по работе с системой</div>
+      <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="tt2">Кодекс риэлтора</div>
+      <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="tt3">Правила модерации</div>      
+    </div>
   </div>
   <main class="mdl-layout__content">
-    <div class="page-content">
+    <div class="mdl-grid">
       <router-view></router-view>
     </div>
   </main>
@@ -112,9 +113,14 @@ export default {
       -webkit-align-items: center;
       -ms-flex-align: center;
       align-items: center;
-      color: rgba(255, 255, 255, 0.85);
       font-weight: 300;
-      font-size: 16px;
+      &._active, &:hover {
+        background-color: rgba(158,158,158,.2);
+      }
+      > .icon {
+        height: 40px;
+        margin-right: 16px;
+      }
     }
   }
   .drawer-header {
@@ -129,8 +135,18 @@ export default {
     justify-content: flex-end;
     padding: 16px;
   }
+  .info-menu {
+    padding: 12px 22px;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    justify-content: space-around;
+  }
   .user-menu {
     display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
     flex-direction: column;
     justify-content: space-around;
     text-align: center;
