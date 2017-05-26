@@ -25,6 +25,13 @@ module.exports = {
         }
       },
       {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'file-loader',
+        options: {
+          name: 'public/fonts/[name].[ext]?[hash]'
+        }
+      },
+      {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/

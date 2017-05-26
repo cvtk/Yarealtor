@@ -9,8 +9,8 @@ const router = new VueRouter({
   mode: 'history',
   linkActiveClass: '_active',
   routes: [
-    { path: '/', component: require('./views/Root.vue'), name: 'root' },
-    { path: '/list', component: require('./views/List.vue'), name: 'list' }
+    { path: '/', component: require('./components/Root.vue'), name: 'root' },
+    { path: '/list', component: require('./components/List.vue'), name: 'list' }
   ]
 });
 
