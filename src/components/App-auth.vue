@@ -34,9 +34,8 @@
       signIn() {
         if ( this.credentials.email && this.credentials.password ) {
           firebase.auth().signInWithEmailAndPassword(this.credentials.email, this.credentials.password)
-            .then((user) => {
-              console.log(firebase.auth().currentUser);
-            }).catch((error) => {
+            .then((user) => {})
+            .catch((error) => {
               if (error.code === 'auth/wrong-password') {
                 this.error = 'Неверный пароль для ' + this.credentials.email + ' или Ваша учетная запись не имеет пароля (вход через социальные сети)'
               } else if (error.code === 'auth/user-not-found') {
@@ -56,15 +55,14 @@
 <style lang="scss" module>
   @import "../assets/style.scss";
   .app__auth {
-    position: absolute;
-    z-index: 3;
+    position: relative;
     width: 100%;
     height: 100%;
     background-color: #364150;
     min-width: 320px;
     > .auth__logo {
-      margin: 60px auto 0;
-      padding: 15px;
+      margin: 0 auto;
+      padding: 60px 15px 15px;
       text-align: center;
       > .logo__pic {
         vertical-align: middle;
@@ -177,7 +175,7 @@
       font-size: 13px;
     }
     @media (max-width: $bp-small) {
-      .auth__logo { margin-top: 10px }
+      .auth__logo { padding-top: 25px }
       .auth__form { width: 320px; margin-top: 10px; }
     }
   }

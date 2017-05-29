@@ -1,97 +1,85 @@
 <template>
-<div :class="{ [$style.app]:true, [$style._toggled]: isToggled }">
-  <app-loader v-show="!dataLoaded"></app-loader>
-  <transition name="fade">
-    <app-auth v-show="!auth"></app-auth>
-  </transition>
-  <header :class="$style.app__header">
-    <div :class="$style.header__logo">
-      <img src="/static/logo.png" alt="Логотип" :class="$style.logo__pic">
-      <button :class="$style.menu__toggler" @click.prevent="isToggled = !isToggled"></button>
-    </div>
-    <div :class="$style.header__menu">
-      <div :class="$style.menu__user">
-        <img :src="'/static/users/default-2.svg' || auth.photoURL" alt="Фото" :class="$style.user__pic">
-        <span :class="$style.user__name">{{ auth.fullName || auth.email }}</span>
-        <ul :class="$style.user__dropdown">
-          <router-link tag="li" :to="{ name: 'profile' }" :class="$style.dropdown__item">
-            <span :class="[$style.item__icon, $style._profile]"></span>
-            <span :class="$style.item__title">Профиль</span>
-          </router-link>
-          <router-link tag="li" :to="{ name: 'my-company' }" :class="$style.dropdown__item">
-            <span :class="[$style.item__icon, $style._my_company]"></span>
-            <span :class="$style.item__title">Моя компания</span>
-          </router-link>
-          <li :class="$style.dropdown__divider"></li>
-          <li :class="$style.dropdown__item" @click="signOut">
-            <span :class="[$style.item__icon, $style._sign_out]"></span>
-            <span :class="$style.item__title">Выйти</span>
-          </li>
-        </ul>
-      </div>
-      <button :class="[$style.menu__toggler, $style._mobile]"></button>
-    </div>
-  </header>
-  <aside :class="[$style.app__sidebar]">
-    <form :class="$style.sidebar__search">
-      <input :class="$style.search__input" type="text" placeholder="Поиск...">
-      <button :class="$style.search__btn"></button>
-    </form>
-    <ul :class="$style.sidebar__menu">
-      <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact>
-        <span :class="[$style.item__icon, $style._news]"></span>
-        <span :class="$style.item__title">Новости</span>
-      </router-link>
-      <router-link tag="li" :to="{ name: 'offers'}" :class="$style.menu__item" :active-class="$style._active">
-        <span :class="[$style.item__icon, $style._offers]"></span>
-        <span :class="$style.item__title">Предложения</span>
-      </router-link>
-      <router-link tag="li" :to="{ name: 'requests'}" :class="$style.menu__item" :active-class="$style._active">
-        <span :class="[$style.item__icon, $style._requests]"></span>
-        <span :class="$style.item__title">Спрос</span>
-      </router-link>
-      <router-link tag="li" :to="{ name: 'companies'}" :class="$style.menu__item" :active-class="$style._active">
-        <span :class="[$style.item__icon, $style._companies]"></span>
-        <span :class="$style.item__title">Компании</span>
-      </router-link>
-    </ul>
-    <ul :class="$style.sidebar__panel">
-      <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._rules]" title="Кодекс риелтора"></router-link>
-      <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._help]" title="Правила пользования порталом"></router-link>
-      <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></router-link>
-    </ul>
-  </aside>
-  <main :class="$style.app__content">
+  <div :class="$style.app" v-if="$route.name === 'auth'">
     <router-view></router-view>
-  </main>
-</div>
+  </div>
+  <div :class="{ [$style.app]:true, [$style._toggled]: isToggled }" v-else>
+    <header :class="$style.app__header">
+      <div :class="$style.header__logo">
+        <img src="/static/logo.png" alt="Логотип" :class="$style.logo__pic">
+        <button :class="$style.menu__toggler" @click.prevent="isToggled = !isToggled"></button>
+      </div>
+      <div :class="$style.header__menu">
+        <div :class="$style.menu__user">
+          <img :src="'/static/users/default-2.svg' || auth.photoURL" alt="Фото" :class="$style.user__pic">
+          <span :class="$style.user__name">{{ auth.fullName || auth.email }}</span>
+          <ul :class="$style.user__dropdown">
+            <router-link tag="li" :to="{ name: 'profile' }" :class="$style.dropdown__item">
+              <span :class="[$style.item__icon, $style._profile]"></span>
+              <span :class="$style.item__title">Профиль</span>
+            </router-link>
+            <router-link tag="li" :to="{ name: 'my-company' }" :class="$style.dropdown__item">
+              <span :class="[$style.item__icon, $style._my_company]"></span>
+              <span :class="$style.item__title">Моя компания</span>
+            </router-link>
+            <li :class="$style.dropdown__divider"></li>
+            <li :class="$style.dropdown__item" @click="signOut">
+              <span :class="[$style.item__icon, $style._sign_out]"></span>
+              <span :class="$style.item__title">Выйти</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    <aside :class="[$style.app__sidebar]">
+      <form :class="$style.sidebar__search">
+        <input :class="$style.search__input" type="text" placeholder="Поиск...">
+        <button :class="$style.search__btn"></button>
+      </form>
+      <ul :class="$style.sidebar__menu">
+        <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact>
+          <span :class="[$style.item__icon, $style._news]"></span>
+          <span :class="$style.item__title">Новости</span>
+        </router-link>
+        <router-link tag="li" :to="{ name: 'offers'}" :class="$style.menu__item" :active-class="$style._active">
+          <span :class="[$style.item__icon, $style._offers]"></span>
+          <span :class="$style.item__title">Предложения</span>
+        </router-link>
+        <router-link tag="li" :to="{ name: 'requests'}" :class="$style.menu__item" :active-class="$style._active">
+          <span :class="[$style.item__icon, $style._requests]"></span>
+          <span :class="$style.item__title">Спрос</span>
+        </router-link>
+        <router-link tag="li" :to="{ name: 'companies'}" :class="$style.menu__item" :active-class="$style._active">
+          <span :class="[$style.item__icon, $style._companies]"></span>
+          <span :class="$style.item__title">Компании</span>
+        </router-link>
+      </ul>
+      <ul :class="$style.sidebar__panel">
+        <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._rules]" title="Кодекс риелтора"></router-link>
+        <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._help]" title="Правила пользования порталом"></router-link>
+        <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></router-link>
+      </ul>
+    </aside>
+    <main :class="$style.app__content">
+      <router-view></router-view>
+    </main>
+  </div>
 </template>
 
 <script>
 import firebase from './firebase.js';
-import AppAuth from './components/App-auth.vue';
-import AppLoader from './components/App-loader.vue'
 
 export default {
   name: 'app',
-  components: { AppAuth, AppLoader },
+  props: ['auth'],
   data() {
     return {
       isToggled: false,
-      auth: false,
-      dataLoaded: false
     }
   },
   methods: {
     signOut() {
       firebase.auth().signOut();
     }
-  },
-  created() {
-    firebase.auth().onAuthStateChanged((user)=> {
-      this.auth = user || false;
-      this.dataLoaded = true;
-    });
   }
 }
 </script>
@@ -159,7 +147,6 @@ export default {
       padding-left: 20px;
       padding-right: 20px;
       transition: width .2s ease-in-out;
-      @media (max-width: $bp-small) { width: 125px }
       > .logo__pic {
         vertical-align: middle;
         cursor: pointer;
@@ -170,6 +157,7 @@ export default {
       height: 50px;
       padding-left: 20px;
       padding-right: 20px;
+      @media (max-width: $bp-small) { padding-left: 0 }
       > .menu__user {
         position: relative;
         float: left;
@@ -181,6 +169,12 @@ export default {
         white-space: pre;
         color: #c6cfda;
         transition: background-color .2s ease-in-out;
+        &:after {
+          content: "\E604";
+          font-family: "Icons";
+          font-size: 9px;
+          margin-left: 5px;
+        }
         &:hover { background-color: #3f4f62;
           > .user__dropdown {
             visibility: visible;
@@ -193,15 +187,7 @@ export default {
           margin-right: 5px;
           vertical-align: middle;
         }
-        > .user__name {
-          @media (max-width: $bp-small) { display: none; }
-          &:after {
-            content: "\E604";
-            font-family: "Icons";
-            font-size: 9px;
-            margin-left: 5px;
-          }
-        }
+        > .user__name {}
         > .user__dropdown {
           visibility: hidden;
           opacity: 0;
@@ -248,6 +234,11 @@ export default {
             > ._sign_out:before { content: "\e065" }
           }
         }
+        @media (max-width: $bp-small) {
+          &:after { margin-left: 0 }
+          > .user__pic { margin-right: 0 }
+          > .user__name { display: none }
+        }
       }
     }
   }
@@ -263,12 +254,6 @@ export default {
     padding: 0;
     line-height: 1;
     font-size: 0;
-    @media (max-width: $bp-large) { display: none; }
-    &._mobile {
-      display: none;
-      margin-left: 20px;
-      @media (max-width: $bp-large) { display: block; }
-    }
     &:hover:before { color: #a7b5c6 }
     &:before {
       content: "\e601";
@@ -406,5 +391,8 @@ export default {
     padding-top: 70px;
     margin-left: 235px;
     transition: margin-left .2s ease-in-out;
+    @media (max-width: $bp-small) {
+      margin-left: 0;
+    }
   }
 </style>
