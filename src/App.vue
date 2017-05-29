@@ -1,5 +1,9 @@
 <template>
 <div :class="{ [$style.app]:true, [$style._toggled]: isToggled }">
+  <app-loader v-show="!dataLoaded"></app-loader>
+  <transition name="fade">
+    <app-auth v-show="!auth"></app-auth>
+  </transition>
   <header :class="$style.app__header">
     <div :class="$style.header__logo">
       <img src="/static/logo.png" alt="Логотип" :class="$style.logo__pic">
@@ -7,8 +11,23 @@
     </div>
     <div :class="$style.header__menu">
       <div :class="$style.menu__user">
-        <img src="/static/users/default-2.svg" alt="Фото" :class="$style.user__pic">
-        <span :class="$style.user__name">Иван Петров</span>
+        <img :src="'/static/users/default-2.svg' || auth.photoURL" alt="Фото" :class="$style.user__pic">
+        <span :class="$style.user__name">{{ auth.fullName || auth.email }}</span>
+        <ul :class="$style.user__dropdown">
+          <router-link tag="li" :to="{ name: 'profile' }" :class="$style.dropdown__item">
+            <span :class="[$style.item__icon, $style._profile]"></span>
+            <span :class="$style.item__title">Профиль</span>
+          </router-link>
+          <router-link tag="li" :to="{ name: 'my-company' }" :class="$style.dropdown__item">
+            <span :class="[$style.item__icon, $style._my_company]"></span>
+            <span :class="$style.item__title">Моя компания</span>
+          </router-link>
+          <li :class="$style.dropdown__divider"></li>
+          <li :class="$style.dropdown__item" @click="signOut">
+            <span :class="[$style.item__icon, $style._sign_out]"></span>
+            <span :class="$style.item__title">Выйти</span>
+          </li>
+        </ul>
       </div>
       <button :class="[$style.menu__toggler, $style._mobile]"></button>
     </div>
@@ -49,20 +68,36 @@
 </template>
 
 <script>
+import firebase from './firebase.js';
+import AppAuth from './components/App-auth.vue';
+import AppLoader from './components/App-loader.vue'
+
 export default {
   name: 'app',
-  data: function() {
+  components: { AppAuth, AppLoader },
+  data() {
     return {
-      isToggled: false
+      isToggled: false,
+      auth: false,
+      dataLoaded: false
     }
+  },
+  methods: {
+    signOut() {
+      firebase.auth().signOut();
+    }
+  },
+  created() {
+    firebase.auth().onAuthStateChanged((user)=> {
+      this.auth = user || false;
+      this.dataLoaded = true;
+    });
   }
 }
 </script>
 
 <style lang="scss" module>
-  $bp-small: 544px;
-  $bp-medium: 768px;
-  $bp-large: 992px;
+  @import "./assets/style.scss";
 
   @font-face {
     font-family: "Icons";
@@ -79,16 +114,17 @@ export default {
     @import "normalize.css";
     height: 100%;
     &._toggled {
+      .header__logo { padding: 0 12px; width: 45px }
+      .logo__pic { display: none }
       .app__content { margin-left: 45px }
       .app__sidebar { width: 45px }
       .sidebar__search { border: none; margin: 20px 14.5px; }
       .search__input { display: none }
       .search__btn { }
-      .menu__item { padding: 10px 13.5px 10px 9.5px; &:after { right: -4px } }
-      .item__icon:before { margin-right: 0 }
-      .item__title {
-        opacity: 0;
-        visibility: hidden;
+      .menu__item {
+        padding: 10px 13.5px 10px 9.5px; &:after { right: -4px }
+        > .item__icon:before { margin-right: 0 }
+        > .item__title { opacity: 0; visibility: hidden; }
       }
       .sidebar__panel {
         padding: 0;
@@ -102,6 +138,7 @@ export default {
       }
     }
   }
+
   .app__header {
     position: fixed;
     z-index: 1;
@@ -115,53 +152,106 @@ export default {
       display: table;
       clear: both;
     }
-  }
-  .header__logo {
-    float: left;
-    width: 235px;
-    line-height: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
-    @media (max-width: $bp-small) { width: 125px }
-  }
-
-  .logo__pic {
-    vertical-align: middle;
-    cursor: pointer;
-  }
-
-  .header__menu {
-    float: right;
-    height: 50px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  .menu__user {
-    float: left;
-    cursor: pointer;
-    line-height: 50px;
-    padding-left: 10px;
-    padding-right: 10px;
-    white-space: pre;
-    color: #c6cfda;
-    transition: background-color .2s ease-in-out;
-    &:hover { background-color: #3f4f62 }
-    &:after {
-      content: "\E604";
-      font-family: "Icons";
-      font-size: 9px;
+    > .header__logo {
+      float: left;
+      width: 235px;
+      line-height: 50px;
+      padding-left: 20px;
+      padding-right: 20px;
+      transition: width .2s ease-in-out;
+      @media (max-width: $bp-small) { width: 125px }
+      > .logo__pic {
+        vertical-align: middle;
+        cursor: pointer;
+      }
+    }
+    > .header__menu {
+      float: right;
+      height: 50px;
+      padding-left: 20px;
+      padding-right: 20px;
+      > .menu__user {
+        position: relative;
+        float: left;
+        cursor: pointer;
+        height: 50px;
+        line-height: 50px;
+        padding-left: 10px;
+        padding-right: 8px;
+        white-space: pre;
+        color: #c6cfda;
+        transition: background-color .2s ease-in-out;
+        &:hover { background-color: #3f4f62;
+          > .user__dropdown {
+            visibility: visible;
+            opacity: 1;
+            top: 100%;
+          }
+        }
+        > .user__pic {
+          height: 30px;
+          margin-right: 5px;
+          vertical-align: middle;
+        }
+        > .user__name {
+          @media (max-width: $bp-small) { display: none; }
+          &:after {
+            content: "\E604";
+            font-family: "Icons";
+            font-size: 9px;
+            margin-left: 5px;
+          }
+        }
+        > .user__dropdown {
+          visibility: hidden;
+          opacity: 0;
+          top: -9999px;
+          transition: visibility 0s, opacity .2s linear, top 0s;
+          position: absolute;
+          right: 0;
+          box-shadow: 5px 5px rgba(102,102,102,.1);
+          width: 195px;
+          background-color: #fff;
+          margin: 0;
+          margin-top: -1px;
+          padding: 0;
+          list-style: none;
+          line-height: 0;
+          &:after {
+            position: absolute;
+            top: -6px;
+            right: 10px;
+            display: block;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid #fff;
+            border-left: 6px solid transparent;
+            content: '';
+          }
+          > .dropdown__divider {
+            background: #f1f3f6;
+            height: 1px;
+            margin: 9px 0;
+            overflow: hidden;
+          }
+          > .dropdown__item {
+            color: #555;
+            padding: 8px 16px;
+            line-height: 18px;
+            transition: background-color .1s ease-in-out;
+            &:hover { background-color: #f6f6f6 }
+            > .item__icon:before {
+              content: "";
+              font-family: "Icons";
+            }
+            > ._profile:before { content: "\e005" }
+            > ._my_company:before { content: "\e001" }
+            > ._sign_out:before { content: "\e065" }
+          }
+        }
+      }
     }
   }
-  .user__pic {
-    height: 30px;
-    margin-right: 5px;
-    vertical-align: middle;
-    
-  }
-  .user__name {
-    margin-right: 5px;
-    @media (max-width: $bp-small) { display: none; }
-  }
+  
   .menu__toggler {
     display: block;
     float: right;
