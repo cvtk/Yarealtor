@@ -1,5 +1,5 @@
 <template>
-  <p>list!</p>
+  <span>list!</span>
 </template>
 
 <script>
