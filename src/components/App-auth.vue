@@ -6,8 +6,8 @@
     <div :class="$style.auth__form">
       <h3 :class="$style.form__title">Войти</h3>
       <div :class="$style.form__alert" v-show="error">{{ error }}</div>
-      <input type="text" placeholder="Эл.почта" name="email" @keyup.enter="signIn" v-model="credentials.email" :class="$style.form__input">
-      <input type="password" placeholder="Пароль" name="password" @keyup.enter="signIn" v-model="credentials.password" :class="$style.form__input">
+      <input type="text" placeholder="Эл.почта" name="email" @keyup.enter="signIn" v-model="email" :class="$style.form__input">
+      <input type="password" placeholder="Пароль" name="password" @keyup.enter="signIn" v-model="password" :class="$style.form__input">
       <div :class="$style.form__actions">
         <button :class="$style.actions__login" @click.prevent="signIn">Вход</button>
         <span :class="$style.actions__forget_password">Забыли пароль?</span>
@@ -22,31 +22,42 @@
 
 <script>
   import firebase from '../firebase.js';
+  import getErrorMessage from './assets/getErrorMessage.js';
+
+  const usersRef = firebase.database().ref('users');
+
   export default {
     name: 'app-auth',
     data() {
-      return {
-        credentials: { email: '', password: '' },
-        error: ''
-      }
+      return { email: '', password: '', error: '' }
     },
     methods: {
-      signIn() {
-        if ( this.credentials.email && this.credentials.password ) {
-          firebase.auth().signInWithEmailAndPassword(this.credentials.email, this.credentials.password)
-            .then((user) => {})
-            .catch((error) => {
-              if (error.code === 'auth/wrong-password') {
-                this.error = 'Неверный пароль для ' + this.credentials.email + ' или Ваша учетная запись не имеет пароля (вход через социальные сети)'
-              } else if (error.code === 'auth/user-not-found') {
-                this.error = 'Учетная запись с таким адресом электронной почты (' + this.credentials.email +') не найдена'
-              } else if (error.code === 'auth/invalid-email') {
-                this.error = 'Неверный адрес электронной почты: ' + this.credentials.email
-              }
-            });
-          } else {
-          this.error = 'Для входа необходимо ввести адрес электронной почты и пароль'
+      createUser(auth) {
+        let name = auth.displayName || auth.email.replace(/@.*/, ''),
+            photo = auth.photoURL || '/static/users/default-' + (Math.floor(Math.random() * 6) + 1)  + '.svg';
+        
+        let user = {
+          name: name,
+          email: auth.email,
+          page: auth.uid,
+          photo: photo,
         }
+        return usersRef.child(auth.uid).set(user);
+      },
+
+      onSign(auth) {
+        usersRef.child(auth.uid).once('value', user => {
+          if (!user.exists()) { this.createUser(auth) }
+          this.$router.push(this.$route.query.redirect);
+        })
+      },
+      signIn() {
+        if ( this.email && this.password ) {
+          firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+            .then(this.onSign)
+            .catch((error) => this.error = getErrorMessage(error.code) || error.message );
+          }
+        else { this.error = 'Для входа необходимо ввести адрес электронной почты и пароль' }
       }
     }
   }

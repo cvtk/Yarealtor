@@ -1,4 +1,8 @@
+import Vue from 'vue'
+import VueFire from 'vuefire'
 import Firebase from 'firebase'
+
+Vue.use(VueFire)
 
 export default Firebase.initializeApp({
   apiKey: "AIzaSyDjqvK3CMo7ruLjdye9wFS_LBN4ZmKHSVo",

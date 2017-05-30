@@ -9,11 +9,11 @@
         <button :class="$style.menu__toggler" @click.prevent="isToggled = !isToggled"></button>
       </div>
       <div :class="$style.header__menu">
-        <div :class="$style.menu__user">
-          <img :src="'/static/users/default-2.svg' || auth.photoURL" alt="Фото" :class="$style.user__pic">
-          <span :class="$style.user__name">{{ auth.fullName || auth.email }}</span>
+        <div :class="$style.menu__user" v-if="dataReady">
+          <img :src="user.photo" alt="Фото" :class="$style.user__pic">
+          <span :class="$style.user__name">{{ user.name }}</span>
           <ul :class="$style.user__dropdown">
-            <router-link tag="li" :to="{ name: 'profile' }" :class="$style.dropdown__item">
+            <router-link tag="li" :to="{ name: 'user', params: { page: user.page } }" :class="$style.dropdown__item">
               <span :class="[$style.item__icon, $style._profile]"></span>
               <span :class="$style.item__title">Профиль</span>
             </router-link>
@@ -28,6 +28,7 @@
             </li>
           </ul>
         </div>
+        <app-loader :config="{width: '50px', height: '50px'}" v-else></app-loader>
       </div>
     </header>
     <aside :class="[$style.app__sidebar]">
@@ -60,21 +61,33 @@
       </ul>
     </aside>
     <main :class="$style.app__content">
-      <router-view></router-view>
+      <router-view :auth="auth"></router-view>
     </main>
   </div>
 </template>
 
 <script>
 import firebase from './firebase.js';
+import AppLoader from './components/app-loader.vue';
+
+const usersRef = firebase.database().ref('users');
 
 export default {
   name: 'app',
-  props: ['auth'],
+  components: { AppLoader },
   data() {
-    return {
-      isToggled: false,
-    }
+    return { isToggled: false, auth: false, user: false, dataReady: false }
+  },
+  beforeCreate() {
+    firebase.auth().onAuthStateChanged((auth)=> {
+      this.auth = auth;
+      if (!auth && this.$route.name !== 'auth') {
+        this.$router.push({ name: 'auth', query: { redirect: this.$route.path} })
+      }
+      else if (auth) {
+        this.$bindAsObject('user', usersRef.child(auth.uid), null, () => this.dataReady = true );
+      }
+    });
   },
   methods: {
     signOut() {
@@ -124,12 +137,16 @@ export default {
         float: none;
         width: 100%;
       }
+      @media (max-width: $bp-small) {
+        .app__content { margin-left: 0 }
+        .app__sidebar { width: 0; overflow: hidden; }
+      }
     }
   }
 
   .app__header {
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     background-color: #2b3643;
     width: 100%;
     min-width: 320px;
@@ -265,6 +282,7 @@ export default {
   }
   .app__sidebar {
     position: fixed;
+    z-index: 1;
     width: 235px;
     height: 100%;
     background-color: #364150;
@@ -386,9 +404,10 @@ export default {
     &._help:before { content: "\e05d" }
   }
   .app__content {
+    position: relative;
     height: 100%;
     padding: 20px;
-    padding-top: 70px;
+    padding-top: 75px;
     margin-left: 235px;
     transition: margin-left .2s ease-in-out;
     @media (max-width: $bp-small) {
