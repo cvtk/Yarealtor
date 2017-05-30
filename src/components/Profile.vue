@@ -11,7 +11,16 @@
     <h1 :class="$style.content__title">{{ user.name }}<span :class="$style._small">Личная страница</span></h1>
     <div :class="$style.content__profile">
       <aside :class="$style.profile__sidebar">
-        
+        <img :class="$style.sidebar__img" :src="user.photo">
+        <div :class="$style.sidebar__user_title">
+          <div :class="$style.user_title__name">{{ user.name }}</div>
+          <div :class="$style.user_title__company">ООО "КакаяКомпания"</div>
+        </div>
+        <!-- TODO: rewrite class -->
+        <ul :class="$style.sidebar__user_menu">
+          <li :class="{[$style.user_menu__item]: true, [$style._active]: currentTab === 'profile'}" @click="currentTab = 'profile'">Профиль</li>
+          <li :class="{[$style.user_menu__item]:true, [$style._settings]:true, [$style._active]: currentTab === 'settings'}" @click="currentTab = 'settings'">Настройки</li>
+        </ul>
       </aside>
       <div :class="$style.profile__account_settings">
         <div :class="$style.account_settings__wrapper">
@@ -34,9 +43,9 @@ const usersRef = firebase.database().ref('users');
     props: ['auth'],
     components: { AppLoader },
     data() {
-      return { dataReady: false }
+      return { dataReady: false, currentTab: 'profile' }
     },
-    created() {
+    mounted() {
       this.$bindAsObject('user', usersRef.child(this.auth.uid), null, () => this.dataReady = true );
     }
   }
@@ -93,6 +102,7 @@ const usersRef = firebase.database().ref('users');
       float: right;
       vertical-align: middle;
       border: 1px solid #32c5d2;
+      outline: none;
       color: #32c5d2;
       background-color: #fff;
       user-select: none;
@@ -136,9 +146,66 @@ const usersRef = firebase.database().ref('users');
     > .profile__sidebar {
       float: left;
       width: 280px;
-      height: 500px;
       background-color: #fff;
       margin-right: 20px;
+      padding: 30px 0 0;
+      > .sidebar__img {
+        display: block;
+        max-width: 100%;
+        margin: 0 auto;
+        width: 50%;
+        height: 50%;
+        border-radius: 50%;
+      }
+      > .sidebar__user_title {
+        text-align: center;
+        margin-top: 20px;
+        > .user_title__name {
+          color: #5a7391;
+          font-size: 20px;
+          font-weight: 600;
+          margin-bottom: 7px;
+        }
+        > .user_title__company {
+          text-transform: uppercase;
+          color: #5b9bd1;
+          font-size: 13px;
+          font-weight: 600;
+          margin-bottom: 7px;
+        }
+      }
+      > .sidebar__user_menu {
+        margin: 30px 0 0;
+        padding: 0 0 20px;
+        list-style: none;
+        > .user_menu__item {
+          border-bottom: 1px solid #f0f4f7;
+          display: block;
+          color: #93a3b5;
+          font-size: 16px;
+          font-weight: 400;
+          padding: 10px 15px;
+          cursor: pointer;
+          transition: background-color .2s ease-in-out, color .2s ease-in-out;
+          &._active {
+            color: #5b9bd1;
+            background-color: #f6f9fb;
+            border-left: 2px solid #5b9bd1;
+            margin-left: -2px;
+          }
+          &:hover {
+            background-color: #fafcfd;
+            color: #5b9bd1;
+          }
+          &._settings:before { content: "\e09a" }
+          &:before {
+            content: "\e069";
+            font-family: "Icons";
+            margin-right: 8px;
+            font-size: 16px;
+          }
+        }
+      }
     }
     > .profile__account_settings {
       overflow: hidden;

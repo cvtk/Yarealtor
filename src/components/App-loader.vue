@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.app__loader" :style="{width: config.width, height: config.height}">
+  <div :class="$style.app__loader">
     <img :class="$style.loader__spinner" src="/static/loader__spinner.svg">
   </div>
 </template>
@@ -21,9 +21,8 @@
 
   .loader__spinner {
     display: block;
-    width: 100%;
+    width: 10%;
     height: auto;
-    max-height: 75%;
     position: absolute;
     top: 50%;
     left: 50%;

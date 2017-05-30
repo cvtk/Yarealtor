@@ -28,7 +28,6 @@
             </li>
           </ul>
         </div>
-        <app-loader :config="{width: '50px', height: '50px'}" v-else></app-loader>
       </div>
     </header>
     <aside :class="[$style.app__sidebar]">
@@ -61,7 +60,8 @@
       </ul>
     </aside>
     <main :class="$style.app__content">
-      <router-view :auth="auth"></router-view>
+      <router-view :auth="auth" v-if="auth"></router-view>
+      <app-loader v-else></app-loader>
     </main>
   </div>
 </template>
