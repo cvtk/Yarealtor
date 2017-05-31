@@ -13,7 +13,7 @@ const router = new VueRouter({
     { path: '/requests', component: require('./components/List.vue'), name: 'requests' },
     { path: '/companies', component: require('./components/List.vue'), name: 'companies' },
     { path: '/my-company', component: require('./components/List.vue'), name: 'my-company' },
-    { path: '/user/:page', component: require('./components/Profile.vue'), name: 'user' },
+    { path: '/users/:page', component: require('./components/Profile.vue'), name: 'user' },
     { path: '/auth', component: require('./components/App-auth.vue'), name: 'auth' },
   ]
 });

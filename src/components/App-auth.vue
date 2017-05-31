@@ -38,6 +38,9 @@
         
         let user = {
           name: name,
+          position: '',
+          phone: '',
+          mobile: '',
           email: auth.email,
           page: auth.uid,
           photo: photo,
