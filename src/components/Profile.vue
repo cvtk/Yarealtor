@@ -52,33 +52,10 @@
                 :placeholder="user.position"
                 @keypress.enter="updProfileField($event.target)">
             </div>
-            <div :class="$style.content__input_group">
-              <label :for="user['.key'] + '__page'" :class="$style.input_group__label">Страница</label>
-              <div :class="$style.input_group__loader"><app-loader v-show="updField === 'page'"></app-loader></div>
-              <input type="text" name="page"
-                :id="user['.key'] + '__page'" 
-                :class="$style.input_group__text"
-                :placeholder="user.page"
-                @keypress.enter="updProfileField($event.target)">
-            </div>
-            <div :class="$style.content__input_group">
-              <label :for="user['.key'] + '__phone'" :class="$style.input_group__label">Рабочий телефон</label>
-              <div :class="$style.input_group__loader"><app-loader v-show="updField === 'phone'"></app-loader></div>
-              <input type="tel" name="phone"
-                :id="user['.key'] + '__phone'" 
-                :class="$style.input_group__text"
-                :placeholder="user.phone"
-                @keypress.enter="updProfileField($event.target)">
-            </div>
-            <div :class="$style.content__input_group">
-              <label :for="user['.key'] + '__mobile'" :class="$style.input_group__label">Мобильный телефон</label>
-              <div :class="$style.input_group__loader"><app-loader v-show="updField === 'modile'"></app-loader></div>
-              <input type="tel" name="mobile"
-                :id="user['.key'] + '__mobile'" 
-                :class="$style.input_group__text"
-                :placeholder="user.mobile"
-                @keypress.enter="updProfileField($event.target)">
-            </div>
+            
+            <app-input type="page" label="Страница" v-model="user.page" />
+            <app-input type="tel" label="Рабочий телефон" v-model="user.phone" />
+            <app-input type="tel" label="Мобильный телефон" v-model="user.mobile" />
           </div>
         </div>
       </div>
@@ -93,13 +70,14 @@
 <script>
 import firebase from '../firebase.js';
 import AppLoader from './app-loader.vue';
+import AppInput from './modules/inputs.vue'
 
 const usersRef = firebase.database().ref('users');
 
   export default {
     name: 'profile',
     props: ['auth'],
-    components: { AppLoader },
+    components: { AppLoader, AppInput },
     data() {
       return { dataReady: false, currentTab: 'profile', settingsTab: 'main', updField: '' }
     },
