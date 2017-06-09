@@ -15,6 +15,7 @@ const router = new VueRouter({
     { path: '/my-company', component: require('./components/List.vue'), name: 'my-company' },
     { path: '/users/:page', component: require('./components/Profile.vue'), name: 'user' },
     { path: '/auth', component: require('./components/App-auth.vue'), name: 'auth' },
+    { path: '/404', component: require('./components/App-404.vue'), name: '404' }
   ]
 });
 

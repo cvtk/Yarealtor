@@ -54,7 +54,7 @@
         </router-link>
       </ul>
       <ul :class="$style.sidebar__panel">
-        <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._rules]" title="Кодекс риелтора"></router-link>
+        <router-link tag="li" :to="{ name: 'user', params: { page: 123 }}" :class="[$style.panel__item, $style._rules]" title="Кодекс риелтора"></router-link>
         <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._help]" title="Правила пользования порталом"></router-link>
         <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></router-link>
       </ul>
