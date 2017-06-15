@@ -9,7 +9,7 @@ const router = new VueRouter({
   linkActiveClass: '_active',
   routes: [
     { path: '/', component: require('./components/Root.vue'), name: 'root' },
-    { path: '/offers', component: require('./components/List.vue'), name: 'offers' },
+    { path: '/offers', component: require('./components/Offers.vue'), name: 'offers' },
     { path: '/requests', component: require('./components/List.vue'), name: 'requests' },
     { path: '/companies', component: require('./components/List.vue'), name: 'companies' },
     { path: '/my-company', component: require('./components/List.vue'), name: 'my-company' },

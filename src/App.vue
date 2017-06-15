@@ -121,7 +121,7 @@ export default {
       .app__sidebar { width: 45px }
       .sidebar__search { border: none; margin: 20px 14.5px; }
       .search__input { display: none }
-      .search__btn { }
+      .search__btn { width: 100% }
       .menu__item {
         padding: 10px 13.5px 10px 9.5px; &:after { right: -4px }
         > .item__icon:before { margin-right: 0 }
@@ -302,6 +302,7 @@ export default {
   }
   .search__input {
     float: left;
+    width: 90%;
     font-family: "Roboto", sans-serif;
     border: none;
     outline: none;
@@ -315,6 +316,7 @@ export default {
   }
   .search__btn {
     float: right;
+    width: 10%;
     cursor: pointer;
     font-size: 16px;
     color: #4e5d6f;
@@ -341,7 +343,7 @@ export default {
     color: #b4bcc8;
     cursor: pointer;
     white-space: pre;
-    transition: background-color .2s ease-in-out;
+    transition: background-color .2s ease-in-out, padding .2s ease-in-out;
     &:hover { background-color: #3a4656 }
     &._active {
       background-color: #3e4b5c;
@@ -355,6 +357,8 @@ export default {
         border-top: 12px solid transparent;
         border-bottom: 12px solid transparent;
         border-right: 12px solid #eef1f5;
+        line-height: 0;
+        transition: right .2s ease-in-out;
       }
     }
   }
@@ -375,7 +379,7 @@ export default {
   .item__title {
     opacity: 1;
     visibility: visible;
-    transition: opacity .2s ease-in-out, visibility .2s ease-in-out;
+    transition: opacity .1s ease-in-out, visibility .1s ease-in-out;
   }
   .sidebar__panel {
     position: absolute;
@@ -406,8 +410,7 @@ export default {
   .app__content {
     position: relative;
     height: 100%;
-    padding: 20px;
-    padding-top: 75px;
+    padding-top: 50px;
     margin-left: 235px;
     transition: margin-left .2s ease-in-out;
     @media (max-width: $bp-small) {
