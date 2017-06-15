@@ -18,7 +18,7 @@
       </transition>
 
       <div :class="$style.offers__content" v-if="dataReady">
-        <ul :class="$style.content__grid">
+<!--         <ul :class="$style.content__grid">
           <li :class="$style.grid__item">
             <div :class="$style.wrapper">
               <div :class="$style.item__thumb">
@@ -44,7 +44,8 @@
               <span :class="$style.toolbar__item">45</span>
             </div>
           </li>
-        </ul>
+        </ul> -->
+        <app-content-grid :data="tmpHomes"></app-content-grid>
       </div>
       <app-loader v-else></app-loader>
 
@@ -176,7 +177,7 @@
           font-size: 20px;
           font-weight: 600;
           margin: 0;
-          margin-bottom: 7px;
+          margin-bottom: 5px;
         }
          .content__price {
           width: 33.333333%;
@@ -186,12 +187,12 @@
           font-size: 20px;
           font-weight: 300;
           margin: 0;
-          margin-bottom: 7px;
+          margin-bottom: 5px;
         }
          .content__meta {
           width: 66.666667%;
           float: left;
-          margin-bottom: 7px;
+          margin-bottom: 10px;
           > .meta__author, .meta__company {
             display: inline-block;
             color: #5b9bd1;
@@ -204,7 +205,7 @@
           width: 33.333333%;
           float: right;
           text-align: right;
-          margin-bottom: 7px;
+          margin-bottom: 10px;
         }
         > .content__description {
           width: 100%;
@@ -339,13 +340,62 @@
 
 <script>
   import AppLoader from './app-loader.vue';
+  import AppContentGrid from './modules/content-grid.vue';
 
   export default {
     name: 'offers',
     props: ['auth'],
-    components: { AppLoader },
+    components: { AppLoader, AppContentGrid },
     data() {
-      return { dataReady: false }
+      return {
+        dataReady: false,
+        tmpHomes: [
+          {
+            image: '/static/apartments/1.jpg',
+            rooms: 3,
+            price: 1000000,
+            date: 1497548680,
+            area: 87.2,
+            floor: 7,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/2.jpg',
+            rooms: 3,
+            price: 1000000,
+            date: 1497548680,
+            area: 87.2,
+            floor: 7,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/3.jpg',
+            rooms: 3,
+            price: 1000000,
+            date: 1497548680,
+            area: 87.2,
+            floor: 7,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/4.jpg',
+            rooms: 3,
+            price: 1000000,
+            date: 1497548680,
+            area: 87.2,
+            floor: 7,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+        ]
+      }
     },
     created() {
       this.dataReady = true;
