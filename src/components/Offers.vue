@@ -2,13 +2,23 @@
   <div :class="$style.offers">
     <div :class="$style.offers__bar">
       <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Компании</li><span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">ООО "КакоетоНазвание"</li><span :class="$style.breadcrumbs__icon"></span>
+        <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
         <li :class="$style.breadcrumbs__item">Предложения</li>
       </ul>
-      <button :class="$style.bar__actions">Действия</button>
+      <div :class="$style.bar__layout_switcher">
+        <app-input type="button" :class="$style.layout_switcher__grid"><span :class="$style.grid__icon"></span></app-input>
+        <app-input type="button" :class="$style.layout_switcher__list"><span :class="$style.list__icon"></span></app-input>
+      </div>
+
     </div>
-    <h1 :class="$style.offers__title">Предложения<span :class="$style._small">актуальные объекты</span></h1>
+    <div :class="$style.offers__toolbar">
+      <h1 :class="$style.toolbar__title">Предложения<span :class="$style._small">актуальные объекты</span></h1>
+      <div :class="$style.toolbar__actions">
+        <app-input type="button" :class="$style.actions__new"><span :class="$style.new__icon"></span>Создать предложение</app-input>
+      </div>
+      
+    </div>
+    
     <div :class="$style.wrapper">
 
       <transition name="filter" appear>
@@ -52,7 +62,9 @@
       <transition name="ad" appear>
         <aside :class="$style.offers__ad">
           <h2 :class="$style.ad__title">Наши партнеры</h2>
-          <div :class="$style.ad__content"></div>
+          <div :class="$style.ad__content">
+            <img src="/static/ad_1.gif" alt="" >
+          </div>
         </aside>
       </transition>
 
@@ -80,7 +92,6 @@
     position: relative;
     height: 100%;
     padding: 20px;
-    overflow: hidden;
   }
   .offers__filter {
     position: absolute;
@@ -286,76 +297,89 @@
         }
       }
     }
-    > .bar__actions {
-      margin: 6px 0;
-      padding: 5px 10px;
-      font-size: 12px;
-      line-height: 1.5;
-      touch-action: manipulation;
-      text-align: center;
-      cursor: pointer;
-      display: inline-block;
+    > .bar__layout_switcher {
       float: right;
-      vertical-align: middle;
-      border: 1px solid #32c5d2;
-      outline: none;
-      color: #32c5d2;
-      background-color: #fff;
-      user-select: none;
-      transition: all .2s ease-in-out;
-      &:after {
-        content: "\e604";
-        font-family: "Icons";
-        font-size: 8px;
-        margin-left: 5px;
-        vertical-align: middle;
+      text-align: right;
+      padding: 5px 0;
+      > .layout_switcher__list {
+        background-color: transparent;
+        color: #93a3b5;
+        border-color: #93a3b5;
+        > .list__icon:before {
+          content: "\e067";
+          font-family: "Icons";
+        }
       }
-      &:hover {
-        border-color: #32c5d2;
-        color: #FFF;
-        background-color: #32c5d2;
+      > .layout_switcher__grid {
+        background-color: #93a3b5;
+        color: #f1f1f1;
+        border-color: #93a3b5;
+        > .grid__icon:before {
+          content: "\e06a";
+          font-family: "Icons";
+        }
       }
     }
-    &:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
+    &:after { @include clearfix }
+
     @media (max-width: $bp-small) {
       > .bar__breadcrumbs {
         > .breadcrumbs__item:first-child { display: none; }
       }
     }
   }
-  .offers__title {
+  .offers__toolbar {
     margin: 25px 0;
+    &:after { @include clearfix }
+  }
+  .toolbar__title {
+    float: left;
+    width: 50%;
     font-size: 24px;
     color: #666;
+    margin: 0;
     padding: 0;
     letter-spacing: -1px;
     font-weight: 300;
     > ._small { font-size: 14px; letter-spacing: 0; text-transform: lowercase; margin-left: 5px; }
+  }
+
+  .toolbar__actions {
+    float: right;
+    width: 50%;
+    text-align: right;
+  }
+
+  .actions__new {
+    margin: 2px 0;
+    > .new__icon:before {
+      content: "\e060";
+      font-family: "Icons";
+      margin-right: 5px;
+    }
   }
 </style>
 
 <script>
   import AppLoader from './app-loader.vue';
   import AppContentGrid from './modules/content-grid.vue';
+  import AppInput from './modules/inputs.vue';
 
   export default {
     name: 'offers',
     props: ['auth'],
-    components: { AppLoader, AppContentGrid },
+    components: { AppLoader, AppContentGrid, AppInput },
     data() {
       return {
         dataReady: false,
         tmpHomes: [
           {
             image: '/static/apartments/1.jpg',
+            type: 0,
             rooms: 3,
-            price: 1000000,
+            price: 4500000,
             date: 1497548680,
-            area: 87.2,
+            area: 90.2,
             floor: 7,
             author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
             estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
@@ -363,35 +387,134 @@
           },
           {
             image: '/static/apartments/2.jpg',
-            rooms: 3,
-            price: 1000000,
+            type: 1,
+            rooms: 2,
+            price: 2600000,
             date: 1497548680,
-            area: 87.2,
-            floor: 7,
+            area: 77.3,
+            floor: 2,
             author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 5 },
             description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
           },
           {
             image: '/static/apartments/3.jpg',
-            rooms: 3,
+            type: 0,
+            rooms: 1,
             price: 1000000,
             date: 1497548680,
-            area: 87.2,
-            floor: 7,
+            area: 60,
+            floor: 5,
             author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 5 },
             description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
           },
           {
             image: '/static/apartments/4.jpg',
-            rooms: 3,
-            price: 1000000,
+            type: 0,
+            rooms: 2,
+            price: 1400000,
             date: 1497548680,
-            area: 87.2,
-            floor: 7,
+            area: 45.2,
+            floor: 6,
             author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 7 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/5.jpg',
+            type: 0,
+            rooms: 1,
+            price: 1750000,
+            date: 1497548680,
+            area: 45.7,
+            floor: 3,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Советская, 26', city: 'Ярославль', floors: 9 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/6.jpg',
+            type: 0,
+            rooms: 2,
+            price: 3200000,
+            date: 1497548680,
+            area: 50.4,
+            floor: 3,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 5 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/7.jpg',
+            type: 1,
+            rooms: 2,
+            price: 1300000,
+            date: 1497548680,
+            area: 45.9,
+            floor: 6,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 7 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/8.jpg',
+            type: 0,
+            rooms: 4,
+            price: 6700000,
+            date: 1497548680,
+            area: 127.6,
+            floor: 4,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 11 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/9.jpg',
+            type: 0,
+            rooms: 2,
+            price: 4500000,
+            date: 1497548680,
+            area: 70.8,
+            floor: 2,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 5 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/9.jpg',
+            type: 1,
+            rooms: 3,
+            price: 3400000,
+            date: 1497548680,
+            area: 56.3,
+            floor: 4,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 7 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/9.jpg',
+            type: 0,
+            rooms: 2,
+            price: 340000,
+            date: 1497548680,
+            area: 66,
+            floor: 5,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 9 },
+            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
+          },
+          {
+            image: '/static/apartments/9.jpg',
+            type: 1,
+            rooms: 2,
+            price: 2500000,
+            date: 1497548680,
+            area: 56.1,
+            floor: 2,
+            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
+            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 7 },
             description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
           },
         ]

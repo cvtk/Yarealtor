@@ -1,9 +1,20 @@
 <template>
   <ul :class="$style.content__grid">
-    <router-link tag="li" v-for="item in data" :to="{ path: 'root' }" :class="$style.grid__item">
-      <div :class="$style.item__image" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
-
-    </router-link>
+    <li v-for="item in data" :class="$style.grid__item">
+      <span :class="$style.item__type">Продажа</span>
+      <div :class="$style.__wrapper">
+        <div :class="$style.item__image" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
+        <div :class="$style.item__details">
+          
+        </div>
+      </div>
+      <div :class="$style.item__meta">
+        <h3 :class="$style.meta__title">{{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.</h3>
+        <span :class="$style.meta__address">{{ item.estate.city }}, {{ item.estate.address }}</span>
+        <span :class="$style.item__favorites">12</span>
+        <span :class="$style.item__price">{{ formatPrice(item.price) }} руб.</span>
+      </div>
+    </li>
   </ul>
 </template>
 <style lang="scss" module>
@@ -11,7 +22,7 @@
 
   .content__grid {
     list-style: none;
-    margin: 0 -20px;
+    margin: 0 -10px;
     padding: 0;
     &:after { @include clearfix }
   }
@@ -19,26 +30,149 @@
     display: block;
     position: relative;
     width: 33.333333%;
-    height: 190px;
-    padding: 0 15px 15px;
+    padding: 0 10px 20px;
     float: left;
     overflow: hidden;
-    cursor: pointer;
+    &:hover {
+      .item__image { transform:scale(1.1) }
+      .item__details { top: 0 }
+      .item__meta { background-color: #3e4b5c }
+      .meta__title { color: #f1f1f1 }
+      .meta__address { color: #f1f1f1 }
+      .meta__address:after { background-image: url(/static/bg-border-dotted-horizontal--hover.png) }
+      .item__price { color: #f9e491 }
+      .item__favorites { color: #f9e491 }
+    }
   }
+
+  .__wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 75%;
+    overflow: hidden;
+  }
+
   .item__image {
     position: absolute;
-    width: 100%;
-    height: 0;
-    padding-top: 66.64%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: hidden;
+    transition: transform .3s ease-in-out;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+  }
+  
+  .item__details {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    transition: top .2s ease-in-out;
+  }
+
+  .item__type {
+    position: absolute;
+    right: 5px;
+    background: #3e4b5c;
+    color: #fff;
+    letter-spacing: 0.5px;
+    padding: 3px 15px;
+    top: 20px;
+    line-height: 2;
+    z-index: 1;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.1);   
+    &:after {
+      position: absolute;
+      right: 0;
+      bottom: -5px;
+      border-top: 5px solid #2b3643;
+      width: 5px;
+      content: " ";
+      z-index: 1;
+      display: block;
+      border-right: 5px solid #f6f6f6;
+    }
+  }
+
+  .item__meta {
+    background-color: #fff;
+    padding: 15px 20px;
+    transition: background-color .2s ease-in-out;
+    margin-bottom: 10px;
+    &:after { @include clearfix }
+  }
+  .meta__title {
+    color: #5a7391;
+    font-weight: 400;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.8;
+    transition: color .2s ease-in-out;
+  }
+
+  .meta__address {
+    color: #5b9bd1;
+    line-height: 1.8;
+    transition: color .2s ease-in-out;
+    &:before {
+      content: "\e096";
+      font-family: "Icons";
+      font-size: 14px;
+      padding-right: 3px;
+    }
+    &:after {
+      content: "";
+      display: block;
+      margin: 10px 0;
+      height: 1px;
+      background: url(/static/bg-border-dotted-horizontal.png) 0 100% repeat-x;
+    }
+  }
+  .item__favorites {
+    display: block;
+    float: left;
+    width: 25%;
+    cursor: pointer;
+    color: #5b9bd1;
+    vertical-align: middle;
+    transition: color .2s ease-in-out;
+    &:before {
+      content: "\e09b";
+      font-family: "Icons";
+      font-size: 18px;
+      padding-right: 3px;
+    }
+  }
+  .item__price {
+    display: block;
+    float: right;
+    text-align: right;
+    width: 75%;
+    color: #32c5d2;
+    font-size: 20px;
+    font-weight: 300;
+    transition: color .2s ease-in-out;
   }
 </style>
 
 <script>
   export default {
     name: 'app-content-grid',
-    props: ['data']
+    props: ['data'],
+    methods: {
+      formatPrice: function (_number, _sep) {
+        _number = _number.toString();
+        _number = typeof _number != "undefined" && _number > 0 ? _number : "";
+        _number = _number.replace(new RegExp("^(\\d{" + (_number.length%3? _number.length%3:0) + "})(\\d{3})", "g"), "$1 $2").replace(/(\d{3})+?/gi, "$1 ").trim();
+        if(typeof _sep != "undefined" && _sep != " ") {
+            _number = _number.replace(/\s/g, _sep);
+        }
+        return _number;
+      }
+    }
   }
 </script>

@@ -1,5 +1,8 @@
 <template>
-  <div :class="$style.input_group">
+  <button :class="$style.input_button" :id="$style.id" v-if="type === 'button'">
+    <slot></slot>
+  </button>
+  <div :class="$style.input_group" v-else>
     <label :for="$style.id" :class="$style.input_group__label" v-if="label">{{ label }}</label>
     <app-transition> 
       <span :class="$style.input_group__error" v-if="error"></span>
@@ -19,6 +22,28 @@
 <style lang="scss" module>
 
   .id { /* */ }
+  .input_button {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    touch-action: manipulation;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    border: 1px solid #32c5d2;
+    outline: none;
+    color: #fff;
+    background-color: #32c5d2;
+    user-select: none;
+    transition: all .2s ease-in-out;
+    &:hover {
+      color: #fff;
+      background-color: #26a1ab;
+      border-color: #2499a3;
+    }
+  
+  }
   .input_group {
     position: relative;
     margin-bottom: 15px;

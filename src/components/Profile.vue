@@ -59,14 +59,17 @@
 
 <style lang="scss" module>
   @import "../assets/style.scss";
-  .content { position: relative }
+  .content {
+    position: relative;
+    padding: 20px; 
+  }
 
   .content__bar {
     border-bottom: 1px solid #e7ecf1;
     background-color: #fff;
     position: relative;
     padding: 0 20px;
-    margin: -25px -20px 0;
+    margin: -20px -20px 0;
     > .bar__breadcrumbs {
       padding: 11px 0;
       display: inline-block;

@@ -16,7 +16,7 @@
         <span :class="$style.create_account__link">Регистрация</span>
       </div>
     </div>
-    <div :class="$style.auth__copyright">&copy; YaRealtor, Ярославский союз риелторов, 2017</div>
+    <div :class="$style.auth__copyright">&copy; iLAN, Ярославский союз риэлторов, 2017</div>
   </div>
 </template>
 
