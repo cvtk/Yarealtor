@@ -146,7 +146,7 @@ export default {
 
   .app__header {
     position: fixed;
-    z-index: 2;
+    z-index: 3;
     background-color: #2b3643;
     width: 100%;
     min-width: 320px;
@@ -251,7 +251,7 @@ export default {
             > ._sign_out:before { content: "\e065" }
           }
         }
-        @media (max-width: $bp-small) {
+        @media (max-width: $bp-extra-small) {
           &:after { margin-left: 0 }
           > .user__pic { margin-right: 0 }
           > .user__name { display: none }
@@ -282,7 +282,7 @@ export default {
   }
   .app__sidebar {
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     width: 235px;
     height: 100%;
     background-color: #364150;
@@ -361,6 +361,7 @@ export default {
         transition: right .2s ease-in-out;
       }
     }
+    @media (max-width: $bp-small) { &:after { display: none } }
   }
   .item__icon {
     &:before {

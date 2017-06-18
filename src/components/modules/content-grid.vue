@@ -2,7 +2,7 @@
   <ul :class="$style.content__grid">
     <li v-for="item in data" :class="$style.grid__item">
       <span :class="$style.item__type">Продажа</span>
-      <div :class="$style.__wrapper">
+      <div :class="$style.wrapper_image">
         <div :class="$style.item__image" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
         <div :class="$style.item__details">
           
@@ -12,7 +12,7 @@
         <h3 :class="$style.meta__title">{{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.</h3>
         <span :class="$style.meta__address">{{ item.estate.city }}, {{ item.estate.address }}</span>
         <span :class="$style.item__favorites">12</span>
-        <span :class="$style.item__price">{{ formatPrice(item.price) }} руб.</span>
+        <span :class="$style.item__price">{{ item.price | price }} руб.</span>
       </div>
     </li>
   </ul>
@@ -21,10 +21,20 @@
   @import "../../assets/style.scss";
 
   .content__grid {
+    position: relative;
     list-style: none;
     margin: 0 -10px;
     padding: 0;
     &:after { @include clearfix }
+    @media (min-width: $bp-extra-large) {
+      .grid__item { width: 25% }
+    }
+    @media (max-width: $bp-large) {
+      .grid__item { width: 50% }
+    }
+    @media (max-width: $bp-extra-small) {
+      .grid__item { width: 100% }
+    }
   }
   .grid__item {
     display: block;
@@ -45,7 +55,7 @@
     }
   }
 
-  .__wrapper {
+  .wrapper_image {
     position: relative;
     width: 100%;
     padding-top: 75%;
@@ -71,7 +81,7 @@
     height: 100%;
     top: 100%;
     background-color: rgba(0, 0, 0, .5);
-    transition: top .2s ease-in-out;
+    transition: top .4s ease-in-out;
   }
 
   .item__type {
@@ -103,6 +113,7 @@
     padding: 15px 20px;
     transition: background-color .2s ease-in-out;
     margin-bottom: 10px;
+    overflow: hidden;
     &:after { @include clearfix }
   }
   .meta__title {
@@ -112,6 +123,7 @@
     font-size: 16px;
     line-height: 1.8;
     transition: color .2s ease-in-out;
+    white-space: pre;
   }
 
   .meta__address {
@@ -160,19 +172,11 @@
 </style>
 
 <script>
+  import AppFilters from '../helpers/filters.js';
+
   export default {
     name: 'app-content-grid',
     props: ['data'],
-    methods: {
-      formatPrice: function (_number, _sep) {
-        _number = _number.toString();
-        _number = typeof _number != "undefined" && _number > 0 ? _number : "";
-        _number = _number.replace(new RegExp("^(\\d{" + (_number.length%3? _number.length%3:0) + "})(\\d{3})", "g"), "$1 $2").replace(/(\d{3})+?/gi, "$1 ").trim();
-        if(typeof _sep != "undefined" && _sep != " ") {
-            _number = _number.replace(/\s/g, _sep);
-        }
-        return _number;
-      }
-    }
+    filters: AppFilters
   }
 </script>
