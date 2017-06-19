@@ -7,7 +7,9 @@
       </div>
       <div :class="$style.item__content">
         <div :class="$style.row">
-          <h3 :class="$style.content__title">{{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.</h3>
+          <router-link tag="h3" :class="$style.content__title" :to="{ name: 'offer', params: { id: item.id } }">
+            {{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.
+          </router-link>
           <span :class="$style.content__price">{{ item.price | price }} руб.</span>
         </div>
         <div :class="$style.row">
@@ -15,7 +17,7 @@
             <a href="#" :class="$style.meta__author">Сергей Иванов</a>
             <a href="#" :class="$style.meta__company">ООО "Длинное название компании"</a>
           </div>
-          <span :class="$style.content__date">Сегодня, 14:37</span>
+          <span :class="$style.content__date">{{ item.date | unixToDate }}</span>
         </div>
          <div :class="$style.content__description">Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!
          </div>
@@ -107,6 +109,9 @@
     font-weight: 600;
     margin: 0;
     margin-bottom: 5px;
+    cursor: pointer;
+    transition: color .2s ease-in-out;
+    &:hover { color: #3e4b5c }
   }
 
   .content__price {

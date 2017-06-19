@@ -1,3 +1,6 @@
+var moment = require('moment');
+moment.locale('ru');
+
 export default {
   price: function ( _number ) {
     _number = _number.toString();
@@ -7,5 +10,8 @@ export default {
         _number = _number.replace(/\s/g, _sep);
     }
     return _number;
+  },
+  unixToDate: function( _timestamp ) {
+    return moment(_timestamp * 1000).calendar();
   }
 }

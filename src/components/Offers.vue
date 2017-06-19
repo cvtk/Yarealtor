@@ -248,10 +248,11 @@
         tmpHomes: [
           {
             image: '/static/apartments/1.jpg',
+            id: 112323,
             type: 0,
             rooms: 3,
             price: 4500000,
-            date: 1497548680,
+            date: 1497852079,
             area: 90.2,
             floor: 7,
             author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
@@ -260,6 +261,7 @@
           },
           {
             image: '/static/apartments/2.jpg',
+            id: 112324,
             type: 1,
             rooms: 2,
             price: 2600000,
@@ -272,10 +274,11 @@
           },
           {
             image: '/static/apartments/3.jpg',
+            id: 112325,
             type: 0,
             rooms: 1,
             price: 1000000,
-            date: 1497548680,
+            date: 1484265600,
             area: 60,
             floor: 5,
             author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
@@ -284,6 +287,7 @@
           },
           {
             image: '/static/apartments/4.jpg',
+            id: 112326,
             type: 0,
             rooms: 2,
             price: 1400000,
@@ -296,6 +300,7 @@
           },
           {
             image: '/static/apartments/5.jpg',
+            id: 112327,
             type: 0,
             rooms: 1,
             price: 1750000,
@@ -308,6 +313,7 @@
           },
           {
             image: '/static/apartments/6.jpg',
+            id: 112328,
             type: 0,
             rooms: 2,
             price: 3200000,
@@ -320,6 +326,7 @@
           },
           {
             image: '/static/apartments/7.jpg',
+            id: 112329,
             type: 1,
             rooms: 2,
             price: 1300000,
@@ -332,6 +339,7 @@
           },
           {
             image: '/static/apartments/8.jpg',
+            id: 112310,
             type: 0,
             rooms: 4,
             price: 6700000,
@@ -344,6 +352,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            id: 112311,
             type: 0,
             rooms: 2,
             price: 4500000,
@@ -356,6 +365,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            id: 112312,
             type: 1,
             rooms: 3,
             price: 3400000,
@@ -368,6 +378,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            id: 112313,
             type: 0,
             rooms: 2,
             price: 340000,
@@ -380,6 +391,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            id: 112314,
             type: 1,
             rooms: 2,
             price: 2500000,

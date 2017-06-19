@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "firebase": "^4.0.0",
+    "moment": "^2.18.1",
     "normalize.css": "^7.0.0",
     "simple-line-icons": "^2.4.1",
     "vue": "^2.2.1",
