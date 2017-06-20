@@ -10,72 +10,96 @@
     </div>
     <div :class="$style.offer__toolbar">
       <h1 :class="$style.toolbar__title">{{ item.estate.city }}, {{ item.estate.address }}<span :class="$style._small">Предложение #{{ item.id }}</span></h1>
-      <div :class="$style.toolbar__actions">
-
-      </div>
+      <div :class="$style.toolbar__actions"></div>
     </div>
     
-    <div :class="$style.wrapper" v-if="dataReady">
-      <transition name="slide-content" appear>
-        <div :class="$style.wrapper_main">
-          <aside :class="$style.offer__details">
-
-            <div :class="$style.details__author">
-              <img :class="$style.author__photo" :src="item.author.photo">
-              <div :class="$style.author__meta">
-                <router-link :class="$style.meta__name" :to="{ name: 'user', params: { page: item.author.page } }">
-                  {{ item.author.name }}
-                  <app-online-status :online="true"></app-online-status>
-                </router-link>
-                <router-link :class="$style.meta__company" :to="{ name: 'company', params: { page: item.author.page } }">
-                  {{ item.author.company }}
-                </router-link>
-              </div>
-            </div>
-
-            <ul :class="$style.details__list">
-              <li :class="$style.list__item">
-                <span :class="$style.item__title">Цена:</span>
-                <span :class="$style.item__value">{{ item.price }}</span>
-              </li>
-              <li :class="$style.list__item">
-                <span :class="$style.item__title">Населенный пункт:</span>
-                <span :class="$style.item__value">гор. Ярославль</span>
-              </li>
-              <li :class="$style.list__item">
-                <span :class="$style.item__title">Адрес:</span>
-                <span :class="$style.item__value">ул. Красный молдаских партизан, 46 корп. 2</span>
-              </li>
-              <li :class="$style.list__item">
-                <span :class="$style.item__title">Район:</span>
-                <span :class="$style.item__value">Красноперекопский</span>
-              </li>
-              <li :class="$style.list__item">
-                <span :class="$style.item__title">Тип:</span>
-                <span :class="$style.item__value">новостройка</span>
-              </li>
-              <li :class="$style.list__item">
-                <span :class="$style.item__title">Материал:</span>
-                <span :class="$style.item__value">деревянный</span>
-              </li>
-            </ul>
-          </aside>
-          <div :class="$style.offer__content">
-            <div :class="$style.content__background" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
-            <div :class="$style.content__image_wrapper">
-              <img :class="$style.images__item" :src="item.image">
+    <div :class="$style.offer__main">
+      <div :class="$style.main__content">
+        <div :class="$style.content__background" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
+        <aside :class="$style.content__details">
+          <div :class="$style.details__author">
+            <img :class="$style.author__photo" :src="item.author.photo">
+            <div :class="$style.author__meta">
+              <router-link :class="$style.meta__name" :to="{ name: 'user', params: { page: item.author.page } }">
+                {{ item.author.name }}
+                <app-online-status :online="true"></app-online-status>
+              </router-link>
+              <router-link :class="$style.meta__company" :to="{ name: 'company', params: { page: item.author.page } }">
+                {{ item.author.company }}
+              </router-link>
             </div>
           </div>
+
+          <ul :class="$style.details__list">
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Цена:</span>
+              <span :class="$style.item__value">{{ item.price | price }} руб.</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Населенный пункт:</span>
+              <span :class="$style.item__value">гор. Ярославль</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Адрес:</span>
+              <span :class="$style.item__value">{{ item.estate.address }}</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Район:</span>
+              <span :class="$style.item__value">Красноперекопский</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Тип:</span>
+              <span :class="$style.item__value">новостройка</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Материал:</span>
+              <span :class="$style.item__value">деревянный</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Комнат:</span>
+              <span :class="$style.item__value">2</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Этаж:</span>
+              <span :class="$style.item__value">8 / 11</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Общая площадь:</span>
+              <span :class="$style.item__value">90.2 м²</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Жилая площадь:</span>
+              <span :class="$style.item__value">80 м²</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Площадь кухни:</span>
+              <span :class="$style.item__value">10 м²</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Отделка:</span>
+              <span :class="$style.item__value">от застройщика</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Санузел:</span>
+              <span :class="$style.item__value">совмещенный</span>
+            </li>
+            <li :class="$style.list__item">
+              <span :class="$style.item__title">Балкон:</span>
+              <span :class="$style.item__value">есть</span>
+            </li>
+          </ul>
+        </aside>
+        <div :class="$style.content__carousel">
+          <div :class="$style.carousel__menu">
+            <div class="menu__item">
+              <app-icon name="018-music" />
+            </div>
+          </div>
+          <img :src="item.image" alt="" :class="$style.carousel__slide">
         </div>
-      </transition>
-      <aside :class="$style.offer__ad">
-        <h2 :class="$style.ad__title">Наши партнеры</h2>
-        <div :class="$style.ad__content">
-          <img src="/static/ad_1.gif" alt="" >
-        </div>
-      </aside>
+      </div>
+    <app-ad-sidebar :class="$style.main__ad"></app-ad-sidebar>
     </div>
-    <app-loader v-else></app-loader>
   </div>
 </template>
 
@@ -92,255 +116,241 @@
 
 <style lang="scss" module>
   @import "../assets/style.scss";
-
-  .wrapper {
-    position: relative;
-    height: 100%;
-    &:after { @include clearfix }
-  }
-
-  .wrapper_main {
-    position: relative;
-    margin-right: 300px;
-    overflow: hidden;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  }
-  
-  .offer {
-    position: relative;
-    height: 100%;
-    padding: 20px;
-  }
-
-  .offer__content {
-    position: relative;
-    margin-left: 280px;
-    &:after { @include clearfix }
-  }
-
-  .offer__details {
-    position: relative;
-    float: left;
-    width: 280px;
-    overflow: hidden;
-    background-color: #fff;
-  }
-
-  .details__author {
-    position: relative;
-    padding: 20px 15px 5px;
-    &:after {
-      @include clearfix;
-      display: block;
-      height: 1px;
-      padding-top: 15px;
-      background: url(/static/bg-border-dotted-horizontal.png) 0 100% repeat-x;
+  /* offer */
+    .offer {
+      position: relative;
+      height: 100%;
+      padding: 20px;
     }
-  }
 
-  .author__photo {
-    display: block;
-    max-width: 100%;
-    width: 25%;
-    height: auto;
-    border-radius: 50%;
-    padding-right: 5px;
-    float: left;
-  }
+  /* offer__main */
+    .offer__main {
+      position: relative;
+    }
 
-  .author__meta {
-    float: left;
-    width: 75%;
-    padding: 2.5px 0;
-  }
-
-  .meta__name {
-    display: block;
-    color: #5a7391;
-    font-size: 20px;
-    font-weight: 300;
-    margin-bottom: 7px;
-    text-decoration: none;
-  }
-  .meta__company {
-    display: block;
-    text-transform: uppercase;
-    color: #5b9bd1;
-    font-size: 12px;
-    font-weight: 400;
-    text-decoration: none;
-  }
-
-  .details__list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border: 7.5px solid #fff;
-    > .list__item {
-      border-bottom: 1px solid #f0f4f7;
-      display: block;
-      padding: 7.5px;
-      cursor: default;
-      transition: background-color .1s ease-in-out;
-      &:hover { background-color: #eef1f5 }
+  /* offer__bar */
+    .offer__bar {
+      border-bottom: 1px solid #e7ecf1;
+      background-color: #fff;
+      position: relative;
+      padding: 0 20px;
+      margin: -20px -20px 0;
       &:after { @include clearfix }
-      > .item__title, .item__value { display: block; width: 50%; float: left; color: #5a7391; }
-      > .item__value { text-align: right; color: #93a3b5; font-style: italic; }
     }
-  }
 
+  /* offer__toolbar */
+    .offer__toolbar { margin: 25px 0 }
 
-  .content__background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: -1;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: blur(30px);
-    opacity: .8;
-  }
-
-  .content__image_wrapper {
-    position: absolute;
-    width: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    padding-top: 67.666667%;
-    > .images__item {
+    .toolbar__title {
+      font-size: 24px;
+      color: #666;
+      margin: 0;
+      padding: 0;
+      letter-spacing: -1px;
+      font-weight: 300;
+      > ._small { font-size: 14px; letter-spacing: 0; text-transform: lowercase; margin-left: 5px; }
+    }
+  
+  /* main__content */
+    .main__content {
+      position: relative;
+      margin-right: 300px;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+      height: auto;
+      overflow: hidden;
+      &:after { @include clearfix }
+    }
+  
+  /* content__background */
+    .content__background {
       position: absolute;
       top: 0;
       left: 0;
       bottom: 0;
       right: 0;
-      margin: auto;
+      z-index: -1;
+      background-size: cover;
+      background-repeat: no-repeat;
+      filter: blur(50px);
+      opacity: .75;
     }
-  }
 
-  .offer__ad {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 280px;
-    height: 100%;
-    background-color: #fff;
-    padding: 15px 20px;
-    > .ad__title {
-      width: 100%;
-      color: #578ebe;
-      padding: 12px 0;
-      display: inline-block;
-      font-size: 15px;
-      line-height: 18px;
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: .25px;
+  /* content__details */
+
+    .content__details {
+      position: absolute;
+      width: 280px;
+      background-color: #fff;
+      opacity: .9;
     }
-    > .ad__content {}
-  }
-  .offer__bar {
-    border-bottom: 1px solid #e7ecf1;
-    background-color: #fff;
-    position: relative;
-    padding: 0 20px;
-    margin: -20px -20px 0;
-    > .bar__breadcrumbs {
+
+    .details__author {
+      position: relative;
+      padding: 20px 15px 5px;
+      &:after {
+        @include clearfix;
+        display: block;
+        height: 1px;
+        padding-top: 15px;
+        background: url(/static/bg-border-dotted-horizontal.png) 0 100% repeat-x;
+      }
+    }
+
+    .author__photo {
+      display: block;
+      max-width: 100%;
+      width: 25%;
+      height: auto;
+      border-radius: 50%;
+      padding-right: 5px;
+      float: left;
+    }
+
+    .author__meta {
+      float: left;
+      width: 75%;
+      padding: 2.5px 0;
+    }
+
+    .meta__name {
+      display: block;
+      color: #5a7391;
+      font-size: 20px;
+      font-weight: 300;
+      margin-bottom: 7px;
+      text-decoration: none;
+    }
+    .meta__company {
+      display: block;
+      text-transform: uppercase;
+      color: #5b9bd1;
+      font-size: 12px;
+      font-weight: 400;
+      text-decoration: none;
+    }
+
+    .details__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border: 7.5px solid #fff;
+      > .list__item {
+        border-bottom: 1px solid #f0f4f7;
+        display: block;
+        padding: 7.5px;
+        cursor: default;
+        transition: background-color .1s ease-in-out;
+        &:hover { background-color: #eef1f5 }
+        &:after { @include clearfix }
+        > .item__title, .item__value { display: block; width: 50%; float: left; color: #5a7391; }
+        > .item__value { text-align: right; color: #93a3b5; font-style: italic; }
+      }
+    }
+  
+  /* content__carousel */
+    .content__carousel {
+      position: relative;
+      margin-left: 280px;
+      overflow: hidden;
+      width: auto;
+    }
+
+    .carousel__slide {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+  /* carousel__menu */
+    .carousel__menu {
+      position: absolute;
+      background-color: #fff;
+      opacity: .9;
+      width: 100px;
+      height: 100%;
+      left: -80px;
+      transition: left .3s ease-in-out;
+      padding: 20px;
+      border-left: 1px solid #f0f4f7;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+      &:hover, .__active { left: 0; &:after { background-color: #eef1f5 } }
+      &:after {
+        content: "\e602";
+        font-family: "Icons";
+        font-size: 18px;
+        position: absolute;
+        transition: background-color .2s ease-in-out;
+        top: 40%;
+        right: 1px;
+        cursor: pointer;
+        color: #93a3b5;
+        padding: 15px 0;
+        width: 19px;
+      }
+    }
+
+  /* menu__item */
+    .menu__item {
+
+    }
+
+  /* bar__breadcrumbs */
+    .bar__breadcrumbs {
       padding: 11px 0;
       display: inline-block;
       float: left;
       margin: 0;
       list-style: none;
-      > .breadcrumbs__item {
-        display: inline-block;
-        color: #888;
-        cursor: pointer;
-        line-height: 14px;
-        &:last-child {
-          cursor: default;
-        }
-      }
-      > .breadcrumbs__icon {
-        color: #888;
+    }
+    .breadcrumbs__item {
+      display: inline-block;
+      color: #888;
+      cursor: pointer;
+      line-height: 14px;
+      &:last-child {
         cursor: default;
-        line-height: 14px;
-        &:after {
-          content: "\e606";
-          display: inline-block;
-          font-family: "Icons";
-          cursor: default;
-          font-size: 7px;
-          margin-left: 5px;
-          vertical-align: middle;
-        }
+      }
+    }
+    .breadcrumbs__icon {
+      color: #888;
+      cursor: default;
+      line-height: 14px;
+      &:after {
+        content: "\e606";
+        display: inline-block;
+        font-family: "Icons";
+        cursor: default;
+        font-size: 7px;
+        margin-left: 5px;
+        vertical-align: middle;
       }
     }
 
-    &:after { @include clearfix }
-
-    @media (max-width: $bp-small) {
-      > .bar__breadcrumbs {
-        > .breadcrumbs__item:first-child { display: none; }
+  /* responsive */
+    .offer {
+      @media (max-width: $bp-medium) {
+        .main__ad { display: none }
+        .main__content { margin-right: 0 }
+      }
+      @media (max-width: $bp-small) {
+        ._small { display: none }
+        .breadcrumbs__item:first-child { display: none }
       }
     }
-  }
-  .offer__toolbar {
-    margin: 25px 0;
-    &:after { @include clearfix }
-  }
-  .toolbar__title {
-    float: left;
-    width: 50%;
-    font-size: 24px;
-    color: #666;
-    margin: 0;
-    padding: 0;
-    letter-spacing: -1px;
-    font-weight: 300;
-    > ._small { font-size: 14px; letter-spacing: 0; text-transform: lowercase; margin-left: 5px; }
-  }
-
-  .toolbar__actions {
-    float: right;
-    width: 50%;
-    text-align: right;
-  }
-
-  .actions__new {
-    margin: 2px 0;
-    > .new__icon:before {
-      content: "\e060";
-      font-family: "Icons";
-      margin-right: 5px;
-    }
-  }
-
-  .offer {
-    @media (max-width: $bp-medium) {
-      .offer__ad { display: none }
-      .offer__content { margin-right: 0 }
-    }
-    @media (max-width: $bp-small) {
-      ._small { display: none }
-    }
-    @media (max-width: $bp-extra-small) {
-      .new__text { display: none }
-      .new__icon:before { margin-right:0 }
-    }
-  }
 </style>
 
 <script>
   import AppLoader from './app-loader.vue';
   import AppOnlineStatus from './modules/online-status.vue';
+  import AppAdSidebar from './modules/ad-sidebar.vue';
+  import AppIcon from './modules/icon.vue';
+  import AppFilters from './helpers/filters.js';
 
   export default {
     name: 'offer',
     props: ['auth'],
-    components: { AppLoader, AppOnlineStatus },
+    components: { AppLoader, AppOnlineStatus, AppAdSidebar, AppIcon },
+    filters: AppFilters,
     data() {
       return {
         dataReady: false,
