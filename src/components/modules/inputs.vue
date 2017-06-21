@@ -23,6 +23,8 @@
 
   .id { /* */ }
   .input_button {
+    display: inline-block;
+    z-index: 1;
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;

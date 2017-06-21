@@ -48,10 +48,7 @@
 
         </div>
       </div>
-      <div :class="$style.profile__ad">
-        <h2 :class="$style.ad__title">Наши партнеры</h2>
-        <div :class="$style.ad__content"></div>
-      </div>
+      <app-ad-sidebar></app-ad-sidebar>
     </div>
   </div>
   <app-loader v-else></app-loader>
@@ -336,15 +333,16 @@
 <script>
   import firebase from '../firebase.js';
   import AppLoader from './app-loader.vue';
-  import AppInput from './modules/inputs.vue'
-  import AppOnlineStatus from './modules/online-status.vue'
+  import AppInput from './modules/inputs.vue';
+  import AppAdSidebar from './modules/ad-sidebar.vue';
+  import AppOnlineStatus from './modules/online-status.vue';
 
   const usersRef = firebase.database().ref('users');
 
   export default {
     name: 'profile',
     props: ['auth'],
-    components: { AppLoader, AppInput, AppOnlineStatus },
+    components: { AppLoader, AppInput, AppOnlineStatus, AppAdSidebar },
     data() {
       return { dataReady: false, currentTab: 'profile', settingsTab: 'main', user: ''  }
     },
