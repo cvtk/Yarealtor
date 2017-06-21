@@ -4,6 +4,9 @@
     <div :class="$style.sidebar__content">
       <img src="/static/ad_1.gif" alt="" >
     </div>
+    <div :class="$style.sidebar__content">
+      <img src="/static/ad_3.gif" alt="" >
+    </div>
   </aside>
 </template>
 
@@ -28,7 +31,7 @@
     text-transform: uppercase;
     letter-spacing: .25px;
   }
-  .sidebar__content { /* */ }
+  .sidebar__content { padding-bottom: 15px; text-align: center; }
 </style>
   
 <script>

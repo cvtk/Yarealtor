@@ -90,14 +90,42 @@
           </ul>
         </aside>
         <div :class="$style.content__carousel">
-          <div :class="$style.carousel__menu">
-            <div class="menu__item">
-              <app-icon name="018-music" />
+          <div :class="[$style.carousel__menu, !carouselMenuActive || $style.__active]">
+            <div :class="$style.menu__switcher" @click="carouselMenuActive=!carouselMenuActive"></div>
+            <div :class="$style.menu__item" @click="item.favorites=!item.favorites" v-show="carouselMenuActive">
+              <div :class="$style.item__top">
+                <icon :class="$style.top__icon" name="star" v-if="item.favorites"></icon>
+                <icon :class="$style.top__icon" name="star-o" v-else></icon>
+                <span :class="$style.top__text">241</span>
+              </div>
+              <span :class="$style.item__title">Избранное</span>
             </div>
+            <div :class="$style.menu__item" v-show="carouselMenuActive">
+              <div :class="$style.item__top">
+                <icon :class="$style.top__icon" name="comments-o"></icon>
+                <span :class="$style.top__text">87</span>
+              </div>
+              <span :class="$style.item__title">Обсудить</span>
+            </div>
+            <div :class="$style.menu__item" v-show="carouselMenuActive">
+              <div :class="$style.item__top">
+                <icon :class="$style.top__icon" name="map-o"></icon>
+              </div>
+              <span :class="$style.item__title">Карта</span>
+            </div>
+          </div>
+          <div :class="$style.carousel__controls">
+            <span :class="$style.controls__fullscreen"></span>
+            <span :class="$style.controls__prev"></span>
+            <span :class="$style.controls__next"></span>
           </div>
           <img :src="item.image" alt="" :class="$style.carousel__slide">
         </div>
       </div>
+    <div :class="$style.main__description">
+      Сергей, оно зависит от количества текста. Больше текста - больше места. Или Вы не это имели ввиду? Много-много текста, оооочень много текста. Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.
+    </div>
+    <div :class="$style.main__h_ad"><img src="/static/ad_2.gif" alt="" ></div>
     <app-ad-sidebar :class="$style.main__ad"></app-ad-sidebar>
     </div>
   </div>
@@ -161,6 +189,22 @@
       &:after { @include clearfix }
     }
   
+  /* main__description */
+    .main__description {
+      width: 100%;
+      margin-top: 20px;
+      padding-right: 300px;
+      overflow: hidden;
+      font-size: 17px;
+    }
+  
+  /* main__ad */
+    .main__h_ad {
+      text-align: center;
+      margin-top: 20px;
+      padding-right: 300px;
+    }
+
   /* content__background */
     .content__background {
       position: absolute;
@@ -180,6 +224,7 @@
     .content__details {
       position: absolute;
       width: 280px;
+      height: 100%;
       background-color: #fff;
       opacity: .9;
     }
@@ -266,15 +311,16 @@
       position: absolute;
       background-color: #fff;
       opacity: .9;
+      padding: 10px 0;
       width: 100px;
       height: 100%;
       left: -80px;
+      z-index: 1;
       transition: left .3s ease-in-out;
-      padding: 20px;
       border-left: 1px solid #f0f4f7;
       box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-      &:hover, .__active { left: 0; &:after { background-color: #eef1f5 } }
-      &:after {
+      &.__active { left: 0 }
+      > .menu__switcher:after {
         content: "\e602";
         font-family: "Icons";
         font-size: 18px;
@@ -287,11 +333,83 @@
         padding: 15px 0;
         width: 19px;
       }
+      > .menu__switcher:hover:after { background-color: #eef1f5 }
+      > .menu__item {
+        text-align: center;
+        cursor: pointer;
+        padding: 20px 15px;
+        transition: background-color .2s ease-in-out;
+        &:hover { background-color: #eef1f5 }
+        > .item__top {
+          display: block;
+          margin: 0 auto;
+          padding-bottom: 6px;
+          > .top__icon {
+            display: inline-block;
+            color: #364150;
+            width: 24px;
+            height: 24px;
+            margin-right: 3px;
+            vertical-align: middle;
+          }
+          > .top__text {
+            display: inline-block;
+            text-transform: uppercase;
+            color: #2b3643;
+            font-size: 13px;
+            font-weight: 600;
+            vertical-align: bottom;
+          }
+        }
+        > .item__title {
+          display: block;
+          padding-top: 5px;
+          text-transform: uppercase;
+          color: #2b3643;
+          font-size: 12px;
+          font-weight: 400;
+        }
+      }
+    }
+  
+  /* carousel__controls */
+    .carousel__controls {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
     }
 
-  /* menu__item */
-    .menu__item {
-
+    .controls__fullscreen, .controls__prev, .controls__next {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      padding: 10px 15px;
+      text-align: center;
+      background-color: rgba(255, 255, 255, .25);
+      &:after {
+        content: "\e091";
+        font-family: "Icons";
+        font-size: 22px;
+        color: #fff;
+        transition: left .2s ease-in-out;
+      }
+    }
+    .controls__next {
+      top: 45%;
+      &:after {
+        content: "\e606";
+      }
+    }
+    .controls__prev {
+      top: 45%;
+      left: 120px;
+      right: auto;
+      &:after {
+        content: "\e605";
+      }
     }
 
   /* bar__breadcrumbs */
@@ -343,20 +461,28 @@
   import AppLoader from './app-loader.vue';
   import AppOnlineStatus from './modules/online-status.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
-  import AppIcon from './modules/icon.vue';
   import AppFilters from './helpers/filters.js';
+  import Icon from 'vue-awesome/components/Icon.vue';
+  import 'vue-awesome/icons/map';
+  import 'vue-awesome/icons/map-o';
+  import 'vue-awesome/icons/comments';
+  import 'vue-awesome/icons/comments-o';
+  import 'vue-awesome/icons/star';
+  import 'vue-awesome/icons/star-o';
 
   export default {
     name: 'offer',
     props: ['auth'],
-    components: { AppLoader, AppOnlineStatus, AppAdSidebar, AppIcon },
+    components: { AppLoader, AppOnlineStatus, AppAdSidebar, Icon },
     filters: AppFilters,
     data() {
       return {
         dataReady: false,
+        carouselMenuActive: false,
         item:
           {
-            image: '/static/apartments/7.jpg',
+            image: '/static/apartments/1.jpg',
+            favorites: false,
             id: 112313,
             type: 0,
             rooms: 3,

@@ -2,24 +2,29 @@
   <ul :class="$style.content__list">
     <li v-for="item in data" :class="$style.list__item">
       <span :class="$style.item__type">Продажа</span>
-      <div :class="$style.wrapper_image">
+      <router-link :to="{ name: 'offer', params: { id: item.id } }" :class="$style.wrapper_image">
         <div :class="$style.item__image" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
-      </div>
+      </router-link>
       <div :class="$style.item__content">
         <div :class="$style.row">
-          <router-link tag="h3" :class="$style.content__title" :to="{ name: 'offer', params: { id: item.id } }">
+          <router-link :class="$style.content__title" :to="{ name: 'offer', params: { id: item.id } }">
             {{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.
           </router-link>
           <span :class="$style.content__price">{{ item.price | price }} руб.</span>
         </div>
         <div :class="$style.row">
           <div :class="$style.content__meta">
-            <a href="#" :class="$style.meta__author">Сергей Иванов</a>
-            <a href="#" :class="$style.meta__company">ООО "Длинное название компании"</a>
+            <div :class="$style.meta__address">гор. Ярославль, ул. Строителей, 7</div>
           </div>
           <span :class="$style.content__date">{{ item.date | unixToDate }}</span>
         </div>
          <div :class="$style.content__description">Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!
+         </div>
+         <div :class="$style.content__foot">
+           <router-link :to="{ name: 'offer', params: { id: item.id } }" :class="[$style.foot__item, $style._favorites]">43</router-link>
+           <router-link :to="{ name: 'offer', params: { id: item.id } }"  :class="[$style.foot__item, $style._comments]">234</router-link>
+           <router-link :to="{ name: 'offer', params: { id: item.id } }"  :class="[$style.foot__item, $style._author]">Сергей Борисов</router-link>
+           <router-link :to="{ name: 'offer', params: { id: item.id } }"  :class="[$style.foot__item, $style._company]">ООО "Омега Строй</router-link>
          </div>
       </div>
     </li>
@@ -52,9 +57,9 @@
 
   .wrapper_image {
     position: relative;
-    width: 25%;
+    width: 10%;
     float: left;
-    padding-top: 25%;
+    padding-top: 10%;
     overflow: hidden;
   }
 
@@ -96,7 +101,7 @@
   }
 
   .item__content {
-    width: 75%;
+    width: 90%;
     float: left;
     padding-left: 15px;
   }
@@ -109,12 +114,13 @@
     font-weight: 600;
     margin: 0;
     margin-bottom: 5px;
-    cursor: pointer;
+    text-decoration: none;
     transition: color .2s ease-in-out;
     &:hover { color: #3e4b5c }
   }
 
   .content__price {
+    display: block;
     width: 33.333333%;
     float: right;
     text-align: right;
@@ -131,23 +137,18 @@
     margin-bottom: 10px;
   }
 
-  .meta__author, .meta__company {
+  .meta__address {
     display: inline-block;
     color: #5b9bd1;
-    transition: color .2s ease-in-out;
-    text-decoration: none;
     white-space: pre;
     margin-right: 10px;
-    &:hover { color: #578ebe }
     &:before {
-      content: "\e005";
+      content: "\e096";
       font-family: "Icons";
       font-size: 13px;
       margin-right: 3px;
     }
   }
-
-  .meta__company:before { content: "\e001" }
 
   .content__date {
     width: 33.333333%;
@@ -159,6 +160,91 @@
   .content__description {
     width: 100%;
     margin-bottom: 7px;
+  }
+
+  .content__foot {
+    border-top: 1px solid #f0f1f2;
+    padding-top: 20px;
+    margin-top: 20px;
+    text-align: right;
+    > .foot__item {
+      display: inline-block;
+      color: #5a7391;
+      transition: color .2s ease-in-out;
+      text-decoration: none;
+      white-space: pre;
+      font-weight: 400;
+      margin-right: 15px;
+      &:hover { color: lighten(#5a7391, 10%) }
+      &:before {
+        content: "";
+        font-family: "Icons";
+        font-size: 13px;
+        margin-right: 3px;
+      }
+    }
+    > ._author:before { content: "\e005"; }
+    > ._company:before { content: "\e001" }
+    > ._favorites:before { content: "\e09b" }
+    > ._comments:before { content: "\e04a" }
+  }
+
+
+  .content__list {
+    @media (max-width: $bp-extra-large) {
+      .wrapper_image { width: 15%; padding-top: 15%; }
+      .item__content { width: 85% }
+    }
+    @media (max-width: $bp-large) {
+      .wrapper_image { width: 20%; padding-top: 20%; }
+      .item__content { width: 80% }
+    }
+    @media (max-width: $bp-medium) {
+      .wrapper_image { width: 30%; padding-top: 30%; }
+      .item__content { width: 70% }
+    }
+    @media (max-width: $bp-small) {
+      .wrapper_image { width: 40%; padding-top: 40%; }
+      .item__content { width: 60% }
+    }
+    @media (max-width: $bp-extra-small) {
+      .wrapper_image { width: 100%; padding-top: 80%; }
+      .item__content {
+        width: 100%;
+        padding-left: 0;
+        padding-top: 10px;
+      }
+      .content__title {
+        width: 100%;
+        margin-bottom: 0;
+        float: none;
+        font-weight: 400;
+        font-size: 18px
+      }
+      .content__price {
+        width: 100%;
+        float: none;
+        text-align: left;
+        margin-bottom: 0;
+      }
+      .content__meta { width: 100%; margin-bottom: 0; }
+      .content__date {
+        width: 100%;
+        display: inline-block;
+        color: #5b9bd1;
+        transition: color .2s ease-in-out;
+        white-space: pre;
+        text-align: left;
+        &:hover { color: #578ebe }
+        &:before {
+          content: "\e081";
+          font-family: "Icons";
+          font-size: 13px;
+          margin-right: 3px;
+        }
+      }
+      .content__description {  }
+    }
   }
 
 </style>

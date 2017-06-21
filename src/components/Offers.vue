@@ -40,16 +40,7 @@
         </transition>
       </div>
       <app-loader v-else></app-loader>
-
-      <transition name="ad" appear>
-        <aside :class="$style.offers__ad">
-          <h2 :class="$style.ad__title">Наши партнеры</h2>
-          <div :class="$style.ad__content">
-            <img src="/static/ad_1.gif" alt="" >
-          </div>
-        </aside>
-      </transition>
-
+      <app-ad-sidebar></app-ad-sidebar>
     </div>
   </div>
 </template>
@@ -236,11 +227,12 @@
   import AppContentGrid from './modules/content-grid.vue';
   import AppContentList from './modules/content-list.vue';
   import AppInput from './modules/inputs.vue';
+  import AppAdSidebar from './modules/ad-sidebar.vue';
 
   export default {
     name: 'offers',
     props: ['auth'],
-    components: { AppLoader, AppContentGrid, AppContentList, AppInput },
+    components: { AppLoader, AppContentGrid, AppContentList, AppInput, AppAdSidebar },
     data() {
       return {
         dataReady: false,

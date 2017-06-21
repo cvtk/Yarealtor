@@ -9,6 +9,10 @@
         <button :class="$style.menu__toggler" @click.prevent="isToggled = !isToggled"></button>
       </div>
       <div :class="$style.header__menu">
+        <div :class="[ $style.menu__ghost_mode, !ghostMode || $style._active ]" @click="ghostMode=!ghostMode" title="Специальный режим"></div>
+        <div :class="$style.menu__notification">
+          <span :class="$style.notification__badge">7</span>
+        </div>
         <div :class="$style.menu__user" v-if="dataReady">
           <img :src="user.photo" alt="Фото" :class="$style.user__pic">
           <span :class="$style.user__name">{{ user.name }}</span>
@@ -66,36 +70,6 @@
   </div>
 </template>
 
-<script>
-import firebase from './firebase.js';
-import AppLoader from './components/app-loader.vue';
-
-const usersRef = firebase.database().ref('users');
-
-export default {
-  name: 'app',
-  components: { AppLoader },
-  data() {
-    return { isToggled: false, auth: false, user: false, dataReady: false }
-  },
-  beforeCreate() {
-    firebase.auth().onAuthStateChanged((auth)=> {
-      this.auth = auth;
-      if (!auth && this.$route.name !== 'auth') {
-        this.$router.push({ name: 'auth', query: { redirect: this.$route.path} })
-      }
-      else if (auth) {
-        this.$bindAsObject('user', usersRef.child(auth.uid), null, () => this.dataReady = true );
-      }
-    });
-  },
-  methods: {
-    signOut() {
-      firebase.auth().signOut();
-    }
-  }
-}
-</script>
 
 <style lang="scss" module>
   @import "./assets/style.scss";
@@ -175,11 +149,14 @@ export default {
       padding-left: 20px;
       padding-right: 20px;
       @media (max-width: $bp-small) { padding-left: 0 }
-      > .menu__user {
+
+      > .menu__ghost_mode, .menu__notification, .menu__user {
         position: relative;
         float: left;
         cursor: pointer;
+        min-width: 50px;
         height: 50px;
+        text-align: center;
         line-height: 50px;
         padding-left: 10px;
         padding-right: 8px;
@@ -207,6 +184,7 @@ export default {
         > .user__name {}
         > .user__dropdown {
           visibility: hidden;
+          text-align: left;
           opacity: 0;
           top: -9999px;
           transition: visibility 0s, opacity .2s linear, top 0s;
@@ -255,6 +233,50 @@ export default {
           &:after { margin-left: 0 }
           > .user__pic { margin-right: 0 }
           > .user__name { display: none }
+        }
+      }
+      > .menu__notification {
+        &:hover:after { color: #c6cfda }
+        &:after {
+          position: relative;
+          top: 2px;
+          content: "\e027";
+          font-size: 17px;
+          margin-left: 0;
+          color: #79869a;
+          transition: color .2s ease-in-out;
+        }
+        > .notification__badge {
+          display: inline-block;
+          position: absolute;
+          z-index: 1;
+          top: 8px;
+          left: 7px;
+          font-weight: 300;
+          font-size: 11px;
+          padding: 4px 6px;
+          height: 18px;
+          border-radius: 50%;
+          text-shadow: none;
+          text-align: center;
+          vertical-align: middle;
+          min-width: 10px;
+          line-height: 1;
+          white-space: nowrap;
+          background-color: #36c6d3;
+          color: #fff;
+          }
+      }
+      > .menu__ghost_mode {
+        padding: 0 10px;
+        &:hover:after { color: #c6cfda }
+        &._active:after { color: #32c5d2 }
+        &:after {
+          content: "\e01a";
+          font-size: 17px;
+          color: #79869a;
+          transition: color .2s ease-in-out;
+          margin-left: 0;
         }
       }
     }
@@ -419,3 +441,34 @@ export default {
     }
   }
 </style>
+
+<script>
+import firebase from './firebase.js';
+import AppLoader from './components/app-loader.vue';
+
+const usersRef = firebase.database().ref('users');
+
+export default {
+  name: 'app',
+  components: { AppLoader },
+  data() {
+    return { isToggled: false, auth: false, user: false, dataReady: false, ghostMode: false }
+  },
+  beforeCreate() {
+    firebase.auth().onAuthStateChanged((auth)=> {
+      this.auth = auth;
+      if (!auth && this.$route.name !== 'auth') {
+        this.$router.push({ name: 'auth', query: { redirect: this.$route.path} })
+      }
+      else if (auth) {
+        this.$bindAsObject('user', usersRef.child(auth.uid), null, () => this.dataReady = true );
+      }
+    });
+  },
+  methods: {
+    signOut() {
+      firebase.auth().signOut();
+    }
+  }
+}
+</script>
