@@ -1,5 +1,5 @@
 <template>
-  <button :class="$style.input_button" :id="$style.id" v-if="type === 'button'">
+  <button :class="$style.input_button" :id="$style.id" v-if="type === 'button'" @click="onclick">
     <slot></slot>
   </button>
   <div :class="$style.input_group" v-else>
@@ -123,6 +123,9 @@
       }
     },
     methods: {
+      onclick() {
+        this.$emit('click')
+      },
       clearField(element) {
         this.error = false;
         element.value = '';

@@ -272,7 +272,7 @@
         &:hover:after { color: #c6cfda }
         &._active:after { color: #32c5d2 }
         &:after {
-          content: "\e01a";
+          content: "\e00e";
           font-size: 17px;
           color: #79869a;
           transition: color .2s ease-in-out;

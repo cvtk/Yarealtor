@@ -23,12 +23,13 @@
     <div :class="$style.offers__toolbar">
       <h1 :class="$style.toolbar__title">Предложения<span :class="$style._small">актуальные объекты</span></h1>
       <div :class="$style.toolbar__actions">
-        <app-input type="button" :class="$style.actions__new">
-          <span :class="$style.new__icon"></span>
-          <span :class="$style.new__text">Создать предложение</span>
-        </app-input>
+        <router-link :to="{ name: 'new-offer' }">
+          <app-input type="button" :class="$style.actions__new">
+            <span :class="$style.new__icon"></span>
+            <span :class="$style.new__text">Создать предложение</span>
+          </app-input>
+        </router-link>
       </div>
-      
     </div>
     
     <div :class="$style.wrapper">
