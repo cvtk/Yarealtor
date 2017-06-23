@@ -16,21 +16,35 @@
     <div :class="$style.new_offer__main">
       <div :class="$style.main_wrapper">
         <div :class="$style.main__steps">
-          <div :class="$style.steps__item">
+          <div :class="[ $style.steps__item, currentStep === 1 && $style._active ]" @click="currentStep=1">
             <div :class="$style.item__number">1</div>
-            <div :class="$style.item__title">Тип</div>
-            <div :class="$style.item__content">Тут пояснение</div>
+            <div :class="$style.item__title">Общие</div>
+            <div :class="$style.item__content">Адрес и тип предложения</div>
           </div>
-          <div :class="[ $style.steps__item, $style._color_red ]">
+          <div :class="[ $style.steps__item, $style._color_red, currentStep === 2 && $style._active ]" @click="currentStep=2">
             <div :class="$style.item__number">2</div>
-            <div :class="$style.item__title">Опции</div>
-            <div :class="$style.item__content">Какой-то текст</div>
+            <div :class="$style.item__title">Детали</div>
+            <div :class="$style.item__content">Подробное описание</div>
           </div>
-          <div :class="[ $style.steps__item, $style._color_green ]">
+          <div :class="[ $style.steps__item, $style._color_green, currentStep === 3 && $style._active ]" @click="currentStep=3">
             <div :class="$style.item__number">3</div>
             <div :class="$style.item__title">Финиш</div>
             <div :class="$style.item__content">Еще немного текста</div>
           </div>
+        </div>
+        <div :class="$style.main__current_step">
+          <div :class="$style.current_step__first" v-if="currentStep === 1">
+            <div :class="$style.first__images">
+              <app-upload-images v-model="newOffer.images">Добавить изображение</app-upload-images>
+              <div v-for="image in newOffer.images"
+                  :class="$style.images__item" 
+                  :style="{ 'background-image': 'url(' + image.url + ')' }">
+              </div>
+            </div>
+            <div :class="$style.first__content"></div>
+          </div>
+          <div :class="$style.current_step__second" v-else-if="currentStep === 2">2</div>
+          <div :class="$style.current_step__third" v-else-if="currentStep === 3">3</div>
         </div>
       </div>
       
@@ -61,6 +75,7 @@
     .main__steps {
       position: relative;
       background-color: #2f353b;
+      overflow: hidden;
       &:after { @include clearfix }
     }
     
@@ -77,19 +92,7 @@
       &._color_green > .item__number,
       &._color_green > .item__title,
       &._color_green > .item__content { color: #26C281; border-color: #26C281; }
-      &:hover { background-color: #364150; &:after { border-left-color: #364150 } }
-      &:after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 0;
-        height: 0;
-        border-top: 42.5px solid transparent;
-        border-bottom: 42.5px solid transparent;
-        border-left: 42.5px solid transparent;
-        transition: border-left-color .2s ease-in-out;
-      }
+      &:hover, &._active { background-color: #364150; &:after { border-left-color: #364150 } }
     }
 
     .item__number {
@@ -106,17 +109,78 @@
       font-size: 24px;
       color: #e5e5e5;
       font-weight: 100;
-      padding-left: 60px;
+      margin-left: 60px;
       margin-top: -4px;
       text-transform: uppercase;
+      white-space: pre;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
     .item__content {
       font-weight: 300;
-      padding-left: 60px;
+      margin-left: 60px;
       margin-top: -5px;
       color: #95A5A6;
+      white-space: pre;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
+
+  /* main__current_step */
+    .main__current_step {
+      position: relative;
+    }
+
+    .current_step__first {
+      position: relative;
+      margin-top: 20px;
+      &:after { @include clearfix }
+    }
+    .first__images {
+      position: relative;
+      width: 33.333333%;
+      float: left;
+      background-color: #fff;
+      &:after { @include clearfix }
+    }
+
+    .images__item {
+      width: 50%;
+      min-height: 100px;
+      float: left;
+      background-size: cover;
+    }
+
+    .images__upload_image {
+      height: 60px;
+      padding-bottom: 20px;
+      float: left;
+      border: 1px dashed #364150;
+      cursor: pointer;
+      color: #364150;
+      font-style: italic;
+      font-size: 16px;
+      text-align: center;
+      background-image: url(/static/image-placeholder.png);
+      background-size: contain;
+      background-position: left;
+      background-repeat: no-repeat;
+      opacity: .75;
+    }
+
+    .upload_image__input { visibility: hidden }
+
+    .first__content {
+      width: 66.666667%;
+      height: 45vh;
+      float: left;
+      background-color: #fff;
+    }
+    
+    .current_step__second {}
+    
+    .current_step__third {}
 
   /* new_offer__bar */
     .new_offer__bar {
@@ -198,45 +262,47 @@
 
 <script>
   import AppLoader from './app-loader.vue';
-  import AppOnlineStatus from './modules/online-status.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
+  import AppUploadImages from './modules/upload-images.vue';
   import AppFilters from './helpers/filters.js';
-  import Icon from 'vue-awesome/components/Icon.vue';
-  import 'vue-awesome/icons/map';
-  import 'vue-awesome/icons/map-o';
-  import 'vue-awesome/icons/comments';
-  import 'vue-awesome/icons/comments-o';
-  import 'vue-awesome/icons/star';
-  import 'vue-awesome/icons/star-o';
+  import firebase from '../firebase.js';
+
+  const storage = firebase.storage(),
+        ref = storage.ref();
 
   export default {
     name: 'new_offer',
     props: ['auth'],
-    components: { AppLoader, AppOnlineStatus, AppAdSidebar, Icon },
+    components: { AppLoader, AppAdSidebar, AppUploadImages },
     filters: AppFilters,
     data() {
       return {
         dataReady: false,
-        carouselMenuActive: false,
-        item:
-          {
-            image: '/static/apartments/1.jpg',
-            favorites: false,
-            id: 112313,
-            type: 0,
-            rooms: 3,
-            price: 4500000,
-            date: 1497852079,
-            area: 90.2,
-            floor: 7,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Тестовая компания"', photo: '/static/users/default-3.svg' },
-            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          }
+        currentStep: 1,
+        hash: this.randomHash(),
+        newOffer: { images: [] }
       }
     },
     created() {
       this.dataReady = true;
+    },
+    methods: {
+      randomHash() {
+        let hash = '';
+        let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for( var i=0; i < 20; i++ )
+        hash += possible.charAt(Math.floor(Math.random() * possible.length));
+
+        return hash;
+      },
+      uploadImage(e) {
+        let tmpPath = 'offers/tmp/' + this.hash + '/',
+            files = e.target.files;
+
+        Array.prototype.forEach.call(files, file => {
+          ref.child(tmpPath + file.name).put(file).then( data => this.newOffer.images.push(data.downloadURL) )
+        });
+      }
     }
   }
 </script>
