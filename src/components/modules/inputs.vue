@@ -1,7 +1,18 @@
 <template>
-  <button :class="$style.input_button" :id="$style.id" v-if="type === 'button'" @click="onclick">
+  <div :class="$style.input_radio" v-if="type === 'radio'">
+    <input type="radio" :id="id" :class="$style.input_radio__input" :name="name" :value="option" @change="onchange">
+    <label :class="$style.input_radio__label" :for="id">
+      <span :class="$style.input_radio__box">
+        <div :class="$style.box__checked"></div>
+      </span>
+      <slot></slot>
+    </label>
+  </div>
+
+  <button :class="$style.input_button" :id="$style.id" v-else-if="type === 'button'" @click="onclick">
     <slot></slot>
   </button>
+
   <div :class="$style.input_group" v-else>
     <label :for="$style.id" :class="$style.input_group__label" v-if="label">{{ label }}</label>
     <app-transition> 
@@ -22,6 +33,52 @@
 <style lang="scss" module>
 
   .id { /* */ }
+
+  .input_radio__input:checked ~ .input_radio__label .box__checked {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .input_radio {
+    display: inline-block;
+    position: relative;
+  }
+
+  .input_radio__input {
+    display: none;
+  }
+
+  .input_radio__label {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 24px;
+    cursor: pointer;
+  
+  }
+
+  .input_radio__box {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    border: 2px solid #27a4b0;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+  }
+
+  .box__checked {
+    position: absolute;
+    transform: scale(0);
+    opacity: 0;
+    background: #27a4b0;
+    top: 3px;
+    left: 3px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: transform .2s ease-in-out, opacity .2s ease-in-out;
+  }
+
   .input_button {
     display: inline-block;
     z-index: 1;
@@ -102,10 +159,10 @@
 
   export default {
     name: 'app-input',
-    props: ['type', 'label', 'value', 'serverNotify'],
+    props: ['type', 'label', 'value', 'serverNotify', 'name', 'option'],
     components: { AppTransition },
     data() {
-      return { error: false, newValue: '' }
+      return { error: false, newValue: '', id: Math.random().toString(36).substring(7) }
     },
     computed: {
       notify() {
@@ -123,6 +180,10 @@
       }
     },
     methods: {
+      onchange(e) {
+        this.$emit('input', e.target.value);
+
+      },
       onclick() {
         this.$emit('click')
       },

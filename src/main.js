@@ -10,8 +10,8 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: require('./components/Root.vue'), name: 'root' },
     { path: '/offers', component: require('./components/Offers.vue'), name: 'offers' },
-    { path: '/offers/:id', component: require('./components/Offer.vue'), name: 'offer' },
     { path: '/offers/new', component: require('./components/New-offer.vue'), name: 'new-offer' },
+    { path: '/offers/:id', component: require('./components/Offer.vue'), name: 'offer' },
     { path: '/requests', component: require('./components/List.vue'), name: 'requests' },
     { path: '/companies', component: require('./components/Companies.vue'), name: 'companies' },
     { path: '/companies/:page', component: require('./components/List.vue'), name: 'company' },

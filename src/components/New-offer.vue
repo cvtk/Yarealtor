@@ -19,33 +19,32 @@
           <div :class="[ $style.steps__item, currentStep === 1 && $style._active ]" @click="currentStep=1">
             <div :class="$style.item__number">1</div>
             <div :class="$style.item__title">Общие</div>
-            <div :class="$style.item__content">Адрес и тип предложения</div>
+            <div :class="$style.item__content">Тип предложения и описание</div>
           </div>
           <div :class="[ $style.steps__item, $style._color_red, currentStep === 2 && $style._active ]" @click="currentStep=2">
             <div :class="$style.item__number">2</div>
             <div :class="$style.item__title">Детали</div>
-            <div :class="$style.item__content">Подробное описание</div>
+            <div :class="$style.item__content">Подробная информация</div>
           </div>
           <div :class="[ $style.steps__item, $style._color_green, currentStep === 3 && $style._active ]" @click="currentStep=3">
             <div :class="$style.item__number">3</div>
             <div :class="$style.item__title">Финиш</div>
-            <div :class="$style.item__content">Еще немного текста</div>
+            <div :class="$style.item__content">Проверка данных</div>
           </div>
         </div>
         <div :class="$style.main__current_step">
-          <div :class="$style.current_step__first" v-if="currentStep === 1">
-            <div :class="$style.first__images">
-              <app-upload-images v-model="newOffer.images">Добавить изображение</app-upload-images>
-              <div v-for="image in newOffer.images"
-                  :class="$style.images__item" 
-                  :style="{ 'background-image': 'url(' + image.url + ')' }">
-              </div>
-            </div>
-            <div :class="$style.first__content"></div>
-          </div>
+          <app-new-offer-first-step v-model="newOffer" v-if="currentStep === 1"></app-new-offer-first-step>
           <div :class="$style.current_step__second" v-else-if="currentStep === 2">2</div>
           <div :class="$style.current_step__third" v-else-if="currentStep === 3">3</div>
         </div>
+        <app-input type="button" :class="$style.main__prev_step" v-show="allowPrevStep" @click="prevStep">
+          <span :class="$style.prev_step__icon"></span>
+          Предыдущий шаг
+        </app-input>
+        <app-input type="button" :class="$style.main__next_step" v-show="allowNextStep" @click="nextStep">
+          Следующий шаг
+          <span :class="$style.next_step__icon"></span>
+        </app-input>
       </div>
       
       <app-ad-sidebar :class="$style.main__ad"></app-ad-sidebar>
@@ -66,6 +65,7 @@
     .new_offer__main {
       position: relative;
     }
+
   /* main_wrapper */
     .main_wrapper {
       position: relative;
@@ -132,56 +132,47 @@
       position: relative;
     }
 
-    .current_step__first {
-      position: relative;
-      margin-top: 20px;
-      &:after { @include clearfix }
-    }
-    .first__images {
-      position: relative;
-      width: 33.333333%;
-      float: left;
-      background-color: #fff;
-      &:after { @include clearfix }
-    }
-
-    .images__item {
-      width: 50%;
-      min-height: 100px;
-      float: left;
-      background-size: cover;
-    }
-
-    .images__upload_image {
-      height: 60px;
-      padding-bottom: 20px;
-      float: left;
-      border: 1px dashed #364150;
-      cursor: pointer;
-      color: #364150;
-      font-style: italic;
-      font-size: 16px;
-      text-align: center;
-      background-image: url(/static/image-placeholder.png);
-      background-size: contain;
-      background-position: left;
-      background-repeat: no-repeat;
-      opacity: .75;
-    }
-
-    .upload_image__input { visibility: hidden }
-
-    .first__content {
-      width: 66.666667%;
-      height: 45vh;
-      float: left;
-      background-color: #fff;
-    }
-    
     .current_step__second {}
     
     .current_step__third {}
 
+  /* main__next_step */
+    .main__next_step {
+      padding: 12px;
+      font-size: 14px;
+      margin-top: 20px;
+      float: right;
+    }
+
+    .next_step__icon {
+      display: inline-block;
+      margin-left: 5px;
+      vertical-align: middle;
+      &:after {
+        content: "\e079";
+        font-family: "Icons";
+        font-size: 16px;
+      }
+    }
+
+  /* main__prev_step */
+    .main__prev_step {
+      padding: 12px;
+      font-size: 14px;
+      margin-top: 20px;
+      float: left;
+    }
+
+    .prev_step__icon {
+      display: inline-block;
+      margin-right: 5px;
+      vertical-align: middle;
+      &:after {
+        content: "\e07a";
+        font-family: "Icons";
+        font-size: 16px;
+      }
+    }
   /* new_offer__bar */
     .new_offer__bar {
       border-bottom: 1px solid #e7ecf1;
@@ -263,45 +254,48 @@
 <script>
   import AppLoader from './app-loader.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
-  import AppUploadImages from './modules/upload-images.vue';
+  import AppInput from './modules/inputs.vue';
   import AppFilters from './helpers/filters.js';
-  import firebase from '../firebase.js';
-
-  const storage = firebase.storage(),
-        ref = storage.ref();
+  import AppNewOfferFirstStep from './modules/new-offer-first-step.vue';
 
   export default {
     name: 'new_offer',
     props: ['auth'],
-    components: { AppLoader, AppAdSidebar, AppUploadImages },
+    components: { AppLoader, AppAdSidebar, AppInput, AppNewOfferFirstStep },
     filters: AppFilters,
     data() {
       return {
         dataReady: false,
         currentStep: 1,
-        hash: this.randomHash(),
-        newOffer: { images: [] }
+        newOffer: {
+          type: '',
+          object: '',
+          description: '',
+          images: []
+        }
       }
     },
     created() {
       this.dataReady = true;
     },
     methods: {
-      randomHash() {
-        let hash = '';
-        let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for( var i=0; i < 20; i++ )
-        hash += possible.charAt(Math.floor(Math.random() * possible.length));
-
-        return hash;
+      nextStep() {
+        if ( this.allowNextStep && this.currentStep === 1 ) {
+          this.currentStep = 2;
+        }
       },
-      uploadImage(e) {
-        let tmpPath = 'offers/tmp/' + this.hash + '/',
-            files = e.target.files;
-
-        Array.prototype.forEach.call(files, file => {
-          ref.child(tmpPath + file.name).put(file).then( data => this.newOffer.images.push(data.downloadURL) )
-        });
+      prevStep() {
+        if ( this.allowPrevStep && this.currentStep > 1 ) {
+          this.currentStep -= 1;
+        }
+      }
+    },
+    computed: {
+      allowNextStep() {
+        return ( this.newOffer.type && this.newOffer.object && this.newOffer.description && Object.keys(this.newOffer.images).length !== 0 );
+      },
+      allowPrevStep() {
+        return ( this.currentStep != 1 );
       }
     }
   }
