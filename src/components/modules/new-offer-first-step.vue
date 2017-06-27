@@ -74,6 +74,8 @@
         min-height: 100px;
         float: left;
         background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
         &:first-child {
           width: 100%;
           min-height: 327px;

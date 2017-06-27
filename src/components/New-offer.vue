@@ -33,9 +33,11 @@
           </div>
         </div>
         <div :class="$style.main__current_step">
-          <app-new-offer-first-step v-model="newOffer" v-if="currentStep === 1"></app-new-offer-first-step>
-          <div :class="$style.current_step__second" v-else-if="currentStep === 2">2</div>
-          <div :class="$style.current_step__third" v-else-if="currentStep === 3">3</div>
+          <transition :name="stepsDirection" mode="out-in">
+            <app-new-offer-first-step v-model="newOffer" v-if="currentStep === 1"></app-new-offer-first-step>
+            <app-new-offer-second-step v-model="newOffer" v-else-if="currentStep === 2"></app-new-offer-second-step>
+            <div :class="$style.current_step__third" v-else-if="currentStep === 3">3</div>
+          </transition>  
         </div>
         <app-input type="button" :class="$style.main__prev_step" v-show="allowPrevStep" @click="prevStep">
           <span :class="$style.prev_step__icon"></span>
@@ -51,7 +53,30 @@
     </div>
   </div>
 </template>
+<style>
+  .forward-enter-active {
+    transition: right .5s ease-in-out, opacity .45s ease-in-out;
+  }
+  .forward-leave-active {
+    transition: left .5s ease-in-out, opacity .45s ease-in-out;
+  }
+  .forward-leave { left: 0; opacity: 1; }
+  .forward-leave-to { left: -100%; opacity: 0; }
+  .forward-enter { right: -100%; opacity: 0; }
+  .forward-enter-to { right: 0; opacity: 1; }
 
+  .backward-enter-active {
+    transition: left .5s ease-in-out, opacity .45s ease-in-out;
+  }
+  .backward-leave-active {
+    transition: right .5s ease-in-out, opacity .45s ease-in-out;
+  }
+  .backward-leave { right: 0; opacity: 1; }
+  .backward-leave-to { right: -100%; opacity: 0; }
+  .backward-enter { left: -100%; opacity: 0; }
+  .backward-enter-to { left: 0; opacity: 1; }
+
+</style>
 <style lang="scss" module>
   @import "../assets/style.scss";
   /* new_offer */
@@ -130,6 +155,7 @@
   /* main__current_step */
     .main__current_step {
       position: relative;
+      overflow: hidden;
     }
 
     .current_step__second {}
@@ -257,21 +283,38 @@
   import AppInput from './modules/inputs.vue';
   import AppFilters from './helpers/filters.js';
   import AppNewOfferFirstStep from './modules/new-offer-first-step.vue';
+  import AppNewOfferSecondStep from './modules/new-offer-second-step.vue';
 
   export default {
     name: 'new_offer',
     props: ['auth'],
-    components: { AppLoader, AppAdSidebar, AppInput, AppNewOfferFirstStep },
+    components: { AppLoader, AppAdSidebar, AppInput, AppNewOfferFirstStep, AppNewOfferSecondStep },
     filters: AppFilters,
     data() {
       return {
         dataReady: false,
         currentStep: 1,
+        stepsDirection: 'forward',
         newOffer: {
           type: '',
           object: '',
           description: '',
-          images: []
+          images: [],
+          house_city: '',
+          house_address: '',
+          house_number: '',
+          house_district: '',
+          house_waymark: '',
+          house_type: '',
+          house_material: '',
+          house_floors: '',
+          apartment_rooms: '',
+          apartment_floor: '',
+          apartment_furnish: '',
+          apartment_bathroom: '',
+          apartment_balcony: '',
+          apartments_full_area: '',
+          apartments_living_area: ''
         }
       }
     },
@@ -282,17 +325,30 @@
       nextStep() {
         if ( this.allowNextStep && this.currentStep === 1 ) {
           this.currentStep = 2;
+          this.stepsDirection = 'forward';
+        }
+        else if ( this.allowNextStep && this.currentStep === 2 ) {
+          this.currentStep = 3;
+          this.stepsDirection = 'forward';
         }
       },
       prevStep() {
         if ( this.allowPrevStep && this.currentStep > 1 ) {
           this.currentStep -= 1;
+          this.stepsDirection = 'backward';
         }
       }
     },
     computed: {
       allowNextStep() {
-        return ( this.newOffer.type && this.newOffer.object && this.newOffer.description && Object.keys(this.newOffer.images).length !== 0 );
+        if ( this.currentStep === 1 ) {
+          return ( this.newOffer.type && this.newOffer.object && this.newOffer.description && Object.keys(this.newOffer.images).length !== 0 );
+        }
+        else if ( this.currentStep === 2 ) {
+          return ( this.newOffer.house_city && this.newOffer.house_address && this.newOffer.house_number 
+            && this.newOffer.house_district && this.newOffer.house_type && this.newOffer.house_material && this.newOffer.house_floors )
+        }
+        
       },
       allowPrevStep() {
         return ( this.currentStep != 1 );

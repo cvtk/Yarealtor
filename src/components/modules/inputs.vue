@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.input_radio" v-if="type === 'radio'">
-    <input type="radio" :id="id" :class="$style.input_radio__input" :name="name" :value="option" @change="onchange">
+    <input type="radio" :id="id" :class="$style.input_radio__input" :name="name" :value="option" @change="onchange" :checked="value === option">
     <label :class="$style.input_radio__label" :for="id">
       <span :class="$style.input_radio__box">
         <div :class="$style.box__checked"></div>
@@ -13,6 +13,21 @@
     <slot></slot>
   </button>
 
+  <div :class="$style.input_group" v-else-if="type === 'number'">
+    <label :for="$style.id" :class="$style.input_group__label" v-if="label">{{ label }}</label>
+    <app-transition> 
+      <span :class="$style.input_group__error" v-if="error"></span>
+    </app-transition>
+    <input type="number" min=0 max=100000 step="1.0"
+      :id="$style.id" 
+      :class="$style.input_group__text"
+      :placeholder="placeholder"
+      @change="onchange">
+    <app-transition type="toggleDown">
+      <div :class="$style.input_group__notify" v-if="error">{{ notify }}</div>
+    </app-transition>
+  </div>
+
   <div :class="$style.input_group" v-else>
     <label :for="$style.id" :class="$style.input_group__label" v-if="label">{{ label }}</label>
     <app-transition> 
@@ -21,9 +36,9 @@
     <input type="text"
       :id="$style.id" 
       :class="$style.input_group__text"
-      :placeholder="value"
-      @keypress.enter="updateValue($event.target)"
-      @blur="clearField($event.target)">
+      :placeholder="placeholder"
+      :value="value"
+      @change="onchange">
     <app-transition type="toggleDown">
       <div :class="$style.input_group__notify" v-if="error">{{ notify }}</div>
     </app-transition>
@@ -137,10 +152,10 @@
     color: #555;
     background-color: #fff;
     border: 1px solid #c2cad8;
-    &::-webkit-input-placeholder { color: #93a3b5 }
-    &::-moz-placeholder { color: #93a3b5 }
-    &:-ms-input-placeholder { color: #93a3b5 }
-    &:-moz-placeholder { color: #93a3b5 }
+    &::-webkit-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+    &::-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+    &:-ms-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+    &:-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
     transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
     &:focus {
       border-color: #93a1bb;
@@ -159,7 +174,7 @@
 
   export default {
     name: 'app-input',
-    props: ['type', 'label', 'value', 'serverNotify', 'name', 'option'],
+    props: ['type', 'label', 'value', 'serverNotify', 'name', 'option', 'placeholder', 'checked'],
     components: { AppTransition },
     data() {
       return { error: false, newValue: '', id: Math.random().toString(36).substring(7) }
