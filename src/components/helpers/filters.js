@@ -12,6 +12,6 @@ export default {
     return _number;
   },
   unixToDate: function( _timestamp ) {
-    return moment(_timestamp * 1000).calendar();
+    return moment(_timestamp).utcOffset('+0300').calendar();
   }
 }
