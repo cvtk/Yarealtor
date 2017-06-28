@@ -24,29 +24,27 @@
           </div>
         </div>
         <div :class="$style.main__timeline" v-if="dataReady">
-          <transition-group name="fade" appear>
-            <div :class="$style.timeline__item" v-for="post in reverse" :key="post.key">
-              <div :class="$style.item__userpic">
-                <img :src="post.user.photo" :class="$style.userpic__image">
-              </div>
-              <div :class="$style.timeline__body">
-                <div :class="$style.body__header">
-                  <div :class="$style.header__meta">
-                    <router-link :to="{ name: 'user', params: { page: post.user.page } }" :class="$style.meta__author">{{ post.user.name }}</router-link>
-                    <span :class="$style.meta__date">{{ post.timestamp | unixToDate }}</span>
-                  </div>
-                  <div :class="$style.header__menu"><span :class="$style.menu__icon"></span></div>
+          <div :class="$style.timeline__item" v-for="post in postsByTimestamp" :key="post.key">
+            <div :class="$style.item__userpic">
+              <img :src="post.user.photo" :class="$style.userpic__image">
+            </div>
+            <div :class="$style.timeline__body">
+              <div :class="$style.body__header">
+                <div :class="$style.header__meta">
+                  <router-link :to="{ name: 'user', params: { page: post.user.page } }" :class="$style.meta__author">{{ post.user.name }}</router-link>
+                  <span :class="$style.meta__date">{{ post.timestamp | unixToDate }}</span>
                 </div>
-                <div :class="$style.body__content"> {{ post.message }} </div>
+                <div :class="$style.header__menu"><span :class="$style.menu__icon"></span></div>
               </div>
-              <div :class="$style.item__comments">
-                <app-comments :comments="post.comments"></app-comments>
-                <div :class="$style.comments__publish">
-                  <textarea rows="2" :class="$style.publish__input" @keydown.ctrl.enter="comment(post, $event)"></textarea>
-                </div>
+              <div :class="$style.body__content"> {{ post.message }} </div>
+            </div>
+            <div :class="$style.item__comments">
+              <app-comments :comments="post.comments"></app-comments>
+              <div :class="$style.comments__publish">
+                <textarea rows="2" :class="$style.publish__input" @keydown.ctrl.enter="comment(post, $event)"></textarea>
               </div>
             </div>
-          </transition-group>
+          </div>
         </div>
       </div>
       
@@ -86,7 +84,6 @@
 
   .main__timeline {
     position: relative;
-    background-color: #fff;
     padding: 0 20px;
     overflow: hidden;
     &:before {
@@ -339,7 +336,7 @@
 
   const postsRef = firebase.database().ref('posts');
   const usersRef = firebase.database().ref('users');
-  const commentsRef = firebase.database().ref('comments').limitToLast(20);
+  const commentsRef = firebase.database().ref('comments');
 
   export default {
     name: 'news',
@@ -363,8 +360,10 @@
       // postsRef.on('child_changed', snapshot => this.onChildChanged(snapshot));
     },
     computed: {
-      reverse: function() {
-        return this.posts.reverse();
+      postsByTimestamp: function() {
+        return this.posts.sort( (a, b) => {
+          a.timestamp - b.timestamp;
+        });
       }
     },
     methods: {
@@ -373,7 +372,7 @@
         post.key = key;
         post.comments = [];
 
-        commentsRef.orderByChild('post').equalTo(key).on('child_added', commentSnapshot => {
+        commentsRef.orderByChild('post').equalTo(key).limitToLast(100).on('child_added', commentSnapshot => {
           let comment = commentSnapshot.val();
           usersRef.child(comment.author).once('value')
             .then( commentAuthor => {
@@ -393,7 +392,6 @@
             post.user.key = user.key;
             // this.$set( this.posts, key, post )
             this.dataReady = true;
-            console.log(post)
             this.posts.push(post);
           })
             
