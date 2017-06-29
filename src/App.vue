@@ -305,6 +305,7 @@
   .app__sidebar {
     position: fixed;
     z-index: 2;
+    overflow: hidden;
     width: 235px;
     height: 100%;
     background-color: #364150;

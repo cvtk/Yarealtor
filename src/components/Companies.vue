@@ -3,23 +3,23 @@
     <div :class="$style.companies__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
-        <span :class="$style.breadcrumbs__icon"></span>
         <li :class="$style.breadcrumbs__item">Компании</li>
       </ul>
-      <app-layout-switcher v-model="currentLayout"></app-layout-switcher>
     </div>
     <div :class="$style.companies__toolbar">
       <h1 :class="$style.toolbar__title">Компании<span :class="$style._small">организации портала</span></h1>
       <div :class="$style.toolbar__actions"></div>
     </div>
     
-    <ul :class="$style.companies__grid" v-if="currentLayout === 'grid'">
+    <ul :class="$style.companies__grid">
       <li :class="$style.grid__item" v-for="company in companies">
         <div :class="$style.item_wrapper">
           <div :class="$style.image_wrapper">
             <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image + ')' }"></div>
             <div :class="$style.item__links">
-              <app-input type="button" :class="$style.links__more">Узнать больше</app-input>
+              <router-link :to="{ name: 'company', params: { page: company.page } }" :class="$style.links_wrapper">
+                <app-input type="button" :class="$style.links__more">Узнать больше</app-input>
+              </router-link>
             </div>
           </div>
           <h3 :class="$style.item__name">{{ company.name }}</h3>
@@ -210,67 +210,25 @@
 <script>
   import AppLoader from './app-loader.vue';
   import AppInput from './modules/inputs.vue';
-  import AppLayoutSwitcher from './modules/layout-switcher.vue';
+  import firebase from '../firebase.js';
+
+  const companiesRef = firebase.database().ref('companies');
 
   export default {
     name: 'companies',
     props: ['auth'],
-    components: { AppLoader, AppInput, AppLayoutSwitcher },
+    components: { AppLoader, AppInput },
     data() {
       return {
         dataReady: false,
-        currentLayout: 'grid',
-        companies: [
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          },
-          {
-            name: 'ООО "Рога и копыта"',
-            slogan: 'Вперед и вверх',
-            image: '/static/company_01.jpg'
-          }
-        ]
+        companies: {}
       }
     },
     created() {
-      this.dataReady = true;
+      companiesRef.on('value', companies => {
+        this.companies = companies.val();
+        this.dataReady = true;
+      })
     }
   }
 </script>

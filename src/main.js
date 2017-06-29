@@ -14,7 +14,7 @@ const router = new VueRouter({
     { path: '/offers/:id', component: require('./components/Offer.vue'), name: 'offer' },
     { path: '/requests', component: require('./components/List.vue'), name: 'requests' },
     { path: '/companies', component: require('./components/Companies.vue'), name: 'companies' },
-    { path: '/companies/:page', component: require('./components/List.vue'), name: 'company' },
+    { path: '/companies/:page', component: require('./components/Company.vue'), name: 'company' },
     { path: '/my-company', component: require('./components/List.vue'), name: 'my-company' },
     { path: '/users/:page', component: require('./components/Profile.vue'), name: 'user' },
     { path: '/auth', component: require('./components/App-auth.vue'), name: 'auth' },
