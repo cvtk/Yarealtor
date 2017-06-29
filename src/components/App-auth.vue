@@ -44,6 +44,7 @@
           email: auth.email,
           page: auth.uid,
           photo: photo,
+          key: auth.uid
         }
         return usersRef.child(auth.uid).set(user);
       },

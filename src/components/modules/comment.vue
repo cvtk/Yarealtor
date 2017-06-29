@@ -1,11 +1,10 @@
 <template>
-  <div :class="$style.comments">
-    <div :class="$style.comments__roll_down" @click="rollDown = !rollDown">Показать все комментарии ({{ comments.length }})</div>
-    <div :class="$style.comments__item" v-for="(comment, index) in commentsByTimestamp" v-show="isLast(index) || rollDown">
-      <div :class="$style.item__userpic">
+  <transition name="fade">
+    <div :class="$style.comment">
+      <div :class="$style.comment__userpic">
         <img :src="comment.author.photo" :class="$style.userpic__image">
       </div>
-      <div :class="$style.comments__body">
+      <div :class="$style.comment__body">
         <div :class="$style.body__header">
           <div :class="$style.header__meta">
             <router-link :to="{ name: 'user', params: { page: comment.author.page } }" :class="$style.meta__author">{{ comment.author.name }}</router-link>
@@ -21,20 +20,22 @@
         </div>
       </div>
     </div>
-  </div>
+  </transition>
 </template>
+
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity 1s
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0
+  }
+</style>
 
 <style lang="scss" module>
   @import "../../assets/style.scss";
-  /* comments */
-    .comments {
-      background-color: #fff;
-      padding: 0 20px;
-      border: 1px solid lighten(#b4bcc8, 15%);
-      border-top: none;
-    }
-
-    .comments__item {
+  /* comment */
+    .comment {
       padding-top: 10px;
       &:last-child:after { margin: 0; height: 0; margin-bottom: 10px; }
       &:after {
@@ -46,7 +47,7 @@
       }
     }
 
-    .item__userpic {
+    .comment__userpic {
       position: relative;
       float: left;
       width: 40px;
@@ -59,7 +60,7 @@
       border-radius: 50%;
     }
 
-    .comments__body {
+    .comment__body {
       position: relative;
       padding: 2px 10px;
       margin-left: 40px;
@@ -142,42 +143,35 @@
       transition: color .2s ease-in-out;
       &:hover { text-decoration: underline; color: #23527c; }
     }
-    .comments__roll_down {
-      padding: 10px;
-      margin: 0 -21px;
-      color: #f1f1f1;
-      text-align: center;
-      background-color: #b4bcc8;
-      cursor: pointer;
-      transition: background-color .2s ease-in-out;
-      &:hover {
-        background-color: #3e4b5c;
-      }
-    }
+    
+
+
 </style>
 
 <script>
   import AppFilters from '../helpers/filters.js';
 
   export default {
-    name: 'comments',
-    props: ['comments'],
+    name: 'comment',
+    props: ['comment'],
     filters: AppFilters,
     methods: {
-      isLast(index) {
-        return this.comments.length === index + 1;
-      }
+      publishComment(comment, message) {
+
+      },
+      
     },
     computed: {
       commentsByTimestamp: function() {
         return this.comments.sort(function(x, y) {
-          return x.timestamp - y.timestamp;
+          return x.created - y.created;
         });
       }
     },
     data() {
       return {
-        rollDown: false
+        rollDown: false,
+        currentAnswer: {}
       }
     }
   }

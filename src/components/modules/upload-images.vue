@@ -1,5 +1,9 @@
 <template>
-  <label :class="$style.upload">
+  <label :class="$style.upload" v-if="type === 'hidden'">
+    <div :class="$style.upload__progress" :style="{ 'width': progress + '%' }" v-show="loading === true"></div>
+    <input :class="$style.upload__input" type="file" multiple @change="upload">
+  </label>
+  <label :class="$style.upload" v-else>
     <div :class="$style.upload__progress" :style="{ 'width': progress + '%' }" v-show="loading === true"></div>
     <span :class="$style.upload__icon"></span>
     <span :class="$style.upload__notification">
