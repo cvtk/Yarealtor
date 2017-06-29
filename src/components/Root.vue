@@ -361,8 +361,8 @@
     },
     computed: {
       postsByTimestamp: function() {
-        return this.posts.sort( (a, b) => {
-          a.timestamp - b.timestamp;
+        return this.posts.sort(function(x, y) {
+          return y.timestamp - x.timestamp;
         });
       }
     },
@@ -372,7 +372,7 @@
         post.key = key;
         post.comments = [];
 
-        commentsRef.orderByChild('post').equalTo(key).limitToLast(100).on('child_added', commentSnapshot => {
+        commentsRef.orderByChild('post').equalTo(key).on('child_added', commentSnapshot => {
           let comment = commentSnapshot.val();
           usersRef.child(comment.author).once('value')
             .then( commentAuthor => {

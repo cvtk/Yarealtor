@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.comments">
     <div :class="$style.comments__roll_down" @click="rollDown = !rollDown">Показать все комментарии ({{ comments.length }})</div>
-    <div :class="$style.comments__item" v-for="(comment, index) in comments" v-show="isLast(index) || rollDown">
+    <div :class="$style.comments__item" v-for="(comment, index) in commentsByTimestamp" v-show="isLast(index) || rollDown">
       <div :class="$style.item__userpic">
         <img :src="comment.author.photo" :class="$style.userpic__image">
       </div>
@@ -166,6 +166,13 @@
     methods: {
       isLast(index) {
         return this.comments.length === index + 1;
+      }
+    },
+    computed: {
+      commentsByTimestamp: function() {
+        return this.comments.sort(function(x, y) {
+          return x.timestamp - y.timestamp;
+        });
       }
     },
     data() {
