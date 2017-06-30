@@ -10,13 +10,13 @@
             <router-link :to="{ name: 'user', params: { page: comment.author.page } }" :class="$style.meta__author">{{ comment.author.name }}</router-link>
             <span :class="$style.meta__date">{{ comment.created | unixToDate }}</span>
           </div>
-          <!-- <div :class="$style.header__menu"><span :class="$style.menu__icon"></span></div> -->
+          <div :class="$style.header__menu" v-show="isOwner" title="Удалить комментарий" @click="removeComment"><span :class="$style.menu__icon"></span></div>
         </div>
         <div :class="$style.body__content"> {{ comment.message }} </div>
         <div :class="$style.body__answer">
           <span :class="$style.answer__to">Ответ для <router-link :to="{ name: 'user', params: { page: comment.to.page } }" :class="$style.to__link">{{ comment.to.name }}</router-link>
           </span>
-          <span :class="$style.answer__button">Ответить</span>
+          <span :class="$style.answer__button" @click="leaveAnswer">Ответить</span>
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
 
 <style>
   .fade-enter-active, .fade-leave-active {
-    transition: opacity 1s
+    transition: opacity .5s
   }
   .fade-enter, .fade-leave-to {
     opacity: 0
@@ -34,7 +34,6 @@
 
 <style lang="scss" module>
   @import "../../assets/style.scss";
-  /* comment */
     .comment {
       padding-top: 10px;
       &:last-child:after { margin: 0; height: 0; margin-bottom: 10px; }
@@ -62,7 +61,8 @@
 
     .comment__body {
       position: relative;
-      padding: 2px 10px;
+      padding: 2px 0;
+      padding-left: 10px;
       margin-left: 40px;
     }
 
@@ -86,13 +86,13 @@
     .menu__icon {
       display: inline-block;
       cursor: pointer;
-      padding: 0 5px;
       line-height: 19px;
+      padding-left: 5px;
       &:after {
-        content: "\e603";
+        content: "\e054";
         font-family: "Icons";
-        font-size: 16px;
-        color: lighten(#364150, 25%);
+        font-size: 14px;
+        color: lighten(#364150, 35%);
         vertical-align: middle;
         transition: color .2s ease-in-out;
       }
@@ -143,9 +143,6 @@
       transition: color .2s ease-in-out;
       &:hover { text-decoration: underline; color: #23527c; }
     }
-    
-
-
 </style>
 
 <script>
@@ -153,25 +150,25 @@
 
   export default {
     name: 'comment',
-    props: ['comment'],
+    props: ['comment', 'auth'],
     filters: AppFilters,
     methods: {
-      publishComment(comment, message) {
-
+      removeComment() {
+        this.$emit('onCommentRemove', this.comment.key);
       },
+      leaveAnswer() {
+        this.$emit('onAnswerLeave', this.comment);
+      }
       
     },
     computed: {
-      commentsByTimestamp: function() {
-        return this.comments.sort(function(x, y) {
-          return x.created - y.created;
-        });
+      isOwner() {
+        return this.comment.author.key === this.auth.uid;
       }
     },
     data() {
       return {
-        rollDown: false,
-        currentAnswer: {}
+        
       }
     }
   }

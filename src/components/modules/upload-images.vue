@@ -1,7 +1,7 @@
 <template>
   <label :class="$style.upload" v-if="type === 'hidden'">
-    <div :class="$style.upload__progress" :style="{ 'width': progress + '%' }" v-show="loading === true"></div>
-    <input :class="$style.upload__input" type="file" multiple @change="upload">
+    <slot></slot>
+    <input :class="$style.upload__input" type="file" :multiple="multiple === true" @change="upload">
   </label>
   <label :class="$style.upload" v-else>
     <div :class="$style.upload__progress" :style="{ 'width': progress + '%' }" v-show="loading === true"></div>
@@ -10,7 +10,7 @@
       <span v-if="loading === true">{{ progress }}%</span>
       <span v-else><slot></slot></span>
     </span>
-    <input :class="$style.upload__input" type="file" multiple @change="upload">
+    <input :class="$style.upload__input" type="file" :multiple="multiple === true" @change="upload">
   </label>
 </template>
 
@@ -78,7 +78,7 @@
 
   export default {
     name: 'upload-images',
-    props: ['type'],
+    props: ['type', 'multiple'],
     data() {
       return {
         tmpPath: '/tmp/' + md5(this.hash()),
@@ -129,7 +129,7 @@
               this.$set( this.images[name], 'progress', currentProgress );
               this.progress = this.averageProgress(this.images);
               if ( this.progress === 100 ) {
-                this.$emit('input', this.images);
+                if ( this.multiple ) { this.$emit('input', this.images) }
                 this.loading = false;
               }
             }, 
@@ -138,7 +138,8 @@
             },
             () => {
               let currentUrl = task.snapshot.downloadURL;
-              this.$set( this.images[name], 'url', currentUrl );
+              if ( this.multiple ) { this.$set( this.images[name], 'url', currentUrl ) }
+              else { this.$emit('input', currentUrl) }
             }
           )
         });

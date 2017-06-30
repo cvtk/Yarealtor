@@ -38,7 +38,7 @@
       :class="$style.input_group__text"
       :placeholder="placeholder"
       :value="value"
-      @change="onchange">
+      @input="onchange">
     <app-transition type="toggleDown">
       <div :class="$style.input_group__notify" v-if="error">{{ notify }}</div>
     </app-transition>

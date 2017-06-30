@@ -21,7 +21,7 @@
               <span :class="[$style.item__icon, $style._profile]"></span>
               <span :class="$style.item__title">Профиль</span>
             </router-link>
-            <router-link tag="li" :to="{ name: 'my-company' }" :class="$style.dropdown__item">
+            <router-link tag="li" :to="{ name: 'company', params: { page: user.company.page } }" :class="$style.dropdown__item">
               <span :class="[$style.item__icon, $style._my_company]"></span>
               <span :class="$style.item__title">Моя компания</span>
             </router-link>
@@ -448,6 +448,7 @@ import firebase from './firebase.js';
 import AppLoader from './components/app-loader.vue';
 
 const usersRef = firebase.database().ref('users');
+const companiesRef = firebase.database().ref('companies');
 
 export default {
   name: 'app',
@@ -462,7 +463,14 @@ export default {
         this.$router.push({ name: 'auth', query: { redirect: this.$route.path} })
       }
       else if (auth) {
-        this.$bindAsObject('user', usersRef.child(auth.uid), null, () => this.dataReady = true );
+        usersRef.child(auth.uid).on('value', user => {
+          this.user = user.val();
+          companiesRef.child(this.user.company).on('value', company => {
+            this.$set(this.user, 'company', company.val());
+            this.dataReady = true;
+          })
+        })
+        //this.$bindAsObject('user', usersRef.child(auth.uid), null, () => this.dataReady = true );
       }
     });
   },

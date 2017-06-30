@@ -2,11 +2,14 @@
   <div :class="$style.content" v-if="dataReady">
     <div :class="$style.content__bar">
       <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Компании</li><span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">ООО "КакоетоНазвание"</li><span :class="$style.breadcrumbs__icon"></span>
+        <router-link :to="{ name: 'companies' }" tag="li" :class="$style.breadcrumbs__item">
+          Компании
+        </router-link><span :class="$style.breadcrumbs__icon"></span>
+        <router-link :to="{ name: 'company', params: { page: user.company.page } }" tag="li" :class="$style.breadcrumbs__item">
+          {{ user.company.name }}
+        </router-link><span :class="$style.breadcrumbs__icon"></span>
         <li :class="$style.breadcrumbs__item">{{ user.name }}</li>
       </ul>
-      <button :class="$style.bar__actions">Действия</button>
     </div>
     <h1 :class="$style.content__title">{{ user.name }}<span :class="$style._small">Личная страница</span></h1>
     <div :class="$style.content__profile">
@@ -14,17 +17,31 @@
         <img :class="$style.sidebar__img" :src="user.photo">
         <div :class="$style.sidebar__user_title">
           <div :class="$style.user_title__name">{{ user.name }}<app-online-status :online="true"></app-online-status></div>
-          <div :class="$style.user_title__company">ООО "КакаяКомпания"</div>
+          <router-link :to="{ name: 'company', params: { page: user.company.page } }" :class="$style.user_title__company">
+            {{ user.company.name }}
+          </router-link>
         </div>
         <!-- TODO: rewrite class -->
         <ul :class="$style.sidebar__user_menu">
           <li :class="{ [$style.user_menu__item]:true, [$style._active]:currentTab === 'profile'}" @click="currentTab = 'profile'">Информация</li>
-          <li :class="{ [$style.user_menu__item]:true, [$style._settings]:true, [$style._active]: currentTab === 'settings' }" @click="currentTab = 'settings'">Настройки</li>
+          <li :class="[$style.user_menu__item, $style._settings, currentTab === 'settings' && $style._active]" v-if="user.key === auth.uid" @click="currentTab = 'settings'">Настройки</li>
         </ul>
       </aside>
       <div :class="$style.profile__data" v-if="currentTab === 'profile'">
         <div :class="$style.data__bar">
           <h2 :class="$style.bar__title">Профиль</h2>
+        </div>
+        <div :class="$style.data_wrapper">
+            <div :class="$style.data__about">{{ user.about }}</div>
+            <div :class="$style.main__timeline">
+              <app-timeline-post v-for="post in postsByTimestamp" 
+                :key="post.key" 
+                :post="post" 
+                :auth="auth" 
+                @onCommentLeave="leaveComment"
+                @onPostRemove="removePost">    
+              </app-timeline-post>
+            </div>
         </div>
       </div>
       <div :class="$style.profile__data" v-if="currentTab === 'settings'">
@@ -33,20 +50,31 @@
           <ul :class="$style.bar__nav_tabs">
             <li :class="{ [$style.nav_tabs__item]:true, [$style._active]:settingsTab === 'main'}" @click="settingsTab = 'main'">Общая информация</li>
             <li :class="{ [$style.nav_tabs__item]:true, [$style._active]:settingsTab === 'bio'}" @click="settingsTab = 'bio'">Личные данные</li>
-            <li :class="{ [$style.nav_tabs__item]:true, [$style._active]:settingsTab === 'avatar'}" @click="settingsTab = 'avatar'">Фото профиля</li>
             <li :class="{ [$style.nav_tabs__item]:true, [$style._active]:settingsTab === 'change-password'}" @click="settingsTab = 'change-password'">Смена пароля</li>
           </ul>
         </div>
         <div :class="$style.data__content" v-show="settingsTab === 'main'">
-          <app-input type="name" label="Ваше имя" :value="user.name" />
-          <app-input type="name" label="Должность" :value="user.position" />
-          <app-input type="page" label="Страница" :value="user.page" />
-          <app-input type="tel" label="Рабочий телефон" :value="user.phone" />
-          <app-input type="tel" label="Мобильный телефон" :value="user.mobile" />
+          <app-input type="name" label="Ваше имя" v-model="changedUser.name" />
+          <app-input type="name" label="Должность" v-model="changedUser.position" />
+          <app-input type="page" label="Страница" v-model="changedUser.page" />
+          <app-input type="tel" label="Рабочий телефон" v-model="changedUser.phone" />
+          <app-input type="tel" label="Мобильный телефон" v-model="changedUser.mobile" />
         </div>
         <div :class="$style.data__content" v-show="settingsTab === 'bio'">
-
+          <div :class="$style.content__bio">
+            <div :class="$style.bio__avatar">
+              <app-upload-image v-model="changedUser.photo" type="hidden" :multiple="false" :class="$style.avatar__upload">
+                <img :src="changedUser.photo" alt="Аватар" :class="$style.avatar__image">
+                Сменить фото
+              </app-upload-image>
+            </div>
+            <div :class="$style.bio__about">
+              <app-input v-model="changedUser.birthday" :class="$style.about__birthday" label="День рождения" />
+              <textarea v-model="changedUser.about" rows="4" :class="$style.about__input" placeholder="Немного о себе"></textarea>
+            </div>
+          </div>
         </div>
+        <app-input :class="$style.data__save" type="button" @click="saveUser">Сохранить</app-input>
       </div>
       <app-ad-sidebar></app-ad-sidebar>
     </div>
@@ -95,36 +123,6 @@
           margin-left: 5px;
           vertical-align: middle;
         }
-      }
-    }
-    > .bar__actions {
-      margin: 6px 0;
-      padding: 5px 10px;
-      font-size: 12px;
-      line-height: 1.5;
-      touch-action: manipulation;
-      text-align: center;
-      cursor: pointer;
-      display: inline-block;
-      float: right;
-      vertical-align: middle;
-      border: 1px solid #32c5d2;
-      outline: none;
-      color: #32c5d2;
-      background-color: #fff;
-      user-select: none;
-      transition: all .2s ease-in-out;
-      &:after {
-        content: "\e604";
-        font-family: "Icons";
-        font-size: 8px;
-        margin-left: 5px;
-        vertical-align: middle;
-      }
-      &:hover {
-        border-color: #32c5d2;
-        color: #FFF;
-        background-color: #32c5d2;
       }
     }
     &:after {
@@ -181,10 +179,12 @@
       }
       > .user_title__company {
         text-transform: uppercase;
+        text-decoration: none;
         color: #5b9bd1;
-        font-size: 13px;
         font-weight: 600;
         margin-bottom: 7px;
+        transition: color .2s ease-in-out;
+        &:hover { color: darken(#5b9bd1, 20%); text-decoration: underline; }
       }
     }
     > .sidebar__user_menu {
@@ -249,6 +249,24 @@
     margin-left: 300px;
     margin-right: 300px;
     margin-bottom: 25px;
+    &:after { @include clearfix }
+
+    .main__timeline {
+      position: relative;
+      background-color: #fff;
+      overflow: hidden;
+      &:before {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 4px;
+        background: #f5f6fa;
+        top: 0;
+        bottom: 0;
+        margin-left: 38px;
+      }
+    }
+
     > .data__bar {
       min-height: 48px;
       border-bottom: 1px solid #eee;
@@ -326,43 +344,130 @@
         }
       }
     }
+
+    .content__bio {
+      position: relative;
+      overflow: hidden;
+      &:after { @include clearfix }
+    }
+
+    .bio__avatar {
+      float: left;
+      width: 150px;
+    }
+    .avatar__image {
+      max-width: 100%;
+      padding: 10px;
+      padding-top: 0;
+    }
+    
+    .avatar__upload {
+      height: auto;
+      text-align: center;
+    }
+    .bio__about {
+      margin-left: 170px;
+    }
+
+    .about__input {
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 12px 10px;
+      color: #364150;
+      border: 1px solid #c2cad8;
+      &::-webkit-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+      &::-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+      &:-ms-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+      &:-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+      resize: vertical;
+      transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
+      &:focus {
+        border-color: #93a1bb;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(147,161,187,.6);
+      }
+    }
+    .data__save {
+      font-size: 14px;
+      margin-top: 20px;
+      float: right;
+    }
   }
     
 </style>
 
 <script>
   import firebase from '../firebase.js';
+  import Firebase from 'firebase';
   import AppLoader from './app-loader.vue';
   import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppOnlineStatus from './modules/online-status.vue';
+  import AppUploadImage from './modules/upload-images.vue';
+  import AppTimelinePost from './modules/timeline-post.vue';
 
   const usersRef = firebase.database().ref('users');
+  const companiesRef = firebase.database().ref('companies');
+  const commentsRef = firebase.database().ref('comments');
+  const postsRef = firebase.database().ref('posts');
 
   export default {
     name: 'profile',
     props: ['auth'],
-    components: { AppLoader, AppInput, AppOnlineStatus, AppAdSidebar },
+    components: { AppLoader, AppInput, AppOnlineStatus, AppAdSidebar, AppUploadImage, AppTimelinePost },
     data() {
-      return { dataReady: false, currentTab: 'profile', settingsTab: 'main', user: ''  }
+      return { dataReady: false, currentTab: 'profile', settingsTab: 'main', user: '', changedUser: '', posts: {}  }
     },
     created() {
       usersRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (data) => {
         if ( data.exists() ) {
-          data.forEach( (user) => this.user = user.val() );
+          data.forEach( (user) => {
+            this.user = user.val();
+            this.changedUser = user.val();
+            companiesRef.child(this.user.company).on('value', company => {
+              this.$set(this.user, 'company', company.val());
+            })
+            postsRef.orderByChild('author').equalTo(this.user.key).on('value', posts => {
+              posts.forEach(post => this.onPostAdded(post));
+              this.dataReady = true;
+            })
+          });
         }
         else {
           this.$router.push({ name: '404', query: { redirect: this.$route.params.page } });
         }
-        this.dataReady = true
-      })
+      });
+      postsRef.on('child_removed', post => this.$delete(this.posts, post.key));
+    },
+    computed: {
+      postsByTimestamp: function() {
+        let arr = Object.keys(this.posts).map(key => this.posts[key] );
+        return arr.sort((x, y) => y.created - x.created);
+      }
     },
     methods: {
+      saveUser() {
+        usersRef.child(this.auth.uid).update(this.changedUser);
+      },
+      removePost(key) {
+        postsRef.child(key).remove();
+      },
+      leaveComment(comment) {
+        comment.created = Firebase.database.ServerValue.TIMESTAMP;
+        comment.key = commentsRef.push().key;
+
+        commentsRef.child(comment.key).update(comment);
+      },
       updProfileField(el) {
         usersRef.child(this.user['.key']).update({[el.name]: el.value}, () => {
           el.value = '';
           el.blur();
         });
+      },
+      onPostAdded(snapshot) {
+        let key = snapshot.key, post = snapshot.val();
+        post.author = this.user;
+        this.$set( this.posts, key, post )
       }
     }
   }

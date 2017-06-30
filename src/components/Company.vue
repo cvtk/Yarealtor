@@ -13,24 +13,57 @@
       <div :class="$style.toolbar__actions"></div>
     </div>
     <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image + ')' }">
-      <h2 :class="$style.banner__name">{{ company.name }}</h2>
+      <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge">Участник ЯСР</span></h2>
       <h3 :class="$style.banner__slogan">{{ company.slogan }}</h3>
     </div>
     
-    <div :class="$style.company_wrapper">
+    <div :class="$style.company_wrapper" v-if="dataReady">
       <div :class="$style.company__about_us">
         <h4 :class="$style.about_us__header"><span :class="$style.header__icon"></span> О Компании</h4>
         <p :class="$style.about_us__description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+        <div :class="$style.about_us__contacts">
+          <div :class="$style.contacts__item"><span :class="$style.item__icon_address"></span>Адрес: {{ company.address }}</div>
+          <div :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span>Телефон: {{ company.phone }}</div>
+          <div :class="$style.contacts__item"><span :class="$style.item__icon_email"></span>Эл. почта: {{ company.email }}</div>
+        </div>
+        <div :class="$style.about_us__requisites">
+          <h5 :class="$style.requisites__title">Реквизиты</h5>
+          <p :class="$style.requisites__item">Юридический адрес: 150000, г. Ярославль, ул. Большая Октябрьская, 76
+            ИНН: 760214015080
+            ОГРН: 1027700067328
+            Расчетный счет: 40802810002910000776 в  АО "АЛЬФА-БАНК"
+          </p>
+        </div>
       </div>
       <div :class="$style.company__employees">
         <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Сотрудники</h4>
         <div :class="$style.employees_wrapper">
-          <div :class="$style.employees__item" v-for="employe in employees">
-            <div :class="$style.photo_wrapper">
-              <img :class="$style.item__photo" :src="employe.photo">
+          <div :class="$style.employees__principal">
+            <img :class="$style.principal__photo" :src="company.principal.photo">
+            <div :class="$style.principal__meta">
+              <router-link :to="{ name: 'user', params: { page: company.principal.page } }" :class="$style.meta__name">{{ company.principal.name }}</router-link>
+              <span :class="$style.meta__position">{{ company.principal.position }}</span>
+              <p :class="$style.meta__about">{{ company.principal.about }}</p>
+              <div :class="$style.meta__contacts">
+                <span :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span> {{ company.principal.phone }}</span>
+                <span :class="$style.contacts__item"><span :class="$style.item__icon_mobile"></span> {{ company.principal.mobile }}</span>
+                <span :class="$style.contacts__item"><span :class="$style.item__icon_email"></span> {{ company.principal.email }}</span>
+              </div>
             </div>
-            <router-link :to="{ name: 'user', params: { page: employe.page } }" :class="$style.item__name">{{ employe.name }}</router-link>
-            <span :class="$style.item__position">{{ employe.position }}</span>
+          </div>
+          <div :class="$style.employees__search_filter">
+            <app-input v-model="search_filter" placeholder="Поиск сотрудника..." :class="$style.search_filter__input" @keydown.enter.native="searchFilterSelectAll" />
+          </div>
+          <div :class="$style.employees__item" v-for="employe in employees_list">
+            <transition name="fade" appear>
+              <div :class="$style.employe__wrapper">
+                <div :class="$style.photo_wrapper">
+                  <img :class="$style.item__photo" :src="employe.photo">
+                </div>
+                <router-link :to="{ name: 'user', params: { page: employe.page } }" :class="$style.item__name">{{ employe.name }}</router-link>
+                <span :class="$style.item__position">{{ employe.position }}</span>
+              </div>
+            </transition>
           </div>
         </div>
       </div>
@@ -38,7 +71,15 @@
     
   </div>
 </template>
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .45s ease-in-out;
+  }
 
+  .fade-leave, .fade-enter-to { opacity: 1 }
+  .fade-enter, .fade-leave-to { opacity: 0 }
+
+</style>
 <style lang="scss" module>
   @import "../assets/style.scss";
 
@@ -64,6 +105,32 @@
       text-shadow: 1px 1px 0 rgba(0,0,0,.2);
     }
 
+    .name__badge {
+      display: inline-block;
+      position: relative;
+      top: 1px;
+      vertical-align: middle;
+      margin-left: 10px;
+      font-size: 14px;
+      line-height: 1;
+      font-weight: 300;
+      letter-spacing: .25px;
+      background-color: #9A12B3;
+      opacity: .65;
+      padding: 10px;
+      padding-left: 5px;
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: -17px;
+        border-top: 17px solid transparent;
+        border-bottom: 17px solid transparent; 
+        border-right: 17px solid #9A12B3; 
+      }
+    }
+
     .banner__slogan {
       color: #fff;
       text-align: center;
@@ -79,7 +146,7 @@
   .company_wrapper {
     position: relative;
     overflow: hidden;
-    margin: 0 -10px;
+    margin: 20px -10px;
     &:after { @include clearfix }
   }
 
@@ -116,13 +183,58 @@
       color: #808a94;
       background-color: #fff;
     }
+
+    .about_us__contacts {
+      position: relative;
+      overflow: hidden;
+      padding: 0 20px 15px;
+      background-color: #fff;
+    }
+
+    .contacts__item {
+      margin: 5px 0;
+      font-size: 16px;
+      color: #808a94;
+    }
+
+    .item__icon_address, .item__icon_phone, .item__icon_email {
+      display: inline-block;
+      font-size: 17px;
+      margin-right: 5px;
+      &:before {
+        content: "\e096";
+        font-family: "Icons";
+        display: inline-block;
+      }
+    }
+    .item__icon_phone:before { content: "\E048" }
+    .item__icon_email:before { content: "\e01e" }
+
+    .about_us__requisites {
+      position: relative;
+      overflow: hidden;
+      padding: 0 20px 20px;
+      background-color: #fff;
+    }
+
+    .requisites__title {
+      font-size: 16px;
+      font-weight: 400;
+      margin: 0 0 5px;
+    }
+
+    .requisites__item {
+      margin: 0;
+      line-height: 24px;
+      color: #808a94;
+      white-space: pre-line;
+    }
   }
 
   .company__employees {
     float: left;
     width: 50%;
     padding: 0 10px;
-    background-color: #fff;
 
     .employees__header {
       background-color: #3598dc;
@@ -148,9 +260,88 @@
 
     .employees_wrapper {
       position: relative;
+      height: 800px;
+      overflow-y: auto;
+      overflow-x: hidden;
       padding: 20px;
       margin: 0;
+      background-color: #fff;
       &:after { @include clearfix }
+    }
+    .employees__principal {
+      position: relative;
+      margin-bottom: 20px;
+      overflow: hidden;
+      &:after { @include clearfix }
+    }
+
+    .principal__photo {
+      display: block;
+      float: left;
+      width: 20%;
+    }
+
+    .principal__meta {
+      float: left;
+      width: 80%;
+      padding-left: 20px;
+    }
+
+    .meta__name {
+      font-size: 16px;
+      margin: 0;
+      color: #32c5d2;
+      text-transform: uppercase;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color .2s ease-in-out;
+      &:hover { color: darken(#32c5d2, 15%); text-decoration: underline }
+    }
+
+    .meta__position {
+      display: block;
+      color: #95A5A6;
+      line-height: 1.25;
+      white-space: pre;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .meta__about {
+      margin: 7.5px 0;
+      color: #808a94;
+    }
+
+    .meta__contacts {
+      position: relative;
+    }
+
+    .contacts__item {
+      display: inline-block;
+      color: #32c5d2;
+      margin-right: 10px;
+    }
+
+    .item__icon_phone, .item__icon_mobile, .item__icon_email {
+      display: inline-block;
+      margin-bottom: 5px;
+      font-size: 15px;
+      &:before {
+        content: "\e048";
+        font-family: "Icons";
+      }
+    }
+
+    .item__icon_mobile:before { content: "\e010" }
+    .item__icon_email:before { content: "\e01e" }
+    
+    .employees__search_filter:after { @include clearfix }
+    
+    .employe__wrapper { /* */ }
+
+    .search_filter__input {
+      float: right;
+      width: 33.333333%;
     }
 
     .employees__item {
@@ -283,15 +474,39 @@
   import AppInput from './modules/inputs.vue';
   import firebase from '../firebase.js';
 
-  const companyRef = firebase.database().ref('companies');
+  const companiesRef = firebase.database().ref('companies');
+  const usersRef = firebase.database().ref('users');
 
   export default {
     name: 'company',
     props: ['auth'],
     components: { AppLoader, AppInput },
+    computed: {
+      employees_list() {
+        if ( this.search_filter ) {
+          let results = [], 
+              regex = new RegExp(this.search_filter, "i");
+
+          for (let i = 0; i < this.employees.length; i++) {
+            if ( this.employees[i].name.match(regex) ) {
+              results.push(this.employees[i]);
+            }
+          }
+          return results;
+        }
+        else return this.employees;
+      }
+    },
+    methods: {
+      searchFilterSelectAll(e) {
+        let el = e.target;
+        el.setSelectionRange(0, el.value.length)
+      }
+    },
     data() {
       return {
         dataReady: false,
+        search_filter: '',
         company: {},
         employees: [
           {
@@ -374,9 +589,14 @@
         ]
       }
     },
-    created() {
-      companyRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (company) => {
-        if ( company.exists() ) { company.forEach(item => this.company = item.val()) }
+    mounted() {
+      companiesRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (company) => {
+        if ( company.exists() ) { company.forEach(item => {
+          this.company = item.val();
+          usersRef.child(this.company.principal).on('value', principal => {
+            this.$set( this.company, 'principal', principal.val() )
+          })
+        })}
         else {
           this.$router.push({ name: '404', query: { redirect: this.$route.params.page } });
         }
