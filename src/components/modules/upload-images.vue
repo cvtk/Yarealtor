@@ -114,6 +114,7 @@
       },
       upload(e) {
         this.loading = true;
+        this.images = {};
         Array.prototype.forEach.call(e.target.files, file => {
 
           let name = this.md5file(file),
@@ -129,7 +130,9 @@
               this.$set( this.images[name], 'progress', currentProgress );
               this.progress = this.averageProgress(this.images);
               if ( this.progress === 100 ) {
-                if ( this.multiple ) { this.$emit('input', this.images) }
+                if ( this.multiple ) {
+                  this.$emit('input', this.images);
+                }
                 this.loading = false;
               }
             }, 

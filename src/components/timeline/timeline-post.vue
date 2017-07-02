@@ -1,0 +1,545 @@
+<template>
+  <div :class="$style.timeline_post" v-if="dataReady">
+    <div :class="$style.timeline_post_wrapper">
+
+      <div :class="[$style.dropdown_wrapper, dropdownToggled || $style.__hidden]" @mouseleave="dropdownToggled = false">
+        <ul :class="$style.timeline_post__dropdown">
+          <li :class="$style.dropdown__item" v-if="isOwner" @click="removePost">
+            <span :class="$style.item__title">Удалить</span>
+          </li>
+          <li :class="$style.dropdown__item" @click="focusCommentField">
+            <span :class="$style.item__title">Комментировать</span>
+          </li>
+          <li :class="$style.dropdown__item" v-if="!isOwner">
+            <span :class="$style.item__title">Пожаловаться</span>
+          </li>
+        </ul>
+      </div>
+
+      <div :class="$style.timeline_post__userpic">
+        <img :src="author.photo" :class="$style.userpic__image">
+      </div>
+
+      <div :class="$style.timeline_post__body">
+        <div :class="$style.body__header">
+          <div :class="$style.header__meta">
+            <router-link :class="$style.meta__author"
+              :to="{ name: 'user', params: { page: author.page } }">{{ author.name }}</router-link>
+            <span :class="$style.meta__date">{{ post.created | unixToDate }}</span>
+          </div>
+          <div :class="$style.header__menu" @click="dropdownToggled = !dropdownToggled">
+            <span :class="$style.menu__icon"></span>
+          </div>
+        </div>
+        <div :class="$style.body__content">{{ post.message }}</div>
+        <div :class="$style.body__images" v-if="imagesCount">
+          <div :class="[ $style.images_wrapper, $style['images_' + imagesCount] ]" v-for="image in post.inc.images">
+            <div :class="$style.images__item"  :style="{ 'background-image': 'url(' + image.url + ')' }"></div>
+          </div>
+        </div>
+        <div :class="$style.body__poll" v-if="pollCount">
+          <div :class="$style.poll__item" v-for="(poll, index) in post.inc.poll">
+            <div :class="$style.item__progress">{{ index + 1 }}.{{ poll }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div :class="$style.timeline_post__comments">
+        <div :class="$style.comments__roll_down" v-if="commentsCount > 1" @click="rollDown = !rollDown">Показать все комментарии ({{ commentsCount }})</div>
+          <app-comment
+            @onAnswerLeave="leaveAnswer"
+            @onCommentRemove="removeComment"
+            :comment="comment" 
+            :key="comment.key"
+            :auth="auth"
+            v-show="isLastComment(index) || rollDown"
+            v-for="(comment, key, index) in comments">    
+          </app-comment>
+        <div :class="$style.comments__publish">
+          <textarea rows="1" :class="$style.publish__input" :placeholder="'Ваш ответ для ' + commentTo" v-model="newComment.message"
+            @keyup="fieldAutoResize" @keydown.enter.prevent="leaveComment" @keydown.enter.ctrl="newLineCommentField" ref="commentField">
+          </textarea>
+          <div :class="$style.publish__button" @click="leaveComment"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .2s
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0
+  }
+</style>
+
+<style lang="scss" module>
+  @import "../../assets/style.scss";
+
+  .timeline_post {
+    position: relative;
+    margin-top: 20px;
+    &:last-child { margin-bottom: 20px }
+    &:after { @include clearfix }
+    .timeline_post_wrapper { /* */ }
+
+    .dropdown_wrapper {
+      opacity: 1;
+      visibility: visible;
+      position: absolute;
+      padding: 25px;
+      right: -10px;
+      top: 10px;
+      z-index: 1;
+      transition: visibility .2s ease-in-out, opacity .2s ease-in-out, top .2s ease-in-out;
+      &.__hidden { visibility: hidden; opacity: 0; top: 55px; }
+    }
+
+    .timeline_post__dropdown {
+      position: relative;
+      text-align: left;
+      width: 155px;
+      background-color: #fff;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      line-height: 0;
+      border: 1px solid #c2cad8;
+      box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(147,161,187,.6);
+      &:after {
+        position: absolute;
+        top: -6px;
+        right: 7px;
+        display: block;
+        border-right: 6px solid transparent;
+        border-bottom: 6px solid #fff;
+        border-left: 6px solid transparent;
+        content: '';
+      }
+      &:before {
+        position: absolute;
+        top: -8px;
+        right: 6px;
+        display: block;
+        border-right: 7px solid transparent;
+        border-bottom: 7px solid #c2cad8;
+        border-left: 7px solid transparent;
+        content: '';
+      }
+
+      .dropdown__item {
+        color: #555;
+        cursor: pointer;
+        padding: 8px 16px;
+        line-height: 18px;
+        transition: background-color .1s ease-in-out;
+        &:hover { background-color: #f6f6f6 }
+      }
+    }
+
+    .timeline_post__userpic {
+      position: relative;
+      float: left;
+      width: 80px;
+      height: 80px;
+
+      .userpic__image {
+        width: 100%;
+        height: 100%;
+        border: 4px solid #f5f6fa;
+        border-radius: 50%;
+      }
+    }
+
+    .timeline_post__body {
+      position: relative;
+      padding: 10px 15px;
+      margin-left: 110px;
+      background-color: #f5f6fa;
+      &:before {
+        content: "";
+        position: absolute;
+        top: 30px;
+        left: -14px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 14px 14px 14px 0;
+        border-color: transparent #f5f6fa transparent transparent;
+      }
+      .body__header {
+        margin-bottom: 10px;
+        overflow: hidden;
+        &:after { @include clearfix }
+      }
+      .header__meta {
+        float: left;
+        white-space: pre;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 90%;
+      }
+      .header__menu {
+        position: relative;
+        float: right;
+        width: 10%;
+        text-align: right;
+      }
+      
+      .menu__icon {
+        display: inline-block;
+        cursor: pointer;
+        padding: 0 5px;
+        line-height: 22px;
+        &:after {
+          content: "\e603";
+          font-family: "Icons";
+          font-size: 18px;
+          color: lighten(#364150, 25%);
+          vertical-align: middle;
+          transition: color .2s ease-in-out;
+        }
+        &:hover:after { color: lighten(#364150, 5%) }
+      }
+      .meta__author {
+        font-size: 16px;
+        font-weight: 400;
+        color: #578ebe;
+        text-decoration: none;
+        transition: color .2s ease-in-out;
+        &:hover {
+          text-decoration: underline;
+          color: #23527c;
+        }
+      }
+      .meta__date {
+        margin-left: 10px;
+        color: #95A5A6;
+      }
+      .body__content {
+        margin-bottom: 5px;
+        color: #777;
+      }
+
+      .body__poll {
+        overflow: hidden;
+        margin-top: 10px;
+        margin-bottom: 5px;
+      }
+
+      .poll__item {
+        position: relative;
+        width: 100%;
+        border: 1px solid #67b7dc;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      .item__progress {
+        position: relative;
+        width: 78%;
+        padding: 5px 10px;
+        color: #fff;
+        background-color: #67b7dc;
+      }
+
+      .body__images {
+        position: relative;
+        overflow: hidden;
+        margin: 0 -1px;
+        &:after { @include clearfix }
+      }
+
+      .images_wrapper.images_6 {
+        width: 15%;
+        height: 100px;
+        &:first-child {
+          width: 70%;
+          height: 300px;
+        }
+        &:last-child {
+          width: 30%;
+          height: 100px;
+        }
+      }
+      .images_wrapper.images_5 {
+        width: 20%;
+        height: 150px;
+        &:first-child {
+          width: 60%;
+          height: 300px;
+        }
+      }
+      .images_wrapper.images_4 {
+        width: 15%;
+        height: 100px;
+        &:first-child {
+          width: 85%;
+          height: 300px;
+        }
+      }
+
+      .images_wrapper.images_3 {
+        width: 30%;
+        height: 150px;
+        &:first-child {
+          width: 70%;
+          height: 300px;
+        }
+      }
+
+      .images_wrapper.images_2 {
+        width: 50%;
+        height: 300px;
+        &:first-child {
+          float: left;
+          width: 50%;
+          height: 300px;
+        }
+      }
+
+      .images_wrapper.images_1 {
+        float: none;
+        &:first-child {
+          width: 100%;
+          height: 350px;
+        }
+      }
+
+      .images_wrapper {
+        position: relative;
+        float: left;
+        width: 10%;
+        height: 100px;
+        padding: 1px;
+        overflow: hidden;
+        cursor: pointer;
+        &:first-child {
+          width: 70%;
+          height: 300px;
+        }
+      }
+
+      .images__item {
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+        border: 1px solid #f5f6fa;
+      }
+    }
+
+    .timeline_post__comments {
+      position: relative;
+      margin-left: 110px;
+      background-color: #fff;
+      padding: 0 15px;
+      border: 1px solid lighten(#b4bcc8, 15%);
+
+      .comments__roll_down {
+        padding: 10px;
+        margin: 0 -16px;
+        color: #f1f1f1;
+        text-align: center;
+        background-color: #b4bcc8;
+        cursor: pointer;
+        transition: background-color .2s ease-in-out;
+        &:hover {
+          background-color: #3e4b5c;
+        }
+      }
+
+      .comments__publish {
+        position: relative;
+        margin: -1px -16px 0;
+        line-height: 0;
+        &:after { @include clearfix }
+      }
+      .publish__input {
+        display: block;
+        width: 100%;
+        outline: none;
+        padding: 12px 10px;
+        padding-right: 40px;
+        color: #364150;
+        border: 1px solid #c2cad8;
+        min-height: 42px;
+        max-height: 100px;
+        &::-webkit-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+        &::-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+        &:-ms-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+        &:-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
+        resize: none;
+        transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
+        overflow: hidden;
+        &:focus {
+          border-color: #93a1bb;
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(147,161,187,.6);
+        }
+      }
+
+      .publish__button {
+        position: absolute;
+        right: 1px;
+        top: 1px;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        line-height: 40px;
+        text-align: center;
+        &:after {
+          display: inline-block;
+          width: 40px;
+          height: 40px;
+          content: "\e02c";
+          font-family: "Icons";
+          color: lighten(#3e4b5c, 15%);
+          font-size: 20px;
+          transition: color .2s ease-in-out
+        }
+        &:hover:after { color: #3e4b5c }
+      }
+    }
+  }
+</style>
+
+<script>
+  import AppLoader from '../app-loader.vue';
+  import AppComment from './timeline-comment.vue';
+  import AppFilters from '../helpers/filters.js';
+  import Firebase from 'firebase';
+  import firebase from '../../firebase.js';
+
+  const usersRef = firebase.database().ref('users');
+  const commentsRef = firebase.database().ref('comments');
+  const postsRef = firebase.database().ref('posts');
+
+  export default {
+    name: 'timeline-post',
+    props: ['post', 'auth'],
+    components: { AppLoader, AppComment },
+    filters: AppFilters,
+    methods: {
+      leaveAnswer(comment) {
+        this.commentTo = comment.author.name;
+        this.newComment.to = comment.author.key;
+        this.focusCommentField();
+      },
+      removeComment(key) {
+        commentsRef.child(key).remove();
+      },
+      newLineCommentField(event) {
+        let field = event.target,
+            value = field.value;
+        field.value = value + '\n';
+      },
+      focusCommentField() {
+        this.dropdownToggled = false;
+        this.$refs.commentField.focus();
+      },
+      removePost() {
+        this.dropdownToggled = false;
+        postsRef.child(this.post.key).remove();
+      },
+      leaveComment() {
+        this.dropdownToggled = false;
+        if ( this.newComment.message ) {
+          this.newComment.created = Firebase.database.ServerValue.TIMESTAMP;
+          this.newComment.key = commentsRef.push().key;
+          commentsRef.child(this.newComment.key).update(this.newComment);
+          this.newComment.message = '';
+          this.commentTo = this.author.name;
+          this.newComment.to = this.author.key;
+        }
+      },
+      isLastComment(index) {
+        return this.commentsCount === index + 1;
+      },
+      fieldAutoResize(event) {
+        let field = event.target;
+        field.style.height = "5px";
+        field.style.height = (field.scrollHeight)+"px";
+      }
+    },
+    computed: {
+      isOwner() {
+        return this.author.key === this.auth.uid;
+      },
+      dataReady() {
+        return this.authorReady && this.commentsReady;
+      },
+      commentsCount() {
+        let length = 0;
+        for ( let key in this.comments ) {
+          if ( this.comments.hasOwnProperty(key) ) {
+              ++length;
+          }
+        }
+        return length;
+      },
+      pollCount() {
+        let includes = this.post.inc,
+            pollExist = typeof includes != 'undefined' && typeof includes.poll != 'undefined';
+        if ( pollExist && includes.poll.length > 1 ) {
+          return includes.poll.length;
+        }
+        else return false;
+
+      },
+      imagesCount() {
+        let includes = this.post.inc,
+            imagesExists = typeof includes != 'undefined' && typeof includes.images != 'undefined';
+        if ( imagesExists ) {
+          let length = 0;
+          for ( let key in includes.images ) {
+            if ( includes.images.hasOwnProperty(key) ) {
+                ++length;
+            }
+          }
+          return length;
+        }
+        else return false;
+      }
+    },
+    data() {
+      return {
+        rollDown: false,
+        dropdownToggled: false,
+        authorReady: false,
+        commentsReady: false,
+        comments: {},
+        author: {},
+        commentTo: '',
+        newComment: {
+          post: this.post.key,
+          author: this.auth.uid
+        }
+      }
+    },
+    created() {
+      usersRef.child(this.post.author).on('value', author => {
+        this.author = author.val();
+        this.newComment.to = this.author.key;
+        this.commentTo = this.author.name;
+        this.authorReady = true;
+      });
+
+      commentsRef.orderByChild('post').equalTo(this.post.key).on('value', comments => {
+        let tmpComments = {};
+        if ( comments.exists() ) {
+          tmpComments = comments.val();
+          comments.forEach(comment => {
+            usersRef.child(comment.child('author').val()).once('value', author => tmpComments[comment.key].author = author.val());
+            usersRef.child(comment.child('to').val()).once('value', to => tmpComments[comment.key].to = to.val());
+          })
+        }
+        this.comments = tmpComments;
+        this.commentsReady = true;
+      })
+      commentsRef.orderByChild('post').equalTo(this.post.key).on('child_removed', comment => this.$delete(this.comments, comment.key))
+    }
+  }
+</script>

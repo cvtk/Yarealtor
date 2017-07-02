@@ -14,7 +14,7 @@
         </div>
         <div :class="$style.row">
           <div :class="$style.content__meta">
-            <div :class="$style.meta__address">гор. Ярославль, ул. Строителей, 7</div>
+            <div :class="$style.meta__address">г. Ярославль, ул. Бабича, 7</div>
           </div>
           <span :class="$style.content__date">{{ item.date | unixToDate }}</span>
         </div>
@@ -22,9 +22,8 @@
          </div>
          <div :class="$style.content__foot">
            <router-link :to="{ name: 'offer', params: { id: item.id } }" :class="[$style.foot__item, $style._favorites]">43</router-link>
-           <router-link :to="{ name: 'offer', params: { id: item.id } }"  :class="[$style.foot__item, $style._comments]">234</router-link>
-           <router-link :to="{ name: 'offer', params: { id: item.id } }"  :class="[$style.foot__item, $style._author]">Сергей Борисов</router-link>
-           <router-link :to="{ name: 'offer', params: { id: item.id } }"  :class="[$style.foot__item, $style._company]">ООО "Омега Строй</router-link>
+           <router-link :to="{ name: 'user', params: { page: 'ivanov' } }"  :class="[$style.foot__item, $style._author]">Дмитрий Петров</router-link>
+           <router-link :to="{ name: 'company', params: { page: 'gazprom' } }"  :class="[$style.foot__item, $style._company]">ЗАО «ГАЗПРОМ»</router-link>
          </div>
       </div>
     </li>

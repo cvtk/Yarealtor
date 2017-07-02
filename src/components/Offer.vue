@@ -481,7 +481,7 @@
         carouselMenuActive: false,
         item:
           {
-            image: '/static/apartments/1.jpg',
+            image: '/static/apartments/7.jpg',
             favorites: false,
             id: 112313,
             type: 0,

@@ -33,14 +33,22 @@
         </div>
         <div :class="$style.data_wrapper">
             <div :class="$style.data__about">{{ user.about }}</div>
+            <div :class="$style.data__position">{{ user.position }}</div>
+            <div :class="$style.data__contacts">
+              <span :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span> {{ user.phone }}</span>
+              <span :class="$style.contacts__item"><span :class="$style.item__icon_mobile"></span> {{ user.mobile }}</span>
+              <span :class="$style.contacts__item"><span :class="$style.item__icon_email"></span> {{ user.email }}</span>
+            </div>
+            <div :class="$style.data__white_space" v-if="user.key === auth.uid"></div>
+            <div :class="$style.main__new_post" v-if="user.key === auth.uid">
+              <timeline-new-post :auth="auth" />
+            </div>
+            <div :class="$style.data__white_space"></div>
             <div :class="$style.main__timeline">
-              <app-timeline-post v-for="post in postsByTimestamp" 
+              <timeline-post v-for="post in postsByTimestamp" 
                 :key="post.key" 
                 :post="post" 
-                :auth="auth" 
-                @onCommentLeave="leaveComment"
-                @onPostRemove="removePost">    
-              </app-timeline-post>
+                :auth="auth" />
             </div>
         </div>
       </div>
@@ -244,13 +252,54 @@
   }
 
   .profile__data {
-    background-color: #fff;
     padding: 12px 20px 15px;
     margin-left: 300px;
     margin-right: 300px;
     margin-bottom: 25px;
+    overflow: hidden;
+    background-color: #fff;
     &:after { @include clearfix }
 
+    .data__white_space {
+      margin: 0 -20px;
+      height: 20px;
+      background-color: #eef1f5;
+    }
+    .data__about {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .data__position {
+      color: #169ef4;
+      margin-bottom: 10px;
+    }
+    .data__contacts {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .contacts__item {
+      display: inline-block;
+      color: #6b6b6b;
+      margin-right: 10px;
+    }
+
+    .item__icon_phone, .item__icon_mobile, .item__icon_email {
+      display: inline-block;
+      font-size: 14px;
+      &:before {
+        content: "\e048";
+        font-family: "Icons";
+        color: #b5c1c9;
+      }
+    }
+
+    .item__icon_mobile:before { content: "\e010" }
+    .item__icon_email:before { content: "\e01e" }
+
+    .main__new_post {
+      margin-bottom: 15px;
+    }
     .main__timeline {
       position: relative;
       background-color: #fff;
@@ -271,6 +320,7 @@
       min-height: 48px;
       border-bottom: 1px solid #eee;
       margin-bottom: 10px;
+      background-color: #fff;
       &:after { content: ""; display: table; clear: both; }
       > .bar__title {
         color: #578ebe;
@@ -404,7 +454,8 @@
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppOnlineStatus from './modules/online-status.vue';
   import AppUploadImage from './modules/upload-images.vue';
-  import AppTimelinePost from './modules/timeline-post.vue';
+  import TimelinePost from './timeline/timeline-post.vue';
+  import TimelineNewPost from './timeline/timeline-new-post.vue';
 
   const usersRef = firebase.database().ref('users');
   const companiesRef = firebase.database().ref('companies');
@@ -414,7 +465,7 @@
   export default {
     name: 'profile',
     props: ['auth'],
-    components: { AppLoader, AppInput, AppOnlineStatus, AppAdSidebar, AppUploadImage, AppTimelinePost },
+    components: { AppLoader, AppInput, AppOnlineStatus, AppAdSidebar, AppUploadImage, TimelinePost, TimelineNewPost },
     data() {
       return { dataReady: false, currentTab: 'profile', settingsTab: 'main', user: '', changedUser: '', posts: {}  }
     },
@@ -428,7 +479,9 @@
               this.$set(this.user, 'company', company.val());
             })
             postsRef.orderByChild('author').equalTo(this.user.key).on('value', posts => {
-              posts.forEach(post => this.onPostAdded(post));
+              posts.forEach( post => {
+                this.$set( this.posts, post.key, post.val() );
+              });
               this.dataReady = true;
             })
           });
@@ -463,11 +516,6 @@
           el.value = '';
           el.blur();
         });
-      },
-      onPostAdded(snapshot) {
-        let key = snapshot.key, post = snapshot.val();
-        post.author = this.user;
-        this.$set( this.posts, key, post )
       }
     }
   }

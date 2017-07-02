@@ -36,7 +36,7 @@
           <transition :name="stepsDirection" mode="out-in">
             <app-new-offer-first-step v-model="newOffer" v-if="currentStep === 1"></app-new-offer-first-step>
             <app-new-offer-second-step v-model="newOffer" v-else-if="currentStep === 2"></app-new-offer-second-step>
-            <div :class="$style.current_step__third" v-else-if="currentStep === 3">3</div>
+            <app-new-offer-third-step v-model="newOffer" v-else-if="currentStep === 3"></app-new-offer-third-step>
           </transition>  
         </div>
         <app-input type="button" :class="$style.main__prev_step" v-show="allowPrevStep" @click="prevStep">
@@ -284,11 +284,12 @@
   import AppFilters from './helpers/filters.js';
   import AppNewOfferFirstStep from './modules/new-offer-first-step.vue';
   import AppNewOfferSecondStep from './modules/new-offer-second-step.vue';
+  import AppNewOfferThirdStep from './modules/new-offer-third-step.vue';
 
   export default {
     name: 'new_offer',
     props: ['auth'],
-    components: { AppLoader, AppAdSidebar, AppInput, AppNewOfferFirstStep, AppNewOfferSecondStep },
+    components: { AppLoader, AppAdSidebar, AppInput, AppNewOfferFirstStep, AppNewOfferSecondStep, AppNewOfferThirdStep },
     filters: AppFilters,
     data() {
       return {
@@ -296,6 +297,7 @@
         currentStep: 1,
         stepsDirection: 'forward',
         newOffer: {
+          price: 0,
           type: '',
           object: '',
           description: '',

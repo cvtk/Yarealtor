@@ -1,6 +1,8 @@
 <template>
   <ul :class="$style.content__grid">
-    <li v-for="item in data" :class="$style.grid__item">
+    <router-link v-for="item in data"
+      :to="{ name: 'offer', params: { id: item.id } }"
+      :class="$style.grid__item" tag="li">
       <span :class="$style.item__type">Продажа</span>
       <div :class="$style.wrapper_image">
         <div :class="$style.item__image" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
@@ -10,11 +12,11 @@
       </div>
       <div :class="$style.item__meta">
         <h3 :class="$style.meta__title">{{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.</h3>
-        <span :class="$style.meta__address">{{ item.estate.city }}, {{ item.estate.address }}</span>
+        <span :class="$style.meta__address">г. {{ item.estate.city }}, {{ item.estate.address }}</span>
         <span :class="$style.item__favorites">12</span>
         <span :class="$style.item__price">{{ item.price | price }} руб.</span>
       </div>
-    </li>
+    </router-link>
   </ul>
 </template>
 <style lang="scss" module>
@@ -25,6 +27,7 @@
     list-style: none;
     margin: 0 -10px;
     padding: 0;
+    cursor: pointer;
     &:after { @include clearfix }
     @media (min-width: $bp-extra-large) {
       .grid__item { width: 25% }
@@ -150,12 +153,12 @@
     width: 25%;
     cursor: pointer;
     color: #5b9bd1;
-    vertical-align: middle;
+    line-height: 28px;
     transition: color .2s ease-in-out;
     &:before {
       content: "\e09b";
       font-family: "Icons";
-      font-size: 18px;
+      font-size: 14px;
       padding-right: 3px;
     }
   }

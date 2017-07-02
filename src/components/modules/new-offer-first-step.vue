@@ -11,7 +11,7 @@
             :style="{ 'background-image': 'url(' + image.url + ')' }">
         </div>
       </div>
-      <app-upload-images v-model="value.images" :class="$style.images__upload">Добавить изображение</app-upload-images>
+      <app-upload-images v-model="value.images" :class="$style.images__upload" :multiple="true">Добавить изображение</app-upload-images>
     </div>
     <div :class="$style.first__content">
       <div :class="$style.wrapper">
@@ -19,6 +19,7 @@
           <span :class="$style.group__title">Тип предложения</span>
           <app-input type="radio" v-model="value.type" name="offerType" option="sell" :class="$style.type__checkbox">Продать недвижимость
           </app-input><app-input type="radio" v-model="value.type" name="offerType" option="rent" :class="$style.type__checkbox">Сдать в аренду</app-input>
+          <app-input v-model="value.price" type="number" placeholder="Цена" />
           <select :class="$style.type__select" v-model="value.object">
             <option :class="$style.select__option" value="apartment">Квартира</option>
             <option :class="$style.select__option" value="room">Комната</option>

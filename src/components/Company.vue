@@ -13,8 +13,10 @@
       <div :class="$style.toolbar__actions"></div>
     </div>
     <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image + ')' }">
-      <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge">Участник ЯСР</span></h2>
-      <h3 :class="$style.banner__slogan">{{ company.slogan }}</h3>
+      <div :class="$style.title_wrapper">
+        <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge">Участник ЯСР</span></h2>
+        <h3 :class="$style.banner__slogan">{{ company.slogan }}</h3>
+      </div>
     </div>
     
     <div :class="$style.company_wrapper" v-if="dataReady">
@@ -90,11 +92,25 @@
   }
 
   .company__banner {
+    position: relative;
     height: 500px;
     background-position: center;
     margin: 0 -20px;
     overflow: hidden;
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, .5);
+    }
 
+    .title_wrapper {
+      position: relative;
+      z-index: 1;
+    }
     .banner__name {
       color: #fff;
       font-size: 55px;

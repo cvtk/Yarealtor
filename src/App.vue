@@ -40,26 +40,26 @@
         <button :class="$style.search__btn"></button>
       </form>
       <ul :class="$style.sidebar__menu">
-        <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact>
+        <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact :title="isToggled && 'Новости'">
           <span :class="[$style.item__icon, $style._news]"></span>
           <span :class="$style.item__title">Новости</span>
         </router-link>
-        <router-link tag="li" :to="{ name: 'offers'}" :class="$style.menu__item" :active-class="$style._active">
+        <router-link tag="li" :to="{ name: 'offers'}" :class="$style.menu__item" :active-class="$style._active" :title="isToggled && 'Предложения'">
           <span :class="[$style.item__icon, $style._offers]"></span>
           <span :class="$style.item__title">Предложения</span>
         </router-link>
-        <router-link tag="li" :to="{ name: 'requests'}" :class="$style.menu__item" :active-class="$style._active">
+        <router-link tag="li" :to="{ name: 'requests'}" :class="$style.menu__item" :active-class="$style._active" :title="isToggled && 'Спрос'">
           <span :class="[$style.item__icon, $style._requests]"></span>
           <span :class="$style.item__title">Спрос</span>
         </router-link>
-        <router-link tag="li" :to="{ name: 'companies'}" :class="$style.menu__item" :active-class="$style._active">
+        <router-link tag="li" :to="{ name: 'companies'}" :class="$style.menu__item" :active-class="$style._active" :title="isToggled && 'Компании'">
           <span :class="[$style.item__icon, $style._companies]"></span>
           <span :class="$style.item__title">Компании</span>
         </router-link>
       </ul>
       <ul :class="$style.sidebar__panel">
-        <router-link tag="li" :to="{ name: 'user', params: { page: 123 }}" :class="[$style.panel__item, $style._rules]" title="Кодекс риелтора"></router-link>
-        <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._help]" title="Правила пользования порталом"></router-link>
+        <router-link tag="li" :to="{ name: 'codex' }" :class="[$style.panel__item, $style._rules]" title="Кодекс риэлтора"></router-link>
+        <router-link tag="li" :to="{ name: 'rules'}" :class="[$style.panel__item, $style._help]" title="Правила пользования порталом"></router-link>
         <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></router-link>
       </ul>
     </aside>
@@ -178,6 +178,8 @@
         }
         > .user__pic {
           height: 30px;
+          width: 30px;
+          border-radius: 50%;
           margin-right: 5px;
           vertical-align: middle;
         }
@@ -454,7 +456,7 @@ export default {
   name: 'app',
   components: { AppLoader },
   data() {
-    return { isToggled: false, auth: false, user: false, dataReady: false, ghostMode: false }
+    return { isToggled: true, auth: false, user: false, dataReady: false, ghostMode: false }
   },
   beforeCreate() {
     firebase.auth().onAuthStateChanged((auth)=> {
