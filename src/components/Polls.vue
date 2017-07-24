@@ -315,7 +315,10 @@
     created() {
       postsRef.on('value', posts => {
         posts.forEach(post => {
-          this.$set( this.posts, post.key, post.val() );
+          // TODO убрать эту содомию
+          if ( post.val().inc.poll.length > 1 ) {
+            this.$set( this.posts, post.key, post.val() );
+          }
         });
         this.dataReady = true;
       });

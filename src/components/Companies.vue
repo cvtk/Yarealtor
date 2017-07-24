@@ -10,7 +10,24 @@
       <h1 :class="$style.toolbar__title">Компании<span :class="$style._small">организации портала</span></h1>
       <div :class="$style.toolbar__actions"></div>
     </div>
-    
+
+    <ul :class="[ $style.companies__grid, $style._yasr ]">
+      <li :class="$style.grid__item" v-for="company in shuffledCompanies">
+        <div :class="$style.item_wrapper">
+          <div :class="$style.image_wrapper">
+            <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image + ')' }"></div>
+            <div :class="$style.item__links">
+              <router-link :to="{ name: 'company', params: { page: company.page } }" :class="$style.links_wrapper">
+                <app-input type="button" :class="$style.links__more">Узнать больше</app-input>
+              </router-link>
+            </div>
+          </div>
+          <h3 :class="$style.item__name">{{ company.name }}</h3>
+          <h4 :class="$style.item__slogan">{{ company.slogan }}</h4>
+        </div>
+        
+      </li>
+    </ul>
     <ul :class="$style.companies__grid">
       <li :class="$style.grid__item" v-for="company in companies">
         <div :class="$style.item_wrapper">
@@ -47,6 +64,7 @@
       list-style: none;
       margin: 0 -10px;
       &:after { @include clearfix }
+      &._yasr { padding-top: 10px; border: 1px solid #F3C200; margin-bottom: 20px }
     }
 
   /* grid__item */
@@ -229,6 +247,18 @@
         this.companies = companies.val();
         this.dataReady = true;
       })
+    },
+    computed: {
+      shuffledCompanies: function() {
+        var array = Object.keys(this.companies).map(key => this.companies[key] );
+        for (var i = array.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+        }
+        return array;
+      }
     }
   }
 </script>
