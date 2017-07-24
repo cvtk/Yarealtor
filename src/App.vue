@@ -40,7 +40,15 @@
         <button :class="$style.search__btn"></button>
       </form>
       <ul :class="$style.sidebar__menu">
-        <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact :title="isToggled && 'Новости'">
+        <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact :title="isToggled && 'Главная'">
+          <span :class="[$style.item__icon, $style._main]"></span>
+          <span :class="$style.item__title">Главная</span>
+        </router-link>
+        <router-link tag="li" :to="{ name: 'polls'}" :class="$style.menu__item" :active-class="$style._active" exact :title="isToggled && 'Соц. опросы'">
+          <span :class="[$style.item__icon, $style._polls]"></span>
+          <span :class="$style.item__title">Соц. опросы</span>
+        </router-link>
+        <router-link tag="li" :to="{ name: 'news'}" :class="$style.menu__item" :active-class="$style._active" exact :title="isToggled && 'Новости'">
           <span :class="[$style.item__icon, $style._news]"></span>
           <span :class="$style.item__title">Новости</span>
         </router-link>
@@ -55,6 +63,10 @@
         <router-link tag="li" :to="{ name: 'companies'}" :class="$style.menu__item" :active-class="$style._active" :title="isToggled && 'Компании'">
           <span :class="[$style.item__icon, $style._companies]"></span>
           <span :class="$style.item__title">Компании</span>
+        </router-link>
+        <router-link tag="li" :to="{ name: 'yasr'}" :class="$style.menu__item" :active-class="$style._active" :title="isToggled && 'А ЯСР'">
+          <span :class="[$style.item__icon, $style._yasr]"></span>
+          <span :class="$style.item__title">А ЯСР</span>
         </router-link>
       </ul>
       <ul :class="$style.sidebar__panel">
@@ -397,10 +409,13 @@
     position: relative;
     top: 2px;
     }
+    &._main:before { content: "\e041" }
+    &._polls:before { content: "\e077" }
     &._news:before { content: "\e01c" }
     &._offers:before { content: "\e043" }
     &._requests:before { content: "\e04b" }
     &._companies:before { content: "\e001" }
+    &._yasr:before { content: "\e088" }
   }
   .item__title {
     opacity: 1;

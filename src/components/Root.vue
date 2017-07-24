@@ -1,28 +1,35 @@
 <template>
-  <div :class="$style.news">
-    <div :class="$style.news__bar">
+  <div :class="$style.main">
+    <div :class="$style.main__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Новости</li>
       </ul>
     </div>
-    <div :class="$style.news__toolbar">
-      <h1 :class="$style.toolbar__title">Новости<span :class="$style._small">лента событий</span></h1>
-      <div :class="$style.toolbar__actions">
-        <div :class="[$style.actions__buttons, filter === 'all' && $style._active]" @click="filter='all'">Все</div>
-        <div :class="$style.actions__buttons">Руководители</div>
-        <div :class="$style.actions__buttons">Моя компания</div>
-      </div>
+    <div :class="$style.main__toolbar">
+      <h1 :class="$style.toolbar__title">Главная<span :class="$style._small">основные рубрики портала</span></h1>
     </div>
     
-    <div :class="$style.news__main">
+    <div :class="$style.main__main">
       <div :class="$style.main_wrapper">
-        <timeline-new-post :auth="auth" />
-        <div :class="$style.main__timeline" v-if="dataReady">
-          <timeline-post v-for="post in postsByTimestamp" 
-            :key="post.key" 
-            :post="post" 
-            :auth="auth">
-          </timeline-post>
+        <div :class="$style.navigation_item_wrapper">
+          <div :class="$style.main__navigation_item">
+            
+          </div>
+        </div>
+        <div :class="$style.navigation_item_wrapper">
+          <div :class="$style.main__navigation_item">
+            
+          </div>
+        </div>
+        <div :class="$style.navigation_item_wrapper">
+          <div :class="$style.main__navigation_item">
+            
+          </div>
+        </div>
+        <div :class="$style.navigation_item_wrapper">
+          <div :class="$style.main__navigation_item">
+            
+          </div>
         </div>
       </div>
       
@@ -42,145 +49,49 @@
 
 <style lang="scss" module>
   @import "../assets/style.scss";
-  /* news */
-    .news {
+  /* main */
+    .main {
       position: relative;
       height: 100%;
       padding: 20px;
     }
 
-  /* news__main */
-    .news__main {
+  /* main__main */
+    .main__main {
       position: relative;
     }
 
   /* main_wrapper */
     .main_wrapper {
       position: relative;
-      margin-right: 300px;
-    }
-
-  .main__timeline {
-    position: relative;
-    background-color: #fff;
-    padding: 0 20px;
-    overflow: hidden;
-    &:before {
-      content: "";
-      position: absolute;
-      display: block;
-      width: 4px;
-      background: #f5f6fa;
-      top: 0;
-      bottom: 0;
-      margin-left: 38px;
-    }
-  }
-
-
-  .main__post {
-    margin-bottom: 20px;
-    background-color: #fff;
-    padding: 20px;
-    overflow: auto;
-    &:after { @include clearfix }
-
-    .post__userpic {
-      position: relative;
-      float: left;
-      width: 40px;
-      height: 40px;
-    }
-
-    .userpic__image {
-      max-width: 100%;
-      border: 4px solid #f5f6fa;
-      border-radius: 50%;
-    }
-
-    .post__message {
-      position: relative;
-      margin-left: 60px;
-    }
-
-    .message__input {
-      width: 100%;
-      border: none;
-      outline: none;
-      padding: 12px 10px;
-      color: #364150;
-      border: 1px solid #c2cad8;
-      &::-webkit-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      &::-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      &:-ms-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      &:-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      resize: vertical;
-      transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
-      &:focus {
-        border-color: #93a1bb;
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(147,161,187,.6);
-      }
-    }
-    .post__poll {
-      position: relative;
-      padding-top: 15px;
-      margin-left: 60px;
-    }
-    .post__actions {
-      padding-top: 15px;
-      margin-left: 60px;
+      margin-left: -10px;
+      margin-right: 290px;
       &:after { @include clearfix }
     }
-    .actions__add_poll {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
+  
+  .navigation_item_wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 50%;
+    height: 300px;
+    padding-bottom: 33.333333%;
+    margin-bottom: 20px;
+    float: left;
+
+    .main__navigation_item {
+      position: absolute;
+      background-color: #fff;
+      top: 0;
+      bottom: 0;
+      left: 10px;
+      right: 10px;
       cursor: pointer;
-      line-height: 40px;
-      text-align: center;
-      float: left;
-      &:after {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        content: "\e077";
-        font-family: "Icons";
-        color: #b4bcc8;
-        font-size: 20px;
-        transition: color .2s ease-in-out
-      }
-      &:hover:after, &._active:after { color: #3e4b5c }
-    }
-    .actions__add_images {
-      display: inline-block;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      line-height: 40px;
-      text-align: center;
-      float: left;
-      &:after {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        content: "\e07f";
-        font-family: "Icons";
-        color: #b4bcc8;
-        font-size: 20px;
-        transition: color .2s ease-in-out
-      }
-      &:hover:after { color: #3e4b5c }
-    }
-    .actions__send {
-      padding: 7px 10px;
-      color: #f1f1f1;
-      font-size: 14px;
-      float: right;
+
     }
   }
 
-  /* news__bar */
-    .news__bar {
+  /* main__bar */
+    .main__bar {
       border-bottom: 1px solid #e7ecf1;
       background-color: #fff;
       position: relative;
@@ -189,8 +100,8 @@
       &:after { @include clearfix }
     }
 
-  /* news__toolbar */
-    .news__toolbar {
+  /* main__toolbar */
+    .main__toolbar {
       margin: 25px 0;
       &:after { @include clearfix }
     }
@@ -204,34 +115,6 @@
       letter-spacing: -1px;
       font-weight: 300;
       > ._small { font-size: 14px; letter-spacing: 0; text-transform: lowercase; margin-left: 5px; }
-    }
-    .toolbar__actions {
-      float: right;
-    }
-
-    .actions__buttons {
-      display: inline-block;
-      text-align: center;
-      vertical-align: middle;
-      touch-action: manipulation;
-      cursor: pointer;
-      border: 1px solid #32c5d2;
-      white-space: nowrap;
-      padding: 6px 12px;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      padding: 4px 10px;
-      font-size: 13px;
-      color: #fff;
-      background-color: #32c5d2;
-      border-radius: 25px;
-      transition: color .2s ease-in-out, background-color .2s ease-in-out;
-      &:hover, &._active {
-        color: #32c5d2;
-        background-color: #fff;
-      }
     }
   
   /* main__content */
@@ -278,7 +161,7 @@
     
 
   /* responsive */
-    .news {
+    .main {
       @media (max-width: $bp-medium) {
         .main__ad { display: none }
         .main__content { margin-right: 0 }
@@ -302,7 +185,7 @@
   const postsRef = firebase.database().ref('posts');
 
   export default {
-    name: 'news',
+    name: 'main',
     props: ['auth'],
     components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, TimelinePost, TimelineNewPost  },
     data() {

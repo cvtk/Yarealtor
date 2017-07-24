@@ -9,6 +9,8 @@ const router = new VueRouter({
   linkActiveClass: '_active',
   routes: [
     { path: '/', component: require('./components/Root.vue'), name: 'root' },
+    { path: '/polls', component: require('./components/Polls.vue'), name: 'polls' },
+    { path: '/news', component: require('./components/News.vue'), name: 'news' },
     { path: '/codex', component: require('./components/Codex.vue'), name: 'codex' },
     { path: '/rules', component: require('./components/Rules.vue'), name: 'rules' },
     { path: '/offers', component: require('./components/Offers.vue'), name: 'offers' },
@@ -16,6 +18,7 @@ const router = new VueRouter({
     { path: '/offers/:id', component: require('./components/Offer.vue'), name: 'offer' },
     { path: '/requests', component: require('./components/Requests.vue'), name: 'requests' },
     { path: '/companies', component: require('./components/Companies.vue'), name: 'companies' },
+    { path: '/yasr', component: require('./components/Yasr.vue'), name: 'yasr' },
     { path: '/companies/:page', component: require('./components/Company.vue'), name: 'company' },
     { path: '/my-company', component: require('./components/List.vue'), name: 'my-company' },
     { path: '/users/:page', component: require('./components/Profile.vue'), name: 'user' },
