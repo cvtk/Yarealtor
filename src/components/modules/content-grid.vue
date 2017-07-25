@@ -13,6 +13,7 @@
       <div :class="$style.item__meta">
         <h3 :class="$style.meta__title">{{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.</h3>
         <span :class="$style.meta__address">г. {{ item.estate.city }}, {{ item.estate.address }}</span>
+        <span :class="$style.meta__contacts">ЗАО «ГАЗПРОМ», 8 (987) 654-43-21</span>
         <span :class="$style.item__favorites">12</span>
         <span :class="$style.item__price">{{ item.price | price }} руб.</span>
       </div>
@@ -52,7 +53,8 @@
       .item__meta { background-color: #3e4b5c }
       .meta__title { color: #f1f1f1 }
       .meta__address { color: #f1f1f1 }
-      .meta__address:after { background-image: url(/static/bg-border-dotted-horizontal--hover.png) }
+      .meta__contacts { color: #f1f1f1 }
+      .meta__contacts:after { background-image: url(/static/bg-border-dotted-horizontal--hover.png) }
       .item__price { color: #f9e491 }
       .item__favorites { color: #f9e491 }
     }
@@ -130,11 +132,24 @@
   }
 
   .meta__address {
+    display: block;
     color: #5b9bd1;
     line-height: 1.8;
     transition: color .2s ease-in-out;
     &:before {
       content: "\e096";
+      font-family: "Icons";
+      font-size: 14px;
+      padding-right: 3px;
+    }
+  }
+  .meta__contacts {
+    display: block;
+    color: #5b9bd1;
+    line-height: 1.8;
+    transition: color .2s ease-in-out;
+    &:before {
+      content: "\e001";
       font-family: "Icons";
       font-size: 14px;
       padding-right: 3px;

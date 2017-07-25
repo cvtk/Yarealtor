@@ -30,6 +30,7 @@
            <router-link :to="{ name: 'offer', params: { id: item.id } }" :class="[$style.foot__item, $style._favorites]">43</router-link>
            <router-link :to="{ name: 'user', params: { page: 'ivanov' } }"  :class="[$style.foot__item, $style._author]">Дмитрий Петров</router-link>
            <router-link :to="{ name: 'company', params: { page: 'gazprom' } }"  :class="[$style.foot__item, $style._company]">ЗАО «ГАЗПРОМ»</router-link>
+           <span :class="[$style.foot__item, $style._phone]">8 (987) 654-43-21</span>
          </div>
       </div>
     </li>
@@ -208,10 +209,11 @@
         margin-right: 3px;
       }
     }
-    > ._author:before { content: "\e005"; }
-    > ._company:before { content: "\e001" }
+    > ._author:before { content: "\e005" }
+    > ._company { float: left; &:before { content: "\e001" } }
     > ._favorites:before { content: "\e09b" }
     > ._comments:before { content: "\e04a" }
+    > ._phone{ float: left; &:before { content: "\e048" } }
   }
 
 
