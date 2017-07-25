@@ -73,8 +73,7 @@
     position: relative;
     overflow: hidden;
     width: 50%;
-    height: 300px;
-    padding-bottom: 33.333333%;
+    padding-bottom: 25%;
     margin-bottom: 20px;
     float: left;
 

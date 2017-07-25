@@ -3,6 +3,12 @@
     <li v-for="item in data" :class="$style.list__item">
       <span :class="$style.item__type">Продажа</span>
       <router-link :to="{ name: 'offer', params: { id: item.id } }" :class="$style.wrapper_image">
+        <nav :class="$style.item__thumbnails_navigation">
+          <div :class="$style.thumbnails_navigation__item"
+            v-for="index in [0,1,2,3]"
+            @mouseover="item.image = item.thumbs[index]">    
+          </div>
+        </nav>
         <div :class="$style.item__image" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
       </router-link>
       <div :class="$style.item__content">
@@ -59,7 +65,27 @@
     width: 10%;
     float: left;
     padding-top: 10%;
+  }
+  .item__thumbnails_navigation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     overflow: hidden;
+    opacity: .9;
+    z-index: 1;
+    margin-bottom: -4px;
+    &:after { @include clearfix }
+
+    .thumbnails_navigation__item {
+      width: 25%;
+      height: 100%;
+      float: left;
+      border-bottom: 4px solid transparent;
+      transition: border-color .2s ease-in-out;
+      &:hover { border-bottom: 4px solid #32c5d2 }
+    }
   }
 
   .item__image {

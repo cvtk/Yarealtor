@@ -284,6 +284,7 @@
         tmpHomes: [
           {
             image: '/static/apartments/1.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112323,
             type: 0,
             rooms: 3,
@@ -297,6 +298,7 @@
           },
           {
             image: '/static/apartments/2.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112324,
             type: 1,
             rooms: 2,
@@ -310,6 +312,7 @@
           },
           {
             image: '/static/apartments/3.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112325,
             type: 0,
             rooms: 1,
@@ -323,6 +326,7 @@
           },
           {
             image: '/static/apartments/4.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112326,
             type: 0,
             rooms: 2,
@@ -336,6 +340,7 @@
           },
           {
             image: '/static/apartments/5.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112327,
             type: 0,
             rooms: 1,
@@ -349,6 +354,7 @@
           },
           {
             image: '/static/apartments/6.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112328,
             type: 0,
             rooms: 2,
@@ -362,6 +368,7 @@
           },
           {
             image: '/static/apartments/7.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112329,
             type: 1,
             rooms: 2,
@@ -375,6 +382,7 @@
           },
           {
             image: '/static/apartments/8.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112310,
             type: 0,
             rooms: 4,
@@ -388,6 +396,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112311,
             type: 0,
             rooms: 2,
@@ -401,6 +410,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112312,
             type: 1,
             rooms: 3,
@@ -414,6 +424,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112313,
             type: 0,
             rooms: 2,
@@ -427,6 +438,7 @@
           },
           {
             image: '/static/apartments/9.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
             id: 112314,
             type: 1,
             rooms: 2,

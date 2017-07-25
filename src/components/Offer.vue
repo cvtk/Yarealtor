@@ -90,6 +90,9 @@
           </ul>
         </aside>
         <div :class="$style.content__carousel">
+          <div :class="$style.carousel__thumbnails">
+            <div :class="$style.thumbnails__item" v-for="thumbnail in item.thumbs" :style="{ 'background-image': 'url(' + thumbnail + ')' }"></div>
+          </div>
           <div :class="[$style.carousel__menu, !carouselMenuActive || $style.__active]">
             <div :class="$style.menu__switcher" @click="carouselMenuActive=!carouselMenuActive"></div>
             <div :class="$style.menu__item" @click="item.favorites=!item.favorites" v-show="carouselMenuActive">
@@ -300,6 +303,25 @@
       width: auto;
     }
 
+    .carousel__thumbnails {
+      position: absolute;
+      left: 20px;
+      width: 100px;
+      padding: 10px;
+      height: 100%;
+      z-index: 1;
+      background-color: #fff;
+      .thumbnails__item {
+        width: 100%;
+        height: 80px;
+        margin-bottom: 10px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        transition: transform .1s ease-in-out;
+        &:hover { transform:scale(1.1) }
+      }
+    }
     .carousel__slide {
       display: block;
       margin: 0 auto;
@@ -405,7 +427,7 @@
     }
     .controls__prev {
       top: 45%;
-      left: 120px;
+      left: 140px;
       right: auto;
       &:after {
         content: "\e605";
@@ -482,6 +504,7 @@
         item:
           {
             image: '/static/apartments/7.jpg',
+            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/5.jpg', '/static/apartments/6.jpg' ],
             favorites: false,
             id: 112313,
             type: 0,
