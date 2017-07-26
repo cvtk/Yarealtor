@@ -409,7 +409,7 @@
     position: relative;
     top: 2px;
     }
-    &._main:before { content: "\e041" }
+    &._main:before { content: "\e041"; font-size: 17px }
     &._polls:before { content: "\e077" }
     &._news:before { content: "\e01c" }
     &._offers:before { content: "\e043" }

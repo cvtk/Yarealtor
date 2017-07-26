@@ -12,24 +12,76 @@
     <div :class="$style.main__main">
       <div :class="$style.main_wrapper">
         <div :class="$style.navigation_item_wrapper">
-          <div :class="$style.main__navigation_item">
-            
-          </div>
+          <router-link tag="div" :to="{ name: 'polls' }" :class="[ $style.main__navigation_item, $style._polls ]">
+            <div :class="$style.header_wrapper">
+              <div :class="$style.navigation_item__header">
+                <h3 :class="$style.header__title">Соц. опросы</h3>
+                <h4 :class="$style.header__subtitle">Итоги, комментарии, аналитика</h4>
+              </div>
+              <div :class="$style.navigation_item__icon"></div>
+            </div>
+            <div :class="$style.navigation_item__delimiter"></div>
+            <h5 :class="$style.navigation_item__recent_title">Недавние опросы:</h5>
+            <div :class="$style.navigation_item__recent_items">
+              <router-link :to="{ name: 'polls' }" :class="$style.recent_items__article">Сегодня, в 12:35: Как вы считаете, стоит ли это делать?</router-link>
+              <router-link :to="{ name: 'polls' }" :class="$style.recent_items__article">Вчера, в 16:12: Может стоит делать иначе?</router-link>
+              <router-link :to="{ name: 'polls' }" :class="$style.recent_items__article">Вчера, в 11:10: Давайте делать как делали, а?</router-link>
+            </div>
+          </router-link>
         </div>
         <div :class="$style.navigation_item_wrapper">
-          <div :class="$style.main__navigation_item">
-            
-          </div>
+          <router-link tag="div" :to="{ name: 'news' }" :class="[ $style.main__navigation_item, $style._news ]">
+            <div :class="$style.header_wrapper">
+              <div :class="$style.navigation_item__header">
+                <h3 :class="$style.header__title">Новости</h3>
+                <h4 :class="$style.header__subtitle">Лента событий</h4>
+              </div>
+              <div :class="$style.navigation_item__icon"></div>
+            </div>
+            <div :class="$style.navigation_item__delimiter"></div>
+            <h5 :class="$style.navigation_item__recent_title">Недавние новости:</h5>
+            <div :class="$style.navigation_item__recent_items">
+              <router-link :to="{ name: 'news' }" :class="$style.recent_items__article">Сегодня, в 12:35: Как вы считаете, стоит ли это делать?</router-link>
+              <router-link :to="{ name: 'news' }" :class="$style.recent_items__article">Вчера, в 16:12: Может стоит делать иначе?</router-link>
+              <router-link :to="{ name: 'news' }" :class="$style.recent_items__article">Вчера, в 11:10: Давайте делать как делали, а?</router-link>
+            </div>
+          </router-link>
         </div>
         <div :class="$style.navigation_item_wrapper">
-          <div :class="$style.main__navigation_item">
-            
-          </div>
+          <router-link tag="div" :to="{ name: 'offers' }" :class="[ $style.main__navigation_item, $style._offers ]">
+            <div :class="$style.header_wrapper">
+              <div :class="$style.navigation_item__header">
+                <h3 :class="$style.header__title">Предложения</h3>
+                <h4 :class="$style.header__subtitle">Актуальные объекты</h4>
+              </div>
+              <div :class="$style.navigation_item__icon"></div>
+            </div>
+            <div :class="$style.navigation_item__delimiter"></div>
+            <h5 :class="$style.navigation_item__recent_title">Недавние предложения:</h5>
+            <div :class="$style.navigation_item__recent_items">
+              <router-link :to="{ name: 'offers' }" :class="$style.recent_items__article">Сегодня, в 12:35: Как вы считаете, стоит ли это делать?</router-link>
+              <router-link :to="{ name: 'offers' }" :class="$style.recent_items__article">Вчера, в 16:12: Может стоит делать иначе?</router-link>
+              <router-link :to="{ name: 'offers' }" :class="$style.recent_items__article">Вчера, в 11:10: Давайте делать как делали, а?</router-link>
+            </div>
+          </router-link>
         </div>
         <div :class="$style.navigation_item_wrapper">
-          <div :class="$style.main__navigation_item">
-            
-          </div>
+          <router-link tag="div" :to="{ name: 'root' }" :class="[ $style.main__navigation_item, $style._messages ]">
+            <div :class="$style.header_wrapper">
+              <div :class="$style.navigation_item__header">
+                <h3 :class="$style.header__title">Форум и чат</h3>
+                <h4 :class="$style.header__subtitle">Оставайтесь на связи</h4>
+              </div>
+              <div :class="$style.navigation_item__icon"></div>
+            </div>
+            <div :class="$style.navigation_item__delimiter"></div>
+            <h5 :class="$style.navigation_item__recent_title">Недавние сообщения:</h5>
+            <div :class="$style.navigation_item__recent_items">
+              <router-link :to="{ name: 'root' }" :class="$style.recent_items__article">Сегодня, в 12:35: Как вы считаете, стоит ли это делать?</router-link>
+              <router-link :to="{ name: 'root' }" :class="$style.recent_items__article">Вчера, в 16:12: Может стоит делать иначе?</router-link>
+              <router-link :to="{ name: 'root' }" :class="$style.recent_items__article">Вчера, в 11:10: Давайте делать как делали, а?</router-link>
+            </div>
+          </router-link>
         </div>
       </div>
       
@@ -64,8 +116,8 @@
   /* main_wrapper */
     .main_wrapper {
       position: relative;
-      margin-left: -10px;
-      margin-right: 290px;
+      margin-left: 40px;
+      margin-right: 340px;
       &:after { @include clearfix }
     }
   
@@ -75,6 +127,7 @@
     width: 50%;
     padding-bottom: 25%;
     margin-bottom: 20px;
+    min-height: 240px;
     float: left;
 
     .main__navigation_item {
@@ -85,7 +138,110 @@
       left: 10px;
       right: 10px;
       cursor: pointer;
+      padding: 15px 15px 30px;
+      &._polls {
+        background-color: lighten(#2ab4c0, 50%);
 
+        .navigation_item__icon {
+          color: #2ab4c0;
+          &:before { content: "\E077" }
+        }
+        .header__title { color: #2ab4c0 }
+        .navigation_item__delimiter { background-color: #2ab4c0 }
+        .recent_items__article { color: #2ab4c0 }
+      }
+      &._news {
+        background-color: lighten(#f36a5a, 34%);
+
+        .navigation_item__icon {
+          color: #f36a5a;
+          &:before { content: "\E01C" }
+        }
+        .header__title { color: #f36a5a }
+        .navigation_item__delimiter { background-color: #f36a5a }
+        .recent_items__article { color: #f36a5a }
+      }
+      &._offers {
+        background-color: lighten(#5C9BD1, 40%);
+
+        .navigation_item__icon {
+          color: #5C9BD1;
+          &:before { content: "\E043" }
+        }
+        .header__title { color: #5C9BD1 }
+        .navigation_item__delimiter { background-color: #5C9BD1 }
+        .recent_items__article { color: #5C9BD1 }
+      }
+      &._messages {
+        background-color: lighten(#8877a9, 37%);
+
+        .navigation_item__icon {
+          color: #8877a9;
+          &:before { content: "\e04a" }
+        }
+        .header__title { color: #8877a9 }
+        .navigation_item__delimiter { background-color: #8877a9 }
+        .recent_items__article { color: #8877a9 }
+      }
+      &:hover {
+        .header__title { padding-left: 10px }
+        .header__subtitle { padding-left: 10px }
+        .navigation_item__icon { transform:scale(1.15) }
+      }
+    }
+    .header_wrapper:after { @include clearfix }
+
+    .navigation_item__header {
+      float: left;
+    }
+    .navigation_item__icon {
+      float: right;
+      
+      font-size: 36px;
+      line-height: 63px;
+      height: 63px;
+      transition: transform .5s ease-in-out;
+      &:before { font-family: "Icons" }
+    }
+    .header__title {
+      margin: 0 0 2px;
+      padding: 0;
+      font-size: 30px;
+      font-weight: 100;
+      transition: padding-left .5s ease-in-out;
+    }
+    .header__subtitle {
+      font-size: 14px;
+      color: #AAB5BC;
+      font-weight: 500;
+      letter-spacing: .25px;
+      text-transform: uppercase;
+      margin: 0;
+      transition: padding-left .25s ease-in-out;
+    }
+
+    .navigation_item__delimiter {
+      height: 3px;
+      margin: 20px 0;
+    }
+
+    .navigation_item__recent_title {
+      margin: 0;
+      font-size: 11px;
+      color: #AAB5BC;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    .navigation_item__recent_items {
+      margin: 5px 0;
+    }
+    .recent_items__article {
+      display: block;
+      font-size: 14px;
+      font-weight: 300;
+      text-decoration: none;
+      padding: 5px 0;
+      &:hover { text-decoration: underline }
     }
   }
 
@@ -161,6 +317,9 @@
 
   /* responsive */
     .main {
+      @media (max-width: $bp-extra-large) {
+        .main_wrapper { margin-left: -10px; margin-right: 290px }
+      }
       @media (max-width: $bp-medium) {
         .main__ad { display: none }
         .main__content { margin-right: 0 }
