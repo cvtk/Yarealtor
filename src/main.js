@@ -2,28 +2,46 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import App from './App.vue';
 
+import Root from './components/Root.vue';
+import Polls from './components/Polls.vue';
+import News from './components/News.vue';
+import Codex from './components/Codex.vue';
+import Rules from './components/Rules.vue';
+import Offers from './components/Offers.vue';
+import NewOffer from './components/New-offer.vue';
+import Offer from './components/Offer.vue';
+import Requests from './components/Requests.vue';
+import Companies from './components/Companies.vue';
+import Yasr from './components/Yasr.vue';
+import Company from './components/Company.vue';
+import List from './components/List.vue';
+import Profile from './components/Profile.vue';
+import AppAuth from './components/App-auth.vue';
+import NotFound from './components/App-404.vue';
+
+
 Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: 'history',
   linkActiveClass: '_active',
   routes: [
-    { path: '/', component: require('./components/Root.vue'), name: 'root' },
-    { path: '/polls', component: require('./components/Polls.vue'), name: 'polls' },
-    { path: '/news', component: require('./components/News.vue'), name: 'news' },
-    { path: '/codex', component: require('./components/Codex.vue'), name: 'codex' },
-    { path: '/rules', component: require('./components/Rules.vue'), name: 'rules' },
-    { path: '/offers', component: require('./components/Offers.vue'), name: 'offers' },
-    { path: '/offers/new', component: require('./components/New-offer.vue'), name: 'new-offer' },
-    { path: '/offers/:id', component: require('./components/Offer.vue'), name: 'offer' },
-    { path: '/requests', component: require('./components/Requests.vue'), name: 'requests' },
-    { path: '/companies', component: require('./components/Companies.vue'), name: 'companies' },
-    { path: '/yasr', component: require('./components/Yasr.vue'), name: 'yasr' },
-    { path: '/companies/:page', component: require('./components/Company.vue'), name: 'company' },
-    { path: '/my-company', component: require('./components/List.vue'), name: 'my-company' },
-    { path: '/users/:page', component: require('./components/Profile.vue'), name: 'user' },
-    { path: '/auth', component: require('./components/App-auth.vue'), name: 'auth' },
-    { path: '/404', component: require('./components/App-404.vue'), name: '404' }
+    { path: '/', component: Root, name: 'root' },
+    { path: '/polls', component: Polls, name: 'polls' },
+    { path: '/news', component: News, name: 'news' },
+    { path: '/codex', component: Codex, name: 'codex' },
+    { path: '/rules', component: Rules, name: 'rules' },
+    { path: '/offers', component: Offers, name: 'offers' },
+    { path: '/offers/new', component: NewOffer, name: 'new-offer' },
+    { path: '/offers/:id', component: Offer, name: 'offer' },
+    { path: '/requests', component: Requests, name: 'requests' },
+    { path: '/companies', component: Companies, name: 'companies' },
+    { path: '/yasr', component: Yasr, name: 'yasr' },
+    { path: '/companies/:page', component: Company, name: 'company' },
+    { path: '/my-company', component: List, name: 'my-company' },
+    { path: '/users/:page', component: Profile, name: 'user' },
+    { path: '/auth', component: AppAuth, name: 'auth' },
+    { path: '/404', component: NotFound, name: '404' }
   ]
 });
 

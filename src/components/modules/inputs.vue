@@ -18,10 +18,11 @@
     <app-transition> 
       <span :class="$style.input_group__error" v-if="error"></span>
     </app-transition>
-    <input type="number" min=0 max=100000 step="1.0"
+    <input type="number" step="1.0"
       :id="$style.id" 
       :class="$style.input_group__text"
       :placeholder="placeholder"
+      :value="value"
       @change="onchange">
     <app-transition type="toggleDown">
       <div :class="$style.input_group__notify" v-if="error">{{ notify }}</div>
