@@ -15,11 +15,10 @@ module.exports = {
         loader: 'vue-loader',
         options: {
           cssModules: {
-            localIdentName: '[hash:base64:5]'
+            localIdentName: '[hash:base64:7]'
           },
           loaders: {
-            'scss': 'vue-style-loader!css-loader!sass-loader',
-            'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
+            'scss': 'vue-style-loader!css-loader!sass-loader'
           }
         }
       },

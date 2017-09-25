@@ -61,6 +61,17 @@
     position: relative;
     margin-top: 20px;
     &:after { @include clearfix }
+    @media (max-width: $bp-medium) {
+      .overview__images { width: 100%; padding-right: 0 }
+      .overview__content {
+        width: 100%;
+        padding-left: 0;
+        margin-top: 20px;
+      }
+    }
+    @media (max-width: $bp-small) {
+      .row__item_50p { width: 100% }
+    }
   }
 
   .overview__images {

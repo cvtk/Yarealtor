@@ -31,6 +31,7 @@
     line-height: 24px;
     cursor: pointer;
     user-select: none;
+    touch-action: manipulation;
   }
 
   .radio__box {

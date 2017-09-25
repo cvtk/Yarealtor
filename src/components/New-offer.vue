@@ -1,22 +1,17 @@
 <template>
   <div :class="$style.create">
-
     <div :class="$style.create__bar">
       <breadcrumbs :items="[{ text: 'Главная', to: 'root'}, { text: 'Предложения', to: 'offers'}, { text: 'Создать новое', to: ''}]" /> 
     </div>
-
     <div :class="$style.create__toolbar">
       <h1 :class="$style.toolbar__title">Создать<span :class="$style._small">новое предложение</span></h1>
       <div :class="$style.toolbar__actions"></div>
     </div>
-    
     <div :class="$style.create__main">
       <div :class="$style.main">
-
         <div :class="$style.main__steps_controls">
           <steps-controls v-model="currentStep" />
         </div>
-        
         <div :class="$style.main__current_step">
           <transition :name="stepsDirection" mode="out-in">
             <first-step v-model="offer" v-if="currentStep === 1"></first-step>
@@ -28,16 +23,14 @@
         <div :class="$style.main__actions">
           <div :class="$style.actions">
             <div :class="$style.actions__previos">
-              <default-button icon="previos" label="Предыдущий шаг" />
+              <default-button icon="previos" label="Назад" />
             </div>
             <div :class="$style.actions__next">
-              <default-button icon="next" label="Следующий шаг" />
+              <default-button icon="next" label="Вперёд" />
             </div>
           </div>
         </div>
-
-      </div>
-      
+      </div> 
     <app-ad-sidebar :class="$style.create__ad"></app-ad-sidebar>
     </div>
   </div>
@@ -73,6 +66,13 @@
     position: relative;
     height: 100%;
     padding: 20px;
+    @media (max-width: $bp-small) {
+      .main { margin-right: 0 }
+      .create__ad {
+        position: relative;
+        margin: 20px auto 0;
+      }
+    }
   }
 
   .create__bar {

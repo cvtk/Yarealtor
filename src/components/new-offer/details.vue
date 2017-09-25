@@ -126,6 +126,23 @@
       position: relative;
       margin: 20px -10px 0;
       &:after { @include clearfix }
+      @media (max-width: $bp-large) {
+        .second__content { width: 100%; margin-bottom: 20px; }
+      }
+      @media (max-width: $bp-small) {
+        .group__address { width: 67.5% }
+        .group__house_number { width: 30% }
+        .type__label, .material__label { width: 37.5% }
+        .type__options, .material__options { width: 62.5% }
+        .options__item { width: 100% !important; margin-bottom: 5px !important }
+        .main_params__rooms, .main_params__floor { width: 100%; margin-bottom: 5px }
+        .rooms__label, .floor__label { width: 37.5% !important; text-align: left }
+        .floors__options, .floor__options { width: 25% }
+        .rooms__options { width: 62.5% }
+        .area__full, .area__living { width: 100%; padding: 0; margin-bottom: 5px; }
+        .bathroom__label, .furnish__label, .balcony__label { width: 37.5% }
+        .bathroom__options, .furnish__options, .balcony__options { width: 62.5% }
+      }
     }
 
   /* second__content */

@@ -74,6 +74,14 @@ let defs = {
       { value: 3, title: 'совмещенный' },
       { value: 4, title: 'только душ / ванна' }
     ]
+  },
+  balcony : {
+    current: false,
+    title: 'Балкон',
+      items: [
+      { value: true, title: 'есть' },
+      { value: false, title: 'нет' }
+    ]
   }
 }
 
@@ -90,12 +98,12 @@ let model = {
   house_waymark: { type: String, default: { current: '', title: 'Дополнительные ориентиры' } },
   house_type: { type: Number, default: defs.houseType },
   house_material: { type: Number, default: defs.materialType },
+  apartment_floor: { type: Number, default: { current: null, title: 'Этаж' } },
   house_floors: { type: Number, default: { current: null, title: 'Этажей' } },
   apartment_rooms: { type: Number, default: { current: null, title: 'Комнат' } },
-  apartment_floor: { type: Number, default: { current: null, title: 'Этаж' } },
   apartment_furnish: { type: Number, default: defs.furnishType },
   apartment_bathroom: { type: Number, default: defs.bathType },
-  apartment_balcony: { type: Boolean, default: { current: false, title: 'Балкон' } },
+  apartment_balcony: { type: Boolean, default: defs.balcony },
   apartments_full_area: { type: Number, default: { current: null, title: 'Общая площадь' } },
   apartments_living_area: { type: Number, default: { current: null, title: 'Жилая площадь' } },
 }

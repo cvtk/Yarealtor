@@ -8,11 +8,14 @@
 </template>
 
 <style lang="scss" module>
-
+  @import "../../assets/style.scss";
   .breadcrumbs {
     display: inline-block;
     margin: 0; padding: 0;
     list-style: none;
+    @media (max-width: $bp-small) {
+      .breadcrumbs__item:first-child { display: none }
+    }
   }
 
   .breadcrumbs__item {

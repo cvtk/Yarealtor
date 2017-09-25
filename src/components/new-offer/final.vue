@@ -4,8 +4,13 @@
       <div :class="$style.wrapper">
         <div :class="$style.group__images">
           <div v-for="image in offer.images.current"
+            v-if="offer.images.current.length !== 0"
             :class="$style.images__item" 
             :style="{ 'background-image': 'url(' + image.url + ')' }">
+          </div>
+          <div v-else
+            :class="$style.images__item" 
+            :style="{ 'background-image': 'url(/static/image-placeholder.png)' }">
           </div>
         </div>
       </div>
@@ -41,6 +46,9 @@
       position: relative;
       margin: 20px -10px 0;
       &:after { @include clearfix }
+      @media (max-width: $bp-medium) {
+        .third__content { width: 100% }
+      }
     }
 
   /* third__content */
@@ -74,17 +82,16 @@
     }
 
     .details__list {
-      margin: 0;
+      margin: 0 -7.5px;
       padding: 0;
       list-style: none;
-      border: 7.5px solid #fff;
       > .list__item {
         border-bottom: 1px solid #f0f4f7;
         display: block;
         padding: 7.5px;
         cursor: default;
         transition: background-color .1s ease-in-out;
-        &:hover { background-color: #eef1f5 }
+        &:nth-child(odd) { background-color: #eef1f5 }
         &:after { @include clearfix }
         > .item__title, .item__value { display: block; width: 50%; float: left; color: #5a7391; }
         > .item__value { text-align: right; color: #93a3b5; font-style: italic; }
