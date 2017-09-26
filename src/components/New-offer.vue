@@ -4,8 +4,7 @@
       <breadcrumbs :items="[{ text: 'Главная', to: 'root'}, { text: 'Предложения', to: 'offers'}, { text: 'Создать новое', to: ''}]" /> 
     </div>
     <div :class="$style.create__toolbar">
-      <h1 :class="$style.toolbar__title">Создать<span :class="$style._small">новое предложение</span></h1>
-      <div :class="$style.toolbar__actions"></div>
+      <toolbar title="Создать" sub="новое предложение"></toolbar>
     </div>
     <div :class="$style.create__main">
       <div :class="$style.main">
@@ -16,7 +15,7 @@
           <transition :name="stepsDirection" mode="out-in">
             <first-step v-model="offer" v-if="currentStep === 1"></first-step>
             <second-step v-model="offer" v-else-if="currentStep === 2"></second-step>
-            <third-step :offer="offer" v-else-if="currentStep === 3"></third-step>
+            <offer-preview :offer="offer" v-else-if="currentStep === 3" />
           </transition>  
         </div>
         <div :class="$style.main__validate">
@@ -101,21 +100,6 @@
 
   .main__validate{ position: relative }
 
-  .toolbar__title {
-    font-size: 24px;
-    color: #666;
-    margin: 0;
-    padding: 0;
-    letter-spacing: -1px;
-    font-weight: 300;
-    > ._small {
-      font-size: 14px;
-      letter-spacing: 0;
-      text-transform: lowercase;
-      margin-left: 5px;
-    }
-  }
-
   .main {
     position: relative;
     margin-right: 300px;
@@ -163,12 +147,13 @@
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppInput from './modules/inputs.vue';
   import AppFilters from './helpers/filters.js';
-  import Breadcrumbs from './breadcrumbs/breadcrumbs.vue'
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue'
+  import Toolbar from './page-blocks/toolbar.vue'
   import StepsControls from './new-offer/steps-controls.vue';
   import FirstStep from './new-offer/overview.vue';
   import SecondStep from './new-offer/details.vue';
-  import ThirdStep from './new-offer/final.vue';
   import DefaultButton from './default-inputs/default-button.vue';
+  import OfferPreview from './offer/offer.vue';
 
   const overviewFields = ['type', 'price', 'object', 'description'];
   const detailsFields = ['house_city', 'house_address', 'house_number', 'house_district', 'house_waymark', 'house_type', 'house_material', 'apartment_floor', 'house_floors', 'apartment_rooms', 'apartment_furnish', 'apartment_bathroom','apartments_full_area', 'apartments_living_area' ];
@@ -176,7 +161,7 @@
   export default {
     name: 'new_offer',
     props: ['auth'],
-    components: { AppLoader, AppAdSidebar, AppInput, FirstStep, SecondStep, ThirdStep, Breadcrumbs, StepsControls, DefaultButton },
+    components: { AppLoader, AppAdSidebar, AppInput, FirstStep, SecondStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
     filters: AppFilters,
     data() {
       return {

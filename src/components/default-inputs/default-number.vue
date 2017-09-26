@@ -97,7 +97,6 @@
         this.$emit('input', this.local);
       },
       onKeyDown(e) {
-        console.log(e);
         if ( ( [46, 8, 9, 27, 13, 110, 190].includes(e.keyCode) ) ||
             (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
             (e.keyCode >= 35 && e.keyCode <= 40) ) {

@@ -3,8 +3,8 @@ let defs = {
     current: null,
     title: 'Тип предложения',
     items: [
-      { value: 1, title: 'Продать недвижимость' },
-      { value: 2, title: 'Сдать в аренду' }
+      { value: 1, title: 'Продажа' },
+      { value: 2, title: 'Аренда' }
     ]
   },
   objType : {

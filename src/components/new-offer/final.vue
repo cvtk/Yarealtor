@@ -132,7 +132,7 @@
 
   export default {
     name: 'final',
-    components: { AppInput, AppUploadImages },
+    components: { AppInput, AppUploadImages, OfferPreview },
     props: ['offer'],
     methods: {
       getOptionTitle: model.getOptionTitle
