@@ -4,14 +4,23 @@
       <div :class="$style.wrapper">
         <div :class="$style.content__group">
           <span :class="$style.group__title">Адрес</span>
-          <app-input v-model="value.house_city.current" :placeholder="value.house_city.title" />
-          <div :class="$style.wrapper">
-            <app-input :class="$style.group__address" v-model="value.house_address.current" :placeholder="value.house_address.title" />
-            <app-input :class="$style.group__house_number" v-model="value.house_number.current" :placeholder="value.house_number.title" />
+          <div :class="$style.row">
+            <city-field v-model="value.house_city.current" :label="value.house_city.title" @citySelect="onCitySelect" />
           </div>
-          <select :class="$style.group__district" v-model="value.house_district.current">
-            <option :class="$style.district__option" v-for="opt in value.house_district.items" :value="opt.value">{{ opt.title }}</option>
-          </select>
+          <div :class="$style.row">
+            <div :class="$style.group__address">
+              <street-field v-model="value.house_address.current" :label="value.house_address.title" :parentId="cityId" @streetSelect="onStreetSelect" />
+            </div>
+            <div :class="$style.group__house_number">
+              <build-field v-model="value.house_number.current" :label="value.house_number.title" :parentId="streetId" />
+            </div>
+          </div>
+          <div :class="$style.row">
+            <default-select nameField="title" v-model="value.house_district.current" 
+              :label="value.house_district.title"
+              :options="value.house_district.items"
+            />
+          </div>
           <textarea :class="$style.group__waymark" v-model="value.house_waymark.current" rows="5" :placeholder="value.house_waymark.title"></textarea>
         </div>
       </div>
@@ -159,6 +168,12 @@
       padding: 15px;
       margin: 15px;
       margin-top: 20px;
+    }
+
+
+    .row {
+      position: relative;
+      &:after { @include clearfix }
     }
 
     .content__group:first-child {
@@ -386,10 +401,28 @@
   import AppUploadImages from '../modules/upload-images.vue';
   import DefaultCheckbox from '../default-inputs/default-checkbox.vue';
   import DefaultRadio from '../default-inputs/default-radio.vue';
+  import DefaultSelect from '../default-inputs/default-select.vue';
+  import CityField from '../address-inputs/city-field.vue';
+  import StreetField from '../address-inputs/street-field.vue';
+  import BuildField from '../address-inputs/building-field.vue';
 
   export default {
     name: 'details',
-    components: { AppInput, AppUploadImages, DefaultCheckbox, DefaultRadio },
-    props: ['value']
+    components: { AppInput, AppUploadImages, DefaultCheckbox, DefaultRadio, DefaultSelect, CityField, StreetField, BuildField },
+    props: ['value'],
+    data() {
+      return {
+        cityId: '',
+        streetId: ''
+      }
+    },
+    methods: {
+      onCitySelect(parentId) {
+        this.cityId = parentId;
+      },
+      onStreetSelect(parentId) {
+        this.streetId = parentId;
+      }
+    }
   }
 </script>

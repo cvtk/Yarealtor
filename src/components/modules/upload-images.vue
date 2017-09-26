@@ -10,7 +10,7 @@
       <span v-if="loading === true">{{ progress }}%</span>
       <span v-else><slot></slot></span>
     </span>
-    <input :class="$style.upload__input" type="file" :multiple="multiple === true" @change="upload">
+    <input :class="$style.upload__input" ref="input" type="file" :multiple="multiple === true" @change="upload">
   </label>
 </template>
 
@@ -126,23 +126,22 @@
           
           task.on('state_changed',
             state => {
+              
               let currentProgress = Math.round((state.bytesTransferred / state.totalBytes) * 100);
               this.$set( this.images[name], 'progress', currentProgress );
               this.progress = this.averageProgress(this.images);
-              if ( this.progress === 100 ) {
-                if ( this.multiple ) {
-                  this.$emit('input', this.images);
-                }
-                this.loading = false;
-              }
             }, 
             error => {
               console.log(error);
             },
             () => {
               let currentUrl = task.snapshot.downloadURL;
-              if ( this.multiple ) { this.$set( this.images[name], 'url', currentUrl ) }
-              else { this.$emit('input', currentUrl) }
+              this.$set( this.images[name], 'url', currentUrl );
+              if ( this.images[name].progress >= 100 ) {
+                this.$emit('imageLoaded', this.images[name]);
+                this.loading = false;
+                this.$refs.input.value = '';
+              }
             }
           )
         });

@@ -1,5 +1,5 @@
 <template>
-  <button :class="[ $style.button, $style[icon] ]" :id="id" @click="$emit('click')">{{ label }}</button>
+  <button :class="[ $style.button, $style[icon], $style[red] ]" :id="id" @click="$emit('click')">{{ label }}</button>
 </template>
 
 <style lang="scss" module>
@@ -12,6 +12,7 @@
     padding: 5px 10px;
     font-size: 14px;
     line-height: 1.5;
+    min-height: 36px;
     touch-action: manipulation;
     text-align: center;
     cursor: pointer;
@@ -29,6 +30,16 @@
       border-color: #2499a3;
     }
   }
+
+  .red {
+    background-color: #ee6052;
+    border: 1px solid #ee6052;
+    &:hover {
+      background-color: #e12330;
+      border-color: #dc1e2b;
+    }
+  }
+
   .next:after {
     content: "\e079";
     font-family: "Icons";
@@ -54,7 +65,8 @@
     name: 'default-button',
     props: {
       label: { type: String, default: '' },
-      icon: { type: String, default: '' }
+      icon: { type: String, default: '' },
+      red: { type: Boolean, default: false }
     },
     data() {
       return {

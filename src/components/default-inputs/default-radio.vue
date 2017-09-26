@@ -38,11 +38,13 @@
     position: relative;
     display: inline-block;
     vertical-align: middle;
-    border: 2px solid #27a4b0;
+    border: 2px solid #c2cad8;
     height: 20px;
     width: 20px;
     border-radius: 50%;
   }
+  
+  
 
   ._checked {
     position: absolute;

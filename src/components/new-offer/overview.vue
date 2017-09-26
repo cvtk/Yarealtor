@@ -1,17 +1,19 @@
 <template>
   <div :class="$style.overview">
     <div :class="$style.overview__images">
-      <div :class="$style.wrapper">
-        <div v-if="value.images.current.length === 0"
+      <div :class="$style.images">
+        <div v-if="images.length === 0"
           :class="$style.images__item" 
           :style="{ 'background-image': 'url(/static/image-placeholder.png)' }">
         </div>
-        <div v-for="image in value.images.current" v-else
-            :class="$style.images__item" 
+        <div v-for="(image, index) in images" v-else
+            :class="$style.images__item"
+            @click="moveToFrontImage(index)"
             :style="{ 'background-image': 'url(' + image.url + ')' }">
+          <div :class="$style.images__remove" @click.stop="removeImage(index)" title="Удалить изображение"></div>
         </div>
       </div>
-      <app-upload-images v-model="value.images.current" :class="$style.images__upload" :multiple="true">Добавить изображение</app-upload-images>
+      <app-upload-images @imageLoaded="onImageLoaded" :class="$style.images__upload" :multiple="true">Добавить изображение</app-upload-images>
     </div>
 
     <div :class="$style.overview__content">
@@ -29,14 +31,16 @@
             </div>
           </div>
           <div :class="$style.group__row">
-            <div :class="$style.row__item">
+            <default-number v-model="value.price.current" :label="value.price.title" />
+            <!-- <div :class="$style.row__item">
               <app-input v-model="value.price.current" type="number" :placeholder="value.price.title" />
-            </div>
+            </div> -->
           </div>
           <div :class="$style.group__row">
-            <select :class="$style.type__select" v-model="value.object.current">
-              <option :class="$style.select__option" v-for="opt in value.object.items" :value="opt.value">{{ opt.title }}</option>
-            </select>
+            <default-select nameField="title" v-model="value.object.current" 
+              :label="value.object.title"
+              :options="value.object.items"
+            />
           </div>
         </div>
         <div :class="$style.content__group">
@@ -53,6 +57,13 @@
   .wrapper {
     position: relative;
     background-color: #fff;
+    overflow: auto;
+    &:after { @include clearfix }
+  }
+
+  .images {
+    position: relative;
+    background-color: #eef1f5;
     overflow: auto;
     &:after { @include clearfix }
   }
@@ -84,22 +95,59 @@
 
 
   .images__upload {
+    position: relative;
     margin-top: 20px;
   }
 
   .images__item {
     position: relative;
     width: 50%;
-    min-height: 100px;
+    min-height: 120px;
     float: left;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: #eef1f5;
+    border: 2.5px solid transparent;
+    margin-bottom: 5px; 
+    filter: grayscale(1);
+    opacity: .75;
+    cursor: pointer;
+    transition: filter .35s, opacity .35s;
+    &:hover { filter: grayscale(0); opacity: 1; }
+
     &:first-child {
       width: 100%;
+      filter: grayscale(0);
+      opacity: 1;
       min-height: 327px;
       border: 1px dashed #c2cad8;
+      margin-bottom: 15px;
     }
+  }
+
+  .images__remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    opacity: .75;
+    transition: opacity .35s;
+    text-align: center;
+    &:hover { opacity: 1 }
+    &:after {
+      content: "\e082";
+      font-family: "Icons";
+      display: block;
+      font-size: 24px;
+      width: 28px;
+      height: 28px;
+      color: #fff;
+      line-height: 28px;
+      transition: color .2s ease-in-out;
+    }
+    
   }
 
   .overview__content {
@@ -179,13 +227,43 @@
 </style>
 
 <script>
+  import mdl from '../../models/offer.js';
   import AppInput from '../modules/inputs.vue';
   import AppUploadImages from '../modules/upload-images.vue';
   import DefaultRadio from '../default-inputs/default-radio.vue';
+  import DefaultSelect from '../default-inputs/default-select.vue';
+  import DefaultNumber from '../default-inputs/default-number.vue';
 
   export default {
     name: 'overview',
-    components: { AppInput, AppUploadImages, DefaultRadio },
-    props: ['value']
+    components: { AppInput, AppUploadImages, DefaultRadio, DefaultSelect, DefaultNumber },
+    props: ['value'],
+    data() {
+      return {
+        images: this.value.images.current
+      }
+    },
+    methods: {
+      moveToFrontImage(index) {
+        if (!!index) {
+          console.log(index);
+          let first = this.images[0];
+          this.$set(this.images, 0, this.images[index]);
+          this.$set(this.images, index, first);
+          this.$set( this.value.images, 'current', this.images );
+        }
+      },
+
+      removeImage(index) {
+        let imgs = this.images.splice(index, 1);
+        this.$set( this.images, imgs );
+        this.$set( this.value.images, 'current', this.images );
+      },
+
+      onImageLoaded(image) {
+        let name = image.name, url = image.url;
+        this.value.images.current.push({ name, url });
+      }
+    }
   }
 </script>

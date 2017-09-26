@@ -106,14 +106,20 @@
     .images__item {
       position: relative;
       width: 50%;
-      min-height: 100px;
+      min-height: 120px;
       float: left;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      background-color: #eef1f5;
+      border: 2.5px solid transparent;
+      margin-bottom: 5px; 
+
       &:first-child {
         width: 100%;
         min-height: 327px;
+        border: 1px dashed #c2cad8;
+        margin-bottom: 15px;
       }
     }
 

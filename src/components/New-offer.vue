@@ -19,14 +19,23 @@
             <third-step :offer="offer" v-else-if="currentStep === 3"></third-step>
           </transition>  
         </div>
-
+        <div :class="$style.main__validate">
+          <transition name="backward" mode="out-in">
+            <div :class="$style.validate" v-if="validateMsg">
+              <div :class="$style.validate__text">{{ validateMsg }}</div>
+            </div>
+          </transition>
+        </div>
         <div :class="$style.main__actions">
           <div :class="$style.actions">
             <div :class="$style.actions__previos">
-              <default-button icon="previos" label="Назад" />
+              <default-button icon="previos" label="Назад" v-if="currentStep !== 1" @click="onPreviosStep" />
             </div>
             <div :class="$style.actions__next">
-              <default-button icon="next" label="Вперёд" />
+              <default-button icon="next" label="Вперёд" v-if="currentStep !== 3" @click="onNextStep" />
+            </div>
+            <div :class="$style.actions__save">
+              <default-button label="Сохранить" @click="onSave" v-if="currentStep === 3" />
             </div>
           </div>
         </div>
@@ -90,6 +99,8 @@
 
   .main__actions { position: relative }
 
+  .main__validate{ position: relative }
+
   .toolbar__title {
     font-size: 24px;
     color: #666;
@@ -108,6 +119,20 @@
   .main {
     position: relative;
     margin-right: 300px;
+    overflow: hidden;
+  }
+  
+  .validate {
+    position: relative;
+    padding: 12px 0;
+    margin-top: 20px;
+    border-right: 4px solid #ee6052;
+    text-align: right;
+    color: #ee6052;
+  }
+
+  .validate__text {
+    padding: 0 15px;
   }
 
   .main__steps_controls {
@@ -126,13 +151,14 @@
     margin-top: 20px;
   }
   
+  .actions__save { float: right }
   .actions__next { float: right }
   .actions__previos { float: left }
 
 </style>
 
 <script>
-  import model from '../models/offer.js';
+  import mdl from '../models/offer.js';
   import AppLoader from './app-loader.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppInput from './modules/inputs.vue';
@@ -144,6 +170,9 @@
   import ThirdStep from './new-offer/final.vue';
   import DefaultButton from './default-inputs/default-button.vue';
 
+  const overviewFields = ['type', 'price', 'object', 'description'];
+  const detailsFields = ['house_city', 'house_address', 'house_number', 'house_district', 'house_waymark', 'house_type', 'house_material', 'apartment_floor', 'house_floors', 'apartment_rooms', 'apartment_furnish', 'apartment_bathroom','apartments_full_area', 'apartments_living_area' ];
+
   export default {
     name: 'new_offer',
     props: ['auth'],
@@ -154,18 +183,43 @@
         dataReady: false,
         currentStep: 1,
         stepsDirection: 'forward',
+        validateMsg: '',
         offer: {}
       }
     },
     created() {
-      Object.assign( this.offer, model.init() );
+      Object.assign( this.offer, mdl.init() );
       this.dataReady = true;
     },
     methods: {
       currentField() {
-        let curr = model.check(this.offer);
-        console.log(curr)
+        let curr = mdl.check(this.offer);
         return curr;
+      },
+      currentFullfilled() {
+        switch(this.currentStep) {
+          case 1: return !overviewFields.includes( this.currentField() ); break;
+          case 2: return !detailsFields.includes( this.currentField() ); break;
+        }
+      },
+      onNextStep() {
+        if ( this.currentFullfilled() ) {
+          this.validateMsg= '';
+          this.stepsDirection = 'forward';
+          this.currentStep += 1;
+        } else {
+          let curr = this.offer[this.currentField()].title;
+          this.validateMsg = 'Поле \"' + curr + '\" обязательно к заполнению.'
+        }
+      },
+
+      onPreviosStep() {
+        this.stepsDirection = 'backward';
+        this.currentStep -= 1;
+      },
+
+      onSave() {
+
       }
     }
   }

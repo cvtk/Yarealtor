@@ -1,21 +1,21 @@
 <template>
   <div :class="$style.steps">
     <div :class="$style.steps__item">
-      <div :class="[ $style.item, local === 1 && $style._active ]" @click="onSelect(1)">
+      <div :class="[ $style.item, value === 1 && $style._active ]">
         <div :class="$style.item__number">1</div>
         <div :class="$style.item__title">Общие</div>
         <div :class="$style.item__content">Тип предложения и описание</div>
       </div>
     </div>
     <div :class="$style.steps__item">
-      <div :class="[ $style.item, $style._color_red, local === 2 && $style._active ]" @click="onSelect(2)">
+      <div :class="[ $style.item, $style._color_red, value === 2 && $style._active ]">
         <div :class="$style.item__number">2</div>
         <div :class="$style.item__title">Детали</div>
         <div :class="$style.item__content">Подробная информация</div>
       </div>
     </div>
     <div :class="$style.steps__item">
-      <div :class="[ $style.item, $style._color_green, local === 3 && $style._active ]" @click="onSelect(3)">
+      <div :class="[ $style.item, $style._color_green, value === 3 && $style._active ]">
         <div :class="$style.item__number">3</div>
         <div :class="$style.item__title">Финиш</div>
         <div :class="$style.item__content">Проверка данных</div>
@@ -50,7 +50,7 @@
     &:after { @include clearfix }
     position: relative;
     padding: 20px 15px;
-    cursor: pointer;
+    cursor: default;
     transition: background-color .2s ease-in-out;
     &._color_red > .item__number,
     &._color_red > .item__title,
@@ -58,7 +58,7 @@
     &._color_green > .item__number,
     &._color_green > .item__title,
     &._color_green > .item__content { color: #26C281; border-color: #26C281; }
-    &:hover, &._active { background-color: #364150; &:after { border-left-color: #364150 } }
+    &._active { background-color: #364150; &:after { border-left-color: #364150 } }
   }
 
   .item__number {
@@ -98,20 +98,14 @@
   export default {
     name: 'steps-controls',
     props: {
-      current: {
+      value: {
         type: Number,
         default: 1
       }
     },
     data() {
       return {
-        local: this.current
-      }
-    },
-    methods: {
-      onSelect(num) {
-        this.local = num;
-        this.$emit( 'input', this.local );
+        local: this.value
       }
     }
   }
