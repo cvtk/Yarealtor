@@ -2,6 +2,9 @@
   <div :class="$style.app" v-if="$route.name === 'auth'">
     <router-view></router-view>
   </div>
+  <div :class="$style.app" v-else-if="$route.name === 'registration'">
+    <router-view></router-view>
+  </div>
   <div :class="{ [$style.app]:true, [$style._toggled]: isToggled }" v-else>
     <header :class="$style.app__header">
       <div :class="$style.header__logo">
@@ -76,7 +79,7 @@
       </ul>
     </aside>
     <main :class="$style.app__content">
-      <router-view :auth="auth" v-if="auth"></router-view>
+      <router-view :auth="auth" :user="user" v-if="auth"></router-view>
       <app-loader v-else></app-loader>
     </main>
   </div>
@@ -476,7 +479,7 @@ export default {
   beforeCreate() {
     firebase.auth().onAuthStateChanged((auth)=> {
       this.auth = auth;
-      if (!auth && this.$route.name !== 'auth') {
+      if ( !auth && this.$route.name !== 'auth' && this.$route.name !== 'registration' ) {
         this.$router.push({ name: 'auth', query: { redirect: this.$route.path} })
       }
       else if (auth) {

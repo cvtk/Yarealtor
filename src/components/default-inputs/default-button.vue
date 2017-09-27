@@ -1,5 +1,5 @@
 <template>
-  <button :class="[ $style.button, $style[icon], $style[red] ]" :id="id" @click="$emit('click')">{{ label }}</button>
+  <button :class="[ $style.button, $style[icon], red && $style.red ]" :id="id" @click="$emit('click')">{{ label }}</button>
 </template>
 
 <style lang="scss" module>

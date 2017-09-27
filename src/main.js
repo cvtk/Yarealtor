@@ -18,6 +18,7 @@ import List from './components/List.vue';
 import Profile from './components/Profile.vue';
 import AppAuth from './components/App-auth.vue';
 import NotFound from './components/App-404.vue';
+import Registration from './components/user-auth/auth-registration.vue';
 
 
 Vue.use(VueRouter);
@@ -41,7 +42,8 @@ const router = new VueRouter({
     { path: '/my-company', component: List, name: 'my-company' },
     { path: '/users/:page', component: Profile, name: 'user' },
     { path: '/auth', component: AppAuth, name: 'auth' },
-    { path: '/404', component: NotFound, name: '404' }
+    { path: '/404', component: NotFound, name: '404' },
+    { path: '/registration', component: Registration, name: 'registration' }
   ]
 });
 

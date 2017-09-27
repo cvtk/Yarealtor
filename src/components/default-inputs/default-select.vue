@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.select">
-    <select :class="[ $style.select__input, local && $style._edited ]" :id="id" v-model="local" @change="onChange">
+    <select :class="[ $style.select__input, local && $style._edited, !validate && $style._error ]" :id="id" v-model="local" @change="onChange">
       <option :class="$style.select__option" v-for="item in options" :value="item[valueField]" >{{ item[nameField] }}</option>
     </select>
     <label :class="$style.select__label">{{ label }}</label>
@@ -49,8 +49,10 @@
       background: #36c6d3;
     }
   }
+  .select__input._error ~ .select__label:after,
+  .select__input._error:focus:not([readonly]) ~ .select__label:after { background: #f36a5a }
 
-  .select__input:focus ~ .select__msg { color: #36c6d3; opacity: 1 }
+  .select__input._error:focus:not([readonly]) ~ .select__msg { color: #f36a5a; opacity: 1 }
 
   .select__label {
     display: inline-block;
@@ -94,7 +96,8 @@
       msg: { type: String, default: '' },
       valueField: { type: String, default: 'value' },
       nameField: { type: String, default: 'name' },
-      options: { default: '' }
+      options: { default: '' },
+      validate: { type: Boolean, default: true }
     },
     data() {
       return {

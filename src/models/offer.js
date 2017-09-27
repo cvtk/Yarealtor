@@ -108,6 +108,86 @@ let model = {
   apartment_balcony: { type: Boolean, default: defs.balcony }
 }
 
+let fields = {};
+
+fields.offer = {
+  type: { title: 'Тип предложения', 
+    options: [
+      { value: 1, title: 'Продажа' },
+      { value: 2, title: 'Аренда' }
+    ]
+  },
+  object: { title: 'Тип объекта',
+    options: [
+      { value: 1, title: 'Квартира' },
+      { value: 2, title: 'Комната' },
+      { value: 3, title: 'Коммерческая недвижимость' },
+      { value: 4, title: 'Дом или дача' },
+      { value: 5, title: 'Гараж или хозблок' },
+      { value: 6, title: 'Земельный участок' }
+    ]
+  }
+};
+
+fields.general = {
+  price: { title: 'Цена', options: [] },
+  images: { title: 'Изображения', options: [] },
+  description: { title: 'Дополнительное описание', options: [] },
+};
+
+fields.address = {
+  locality: { title: 'Населенный пункт', options: [] },
+  localityType: { title: 'Тип населенного пункта', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', options: [] },
+  street: { title: 'Улица', options: [] },
+  streetType: { title: 'Тип улицы', options: [] },
+  streetId: { title: 'Идентификатор улицы', options: [] },
+  building: { title: 'Строение', options: [] },
+  buildingId: { title: 'Идентификатор строение', options: [] },
+  district : { title: 'Район',
+    options: [
+      { value: 1, title: 'Дзержинский' },
+      { value: 2, title: 'Заволжский' },
+      { value: 3, title: 'Кировский' },
+      { value: 4, title: 'Красноперекопский' },
+      { value: 5, title: 'Ленинский' },
+      { value: 6, title: 'Ярославский' },
+      { value: 7, title: 'Ярославская область' },
+    ]
+  },
+  waymark: { title: 'Ориентир', options: [] },
+  direction: { title: 'Направление', 
+    options: [
+      { value: 1, title: 'Ярославль' },
+      { value: 2, title: 'Костромское' },
+      { value: 3, title: 'Бурмакинское' },
+      { value: 4, title: 'Ивановское' },
+      { value: 5, title: 'Московское' },
+      { value: 6, title: 'Курбское' },
+      { value: 7, title: 'Угличское' },
+      { value: 8, title: 'Рыбинское' },
+      { value: 9, title: 'Тутаевское' },
+      { value: 10, title: 'Даниловское' },
+      { value: 11, title: 'Любимское' },
+      { value: 12, title: 'Красный Профинтерн' },
+      { value: 13, title: 'Диево-городище' },
+      { value: 14, title: 'Прусовское' },
+      { value: 15, title: 'Красный Профинтерн' }
+    ]
+  },
+  distance: { title: 'Расстояние до Ярославля', options: [] },
+  cadastral_number : { title: 'Кадастровый номер', options: [] },
+  disposition: { title: 'Расположение', 
+    options: [
+      { value: 1, title: 'в ГСК' },
+      { value: 2, title: 'в жилом доме' },
+      { value: 3, title: 'отдельно стоящее' },
+      { value: 4, title: 'парковочное место' }
+    ]
+  }
+}
+
+
 function is(type, value) {
   if ( typeof type === 'undefined' || typeof value === 'undefined' ) return false;
 
@@ -131,6 +211,16 @@ export default {
     }
     return mdl;
   },
+
+  getModel(modelsSet) {
+    return modelsSet.reduce( (result, field) => {
+      if ( typeof fields[field] !== 'undefined' ) {
+        Object.assign(result, fields[field]);
+        return result
+      }
+    }, {})
+  },
+
   getOptionTitle(key, item) {
     if ( typeof model[key] === 'undefined'
         || typeof item === 'undefined'

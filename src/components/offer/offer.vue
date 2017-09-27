@@ -1,14 +1,23 @@
 <template>
   <div :class="$style.offer">
-    <div :class="$style.row">
+    <div :class="[$style.row, $style._shadow ]">
       <div :class="$style.offer__details">
         <offer-details :offer="offer" />
       </div>
-      <div :class="$style.offer__images">
+      <div :class="$style.offer__images" v-if="!showMap">
+        <offer-images :images="offer.images.current" />
+      </div>
+      <div :class="$style.offer__map" v-if="showMap">
         <offer-map :description="offer.house_waymark.current"
           :address="[ offer.house_city.current, offer.house_address.current, offer.house_number.current ]"
         />
       </div>
+    </div>
+    <div :class="$style.row">
+      <div :class="$style.offer__waymark">{{ offer.house_waymark.current }}</div>
+    </div>
+    <div :class="$style.row">
+      <div :class="$style.offer__description">{{ offer.description.current }}</div>
     </div>
   </div>
 </template>
@@ -21,12 +30,13 @@
     position: relative;
     height: 100%;
     margin: 20px 2px;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   }
 
   .row {
     position: relative;
+    margin-bottom: 20px;
     &:after { @include clearfix }
+    &._shadow { box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12) }
   }
 
   .offer__details {
@@ -36,7 +46,7 @@
     background-color: #fff;
   }
 
-  .offer__images {
+  .offer__map, .offer__images {
     margin-left: 280px;
     height: 90vh;
   }
@@ -46,6 +56,7 @@
 <script>
   import AppLoader from '../app-loader.vue';
   import OfferDetails from './offer-details.vue';
+  import OfferImages from './offer-images.vue';
   import OfferMap from './offer-map.vue';
   import Icon from 'vue-awesome/components/Icon.vue';
   import 'vue-awesome/icons/map';
@@ -57,11 +68,12 @@
 
   export default {
     name: 'offer',
-    props: ['auth', 'offer'],
-    components: { AppLoader, OfferDetails, Icon, OfferMap },
+    props: ['auth', 'user', 'offer'],
+    components: { AppLoader, OfferDetails, Icon, OfferImages, OfferMap },
     data() {
       return {
         dataReady: false,
+        showMap: false
       }
     },
     created() {

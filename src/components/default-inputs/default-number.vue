@@ -1,6 +1,8 @@
 <template>
   <div :class="$style.number">
-    <input type="text" :class="[ $style.number__input, local && $style._edited ]" :id="id" v-model="local" @keydown="onKeyDown" @change="onChange">
+    <input type="text" @keydown="onKeyDown" @input="onInput"
+      :class="[ $style.number__input, local !== '' && $style._edited, !validate && $style._error ]" :id="id" v-model="local"
+    >
     <label :class="$style.number__label">{{ label }}</label>
     <span :class="$style.number__msg">{{ msg }}</span>
   </div>
@@ -43,7 +45,10 @@
     }
   }
 
-  .number__input:focus ~ .number__msg { color: #36c6d3; opacity: 1 }
+  .number__input._error ~ .number__label:after,
+  .number__input._error:focus:not([readonly]) ~ .number__label:after { background: #f36a5a }
+
+  .number__input._error:focus:not([readonly]) ~ .number__msg { color: #f36a5a; opacity: 1 }
 
   .number__label {
     display: inline-block;
@@ -76,6 +81,7 @@
     opacity: 0;
     font-size: 13px;
   }
+
 </style>
 
 <script>
@@ -85,6 +91,7 @@
       value: { default: 'default' },
       label: { type: String, default: '' },
       msg: { type: String, default: '' },
+      validate: { type: Boolean, default: true }
     },
     data() {
       return {
@@ -93,13 +100,13 @@
       }
     },
     methods: {
-      onChange() {
+      onInput() {
         this.$emit('input', this.local);
       },
       onKeyDown(e) {
-        if ( ( [46, 8, 9, 27, 13, 110, 190].includes(e.keyCode) ) ||
+        if ( ( [46, 8, 9, 27, 13, 110].includes(e.keyCode) ) ||
             (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) || 
-            (e.keyCode >= 35 && e.keyCode <= 40) ) {
+            (e.keyCode >= 35 && e.keyCode <= 40) || e.key === '.') {
           return true;
         }
 

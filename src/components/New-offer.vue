@@ -13,9 +13,9 @@
         </div>
         <div :class="$style.main__current_step">
           <transition :name="stepsDirection" mode="out-in">
-            <first-step v-model="offer" v-if="currentStep === 1"></first-step>
+            <first-step v-if="currentStep === 1" @dataEntered="onDataEntered"></first-step>
             <second-step v-model="offer" v-else-if="currentStep === 2"></second-step>
-            <offer-preview :offer="offer" v-else-if="currentStep === 3" />
+            <offer-preview :offer="offer" :user="user" v-else-if="currentStep === 3" />
           </transition>  
         </div>
         <div :class="$style.main__validate">
@@ -24,19 +24,6 @@
               <div :class="$style.validate__text">{{ validateMsg }}</div>
             </div>
           </transition>
-        </div>
-        <div :class="$style.main__actions">
-          <div :class="$style.actions">
-            <div :class="$style.actions__previos">
-              <default-button icon="previos" label="Назад" v-if="currentStep !== 1" @click="onPreviosStep" />
-            </div>
-            <div :class="$style.actions__next">
-              <default-button icon="next" label="Вперёд" v-if="currentStep !== 3" @click="onNextStep" />
-            </div>
-            <div :class="$style.actions__save">
-              <default-button label="Сохранить" @click="onSave" v-if="currentStep === 3" />
-            </div>
-          </div>
         </div>
       </div> 
     <app-ad-sidebar :class="$style.create__ad"></app-ad-sidebar>
@@ -160,7 +147,7 @@
 
   export default {
     name: 'new_offer',
-    props: ['auth'],
+    props: ['auth', 'user'],
     components: { AppLoader, AppAdSidebar, AppInput, FirstStep, SecondStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
     filters: AppFilters,
     data() {
@@ -173,10 +160,14 @@
       }
     },
     created() {
-      Object.assign( this.offer, mdl.init() );
       this.dataReady = true;
     },
     methods: {
+      onDataEntered(data) {
+        for ( let field in data ) {
+          this.$set(this.offer, field, data[field]);
+        }
+      },
       currentField() {
         let curr = mdl.check(this.offer);
         return curr;
