@@ -1,16 +1,15 @@
 <template>
-  <div :class="$style.select">
-    <select :class="[ $style.select__input, local && $style._edited, !validate && $style._error ]" :id="id" v-model="local" @change="onChange">
-      <option :class="$style.select__option" v-for="item in options" :value="item[valueField]" >{{ item[nameField] }}</option>
-    </select>
-    <label :class="$style.select__label">{{ label }}</label>
-    <span :class="$style.select__msg">{{ msg }}</span>
+  <div :class="$style.text">
+    <input type="password" :class="[ $style.text__input, local && $style._edited, !validate && $style._error ]"
+      :id="id" v-model="local" @input="onChange">
+    <label :class="$style.text__label">{{ label }}</label>
+    <span :class="$style.text__msg">{{ msg }}</span>
   </div>
   
 </template>
 
 <style lang="scss" module>
-  .select {
+  .text {
     display: inline-block;
     position: relative;
     width: 100%;
@@ -18,7 +17,7 @@
     padding-top: 20px;
   }
 
-  .select__input {
+  .text__input {
     width: 100%;
     height: 34px;
     padding: 6px 12px;
@@ -30,15 +29,10 @@
     padding-right: 0;
     font-size: 14px;
     outline: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    text-indent: 1px;
-    text-overflow: '';
-    cursor: pointer;
   }
 
-  .select__input._edited ~ .select__label,
-  .select__input:focus:not([readonly]) ~ .select__label {
+  .text__input._edited ~ .text__label,
+  .text__input:focus:not([readonly]) ~ .text__label {
     top: 0;
     font-size: 13px;
     color: #888;
@@ -49,12 +43,13 @@
       background: #36c6d3;
     }
   }
-  .select__input._error ~ .select__label:after,
-  .select__input._error:focus:not([readonly]) ~ .select__label:after { background: #f36a5a }
 
-  .select__input._error:focus:not([readonly]) ~ .select__msg { color: #f36a5a; opacity: 1 }
+  .text__input._error ~ .text__label:after,
+  .text__input._error:focus:not([readonly]) ~ .text__label:after { background: #f36a5a }
 
-  .select__label {
+  .text__input._error:focus:not([readonly]) ~ .text__msg { color: #f36a5a; opacity: 1 }
+
+  .text__label {
     display: inline-block;
     position: absolute;
     font-size: 16px;
@@ -78,7 +73,7 @@
     }
   }
 
-  .select__msg {
+  .text__msg {
     display: block;
     position: absolute;
     margin: 2px 0 0;
@@ -89,14 +84,11 @@
 
 <script>
   export default {
-    name: 'default-select',
+    name: 'default-text',
     props: {
       value: { default: 'default' },
       label: { type: String, default: '' },
       msg: { type: String, default: '' },
-      valueField: { type: String, default: 'value' },
-      nameField: { type: String, default: 'name' },
-      options: { default: '' },
       validate: { type: Boolean, default: true }
     },
     data() {
@@ -107,7 +99,7 @@
     },
     methods: {
       onChange() {
-        this.$emit('input', event.target.value );
+        this.$emit('input', this.local);
       }
     }
   }

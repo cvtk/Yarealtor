@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.number">
-    <input type="text" @keydown="onKeyDown" @input="onInput"
+    <input type="text" @keydown="onKeyDown" @input="onInput" v-mask="mask"
       :class="[ $style.number__input, local !== '' && $style._edited, !validate && $style._error ]" :id="id" v-model="local"
     >
     <label :class="$style.number__label">{{ label }}</label>
@@ -83,15 +83,21 @@
   }
 
 </style>
-
+  
 <script>
+  import Vue from 'vue'
+
+  import VueMask from 'v-mask'
+  Vue.use(VueMask);
+  
   export default {
     name: 'default-number',
     props: {
       value: { default: 'default' },
       label: { type: String, default: '' },
       msg: { type: String, default: '' },
-      validate: { type: Boolean, default: true }
+      validate: { type: Boolean, default: true },
+      mask: { type: String, default: '' }
     },
     data() {
       return {
