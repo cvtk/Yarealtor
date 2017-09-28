@@ -1,8 +1,5 @@
 <template>
-  <div :class="$style.app" v-if="$route.name === 'auth'">
-    <router-view></router-view>
-  </div>
-  <div :class="$style.app" v-else-if="$route.name === 'registration'">
+  <div :class="$style.app" v-if="$route.name === 'login' || $route.name === 'registration' || $route.name === 'recovery'">
     <router-view></router-view>
   </div>
   <div :class="{ [$style.app]:true, [$style._toggled]: isToggled }" v-else>
@@ -79,7 +76,7 @@
       </ul>
     </aside>
     <main :class="$style.app__content">
-      <router-view :auth="auth" :user="user" v-if="auth"></router-view>
+      <router-view :auth="auth" :user="user" v-if="!!auth && !!user" :key="$route.fullPath"></router-view>
       <app-loader v-else></app-loader>
     </main>
   </div>
@@ -479,8 +476,8 @@ export default {
   beforeCreate() {
     firebase.auth().onAuthStateChanged((auth)=> {
       this.auth = auth;
-      if ( !auth && this.$route.name !== 'auth' && this.$route.name !== 'registration' ) {
-        this.$router.push({ name: 'auth', query: { redirect: this.$route.path} })
+      if ( !auth && this.$route.name !== 'login' && this.$route.name !== 'registration' ) {
+        this.$router.push({ name: 'login', query: { redirect: this.$route.path} })
       }
       else if (auth) {
         usersRef.child(auth.uid).on('value', user => {
@@ -490,7 +487,6 @@ export default {
             this.dataReady = true;
           })
         })
-        //this.$bindAsObject('user', usersRef.child(auth.uid), null, () => this.dataReady = true );
       }
     });
   },

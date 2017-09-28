@@ -1,166 +1,127 @@
 <template>
-  <div :class="$style.content" v-if="dataReady">
-    <div :class="$style.content__bar">
-      <ul :class="$style.bar__breadcrumbs">
-        <router-link :to="{ name: 'companies' }" tag="li" :class="$style.breadcrumbs__item">
-          Компании
-        </router-link><span :class="$style.breadcrumbs__icon"></span>
-        <router-link :to="{ name: 'company', params: { page: user.company.page } }" tag="li" :class="$style.breadcrumbs__item">
-          {{ user.company.name }}
-        </router-link><span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">{{ user.name }}</li>
-      </ul>
+  <div :class="$style.profile" v-if="dataReady">
+
+    <div :class="$style.profile__bar">
+      <breadcrumbs :items="[
+        { text: 'Главная', to: 'root'},
+        { text: 'Компании', to: 'companies'},
+        { text: profile.company.name, to: 'company', params: { page: profile.company.page } },
+        { text: [profile.name, profile.surname].join(' '), to: ''}
+      ]"/> 
     </div>
-    <h1 :class="$style.content__title">{{ user.name }}<span :class="$style._small">Личная страница</span></h1>
-    <div :class="$style.content__profile">
-      <aside :class="$style.profile__sidebar">
-        <img :class="$style.sidebar__img" :src="user.photo">
-        <div :class="$style.sidebar__user_title">
-          <div :class="$style.user_title__name">{{ user.name }}<app-online-status :online="true"></app-online-status></div>
-          <router-link :to="{ name: 'company', params: { page: user.company.page } }" :class="$style.user_title__company">
-            {{ user.company.name }}
-          </router-link>
-        </div>
-        <!-- TODO: rewrite class -->
-        <ul :class="$style.sidebar__user_menu">
-          <li :class="{ [$style.user_menu__item]:true, [$style._active]:currentTab === 'profile'}" @click="currentTab = 'profile'">Информация</li>
-          <li :class="[$style.user_menu__item, $style._settings, currentTab === 'settings' && $style._active]" v-if="user.key === auth.uid" @click="currentTab = 'settings'">Настройки</li>
-        </ul>
-      </aside>
-      <div :class="$style.profile__data" v-if="currentTab === 'profile'">
-        <div :class="$style.data__bar">
-          <h2 :class="$style.bar__title">Профиль</h2>
-        </div>
-        <div :class="$style.data_wrapper">
-            <div :class="$style.data__about">{{ user.about }}</div>
-            <div :class="$style.data__position">{{ user.position }}</div>
-            <div :class="$style.data__contacts">
-              <span :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span> {{ user.phone }}</span>
-              <span :class="$style.contacts__item"><span :class="$style.item__icon_mobile"></span> {{ user.mobile }}</span>
-              <span :class="$style.contacts__item"><span :class="$style.item__icon_email"></span> {{ user.email }}</span>
+
+    <div :class="$style.profile__toolbar">
+      <toolbar :title="[profile.name, profile.surname].join(' ')" sub="личная страница"></toolbar>
+    </div>
+
+    <div :class="$style.profile__content">
+      <div :class="$style.content">
+        <div :class="$style.content__sidebar">
+          <aside :class="$style.sidebar">
+            <img :class="$style.sidebar__img" :src="profile.photo">
+            <div :class="$style.sidebar__user_title">
+              <div :class="$style.user_title__name">{{ profile.name }} {{ profile.surname }}<app-online-status :online="true"></app-online-status></div>
+              <router-link :to="{ name: 'company', params: { page: profile.company.page } }" :class="$style.user_title__company">
+                {{ profile.company.name }}
+              </router-link>
             </div>
-            <div :class="$style.data__white_space" v-if="user.key === auth.uid"></div>
-            <div :class="$style.main__new_post" v-if="user.key === auth.uid">
+            <ul :class="$style.sidebar__user_menu">
+              <li :class="[ $style.user_menu__item, currentTab === 'profile' && $style._active ]" @click="currentTab = 'profile'">Информация</li>
+              <li :class="[$style.user_menu__item, $style._settings, currentTab === 'settings' && $style._active]" v-if="isAdmin || isUser" @click="currentTab = 'settings'">Настройки</li>
+            </ul>
+          </aside>
+        </div>
+        <div :class="$style.content__main">
+          <div :class="$style.main" v-if="currentTab === 'profile'">
+            <div :class="$style.main__overview">
+              <profile-overview :profile="local" />
+            </div>
+            <div :class="$style.main__post" v-if="isUser">
               <timeline-new-post :auth="auth" />
             </div>
-            <div :class="$style.data__white_space"></div>
             <div :class="$style.main__timeline">
               <timeline-post v-for="post in postsByTimestamp" 
                 :key="post.key" 
                 :post="post" 
-                :auth="auth" />
+                :auth="auth"
+              />
             </div>
-        </div>
-      </div>
-      <div :class="$style.profile__data" v-if="currentTab === 'settings'">
-        <div :class="$style.data__bar">
-          <h2 :class="$style.bar__title">Настройки</h2>
-          <ul :class="$style.bar__nav_tabs">
-            <li :class="{ [$style.nav_tabs__item]:true, [$style._active]:settingsTab === 'main'}" @click="settingsTab = 'main'">Общая информация</li>
-            <li :class="{ [$style.nav_tabs__item]:true, [$style._active]:settingsTab === 'bio'}" @click="settingsTab = 'bio'">Личные данные</li>
-            <li :class="{ [$style.nav_tabs__item]:true, [$style._active]:settingsTab === 'change-password'}" @click="settingsTab = 'change-password'">Смена пароля</li>
-          </ul>
-        </div>
-        <div :class="$style.data__content" v-show="settingsTab === 'main'">
-          <app-input type="name" label="Ваше имя" v-model="changedUser.name" />
-          <app-input type="name" label="Должность" v-model="changedUser.position" />
-          <app-input type="page" label="Страница" v-model="changedUser.page" />
-          <app-input type="tel" label="Рабочий телефон" v-model="changedUser.phone" />
-          <app-input type="tel" label="Мобильный телефон" v-model="changedUser.mobile" />
-        </div>
-        <div :class="$style.data__content" v-show="settingsTab === 'bio'">
-          <div :class="$style.content__bio">
-            <div :class="$style.bio__avatar">
-              <app-upload-image v-model="changedUser.photo" type="hidden" :multiple="false" :class="$style.avatar__upload">
-                <img :src="changedUser.photo" alt="Аватар" :class="$style.avatar__image">
-                Сменить фото
-              </app-upload-image>
-            </div>
-            <div :class="$style.bio__about">
-              <app-input v-model="changedUser.birthday" :class="$style.about__birthday" label="День рождения" />
-              <textarea v-model="changedUser.about" rows="4" :class="$style.about__input" placeholder="Немного о себе"></textarea>
+          </div>
+          <div :class="$style.main" v-if="currentTab === 'settings'">
+            <div :class="$style.main__settings">
+              <profile-settings :profile="local" :user="user" />
+              <div :class="$style.settings__save">
+                <default-button label="Сохранить" @click="saveUser" />
+              </div>
             </div>
           </div>
         </div>
-        <app-input :class="$style.data__save" type="button" @click="saveUser">Сохранить</app-input>
+        <app-ad-sidebar></app-ad-sidebar>
       </div>
-      <app-ad-sidebar></app-ad-sidebar>
     </div>
   </div>
   <app-loader v-else></app-loader>
 </template>
 
 <style lang="scss" module>
+
   @import "../assets/style.scss";
-  .content {
+
+  .profile {
     position: relative;
     padding: 20px; 
   }
 
-  .content__bar {
+  .profile__bar {
     border-bottom: 1px solid #e7ecf1;
     background-color: #fff;
     position: relative;
     padding: 0 20px;
     margin: -20px -20px 0;
-    > .bar__breadcrumbs {
-      padding: 11px 0;
-      display: inline-block;
-      float: left;
-      margin: 0;
-      list-style: none;
-      > .breadcrumbs__item {
-        display: inline-block;
-        color: #888;
-        cursor: pointer;
-        line-height: 14px;
-        &:last-child {
-          cursor: default;
-        }
-      }
-      > .breadcrumbs__icon {
-        color: #888;
-        cursor: default;
-        line-height: 14px;
-        &:after {
-          content: "\e606";
-          display: inline-block;
-          font-family: "Icons";
-          cursor: default;
-          font-size: 7px;
-          margin-left: 5px;
-          vertical-align: middle;
-        }
-      }
-    }
-    &:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
-    @media (max-width: $bp-small) {
-      > .bar__breadcrumbs {
-        > .breadcrumbs__item:first-child { display: none; }
-      }
-    }
   }
 
-  .content__title {
-    margin: 25px 0;
-    font-size: 24px;
-    color: #666;
-    padding: 0;
-    letter-spacing: -1px;
-    font-weight: 300;
-    > ._small { font-size: 14px; letter-spacing: 0; text-transform: lowercase; margin-left: 5px; }
+  .profile__toolbar { margin: 25px 0 }
+
+  .profile__content { position: relative }
+
+  .content { position: relative }
+
+  .content__sidebar { position: relative }
+
+  .content__main {
+    margin-left: 300px;
+    margin-right: 300px;
+    overflow: hidden;
+    &:after { @include clearfix }
   }
 
-  .content__profile {
+  .main { position: relative }
+
+  .main__overview {
     position: relative;
-    &:after { content: ""; display: table; clear: both; }
+    padding: 10px 20px 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
   }
 
-  .profile__sidebar {
+  .main__post { position: relative }
+
+  .main__timeline {
+    position: relative;
+    padding: 0 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .main__settings {
+    position: relative;
+    padding: 10px 20px 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .sidebar {
     position: absolute;
     top: 0;
     left: 0;
@@ -251,197 +212,10 @@
     > .ad__content {}
   }
 
-  .profile__data {
-    padding: 12px 20px 15px;
-    margin-left: 300px;
-    margin-right: 300px;
-    margin-bottom: 25px;
-    overflow: hidden;
-    background-color: #fff;
-    &:after { @include clearfix }
-
-    .data__white_space {
-      margin: 0 -20px;
-      height: 20px;
-      background-color: #eef1f5;
-    }
-    .data__about {
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-    .data__position {
-      color: #169ef4;
-      margin-bottom: 10px;
-    }
-    .data__contacts {
-      position: relative;
-      margin-bottom: 20px;
-    }
-    .contacts__item {
-      display: inline-block;
-      color: #6b6b6b;
-      margin-right: 10px;
-    }
-
-    .item__icon_phone, .item__icon_mobile, .item__icon_email {
-      display: inline-block;
-      font-size: 14px;
-      &:before {
-        content: "\e048";
-        font-family: "Icons";
-        color: #b5c1c9;
-      }
-    }
-
-    .item__icon_mobile:before { content: "\e010" }
-    .item__icon_email:before { content: "\e01e" }
-
-    .main__new_post {
-      margin-bottom: 15px;
-    }
-    .main__timeline {
-      position: relative;
-      background-color: #fff;
-      overflow: hidden;
-      &:before {
-        content: "";
-        position: absolute;
-        display: block;
-        width: 4px;
-        background: #f5f6fa;
-        top: 0;
-        bottom: 0;
-        margin-left: 38px;
-      }
-    }
-
-    > .data__bar {
-      min-height: 48px;
-      border-bottom: 1px solid #eee;
-      margin-bottom: 10px;
-      background-color: #fff;
-      &:after { content: ""; display: table; clear: both; }
-      > .bar__title {
-        color: #578ebe;
-        padding: 12px 0;
-        float: left;
-        display: inline-block;
-        font-size: 15px;
-        line-height: 18px;
-        margin: 0;
-        text-transform: uppercase;
-        letter-spacing: .25px;
-      }
-      > .bar__nav_tabs {
-        margin: 0;
-        float: right;
-        display: inline-block;
-        padding: 0;
-        list-style: none;
-        &:after {
-          content: "";
-          display: table;
-          clear: both;
-        }
-        > .nav_tabs__item {
-          padding: 12px 13px 13px;
-          font-size: 13px;
-
-          border-bottom: 4px solid transparent;
-          float: left;
-          cursor: pointer;
-          transition: border-color .1s ease-in-out;
-          &._active, &:hover { border-color: #36c6d3; }
-        }
-      }
-    }
-    > .data__content {
-      padding-top: 8px;
-      > .content__input_group {
-        position: relative;
-        margin-bottom: 15px;
-        > .input_group__loader {
-          position: absolute;
-          width: 50px;
-          height: 34px;
-          right: 0;
-          img { width: 50% }
-        }
-        > .input_group__label {
-          margin-top: 1px;
-          margin-bottom: 5px;
-          display: inline-block;
-          cursor: default;
-        }
-        > .input_group__text {
-          outline: 0;
-          width: 100%;
-          height: 34px;
-          padding: 6px 12px;
-          color: #555;
-          background-color: #fff;
-          border: 1px solid #c2cad8;
-          &::-webkit-input-placeholder { color: #93a3b5 }
-          &::-moz-placeholder { color: #93a3b5 }
-          &:-ms-input-placeholder { color: #93a3b5 }
-          &:-moz-placeholder { color: #93a3b5 }
-          transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
-          &:focus {
-            border-color: #93a1bb;
-            box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(147,161,187,.6);
-          }
-        }
-      }
-    }
-
-    .content__bio {
-      position: relative;
-      overflow: hidden;
-      &:after { @include clearfix }
-    }
-
-    .bio__avatar {
-      float: left;
-      width: 150px;
-    }
-    .avatar__image {
-      max-width: 100%;
-      padding: 10px;
-      padding-top: 0;
-    }
-    
-    .avatar__upload {
-      height: auto;
-      text-align: center;
-    }
-    .bio__about {
-      margin-left: 170px;
-    }
-
-    .about__input {
-      width: 100%;
-      border: none;
-      outline: none;
-      padding: 12px 10px;
-      color: #364150;
-      border: 1px solid #c2cad8;
-      &::-webkit-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      &::-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      &:-ms-input-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      &:-moz-placeholder { color: #93a3b5; font-family: "Roboto", sans-serif; font-weight: 300; font-style: italic; }
-      resize: vertical;
-      transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out;
-      &:focus {
-        border-color: #93a1bb;
-        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(147,161,187,.6);
-      }
-    }
-    .data__save {
-      font-size: 14px;
-      margin-top: 20px;
-      float: right;
-    }
+  .settings__save {
+    position: relative;
+    padding-top: 10px;
+    text-align: right;
   }
     
 </style>
@@ -456,6 +230,13 @@
   import AppUploadImage from './modules/upload-images.vue';
   import TimelinePost from './timeline/timeline-post.vue';
   import TimelineNewPost from './timeline/timeline-new-post.vue';
+  import DefaultText from './default-inputs/default-text.vue';
+  import DefaultNumber from './default-inputs/default-number.vue';
+  import DefaultButton from './default-inputs/default-button.vue';
+  import ProfileSettings from './profile/profile-settings.vue';
+  import ProfileOverview from './profile/profile-overview.vue';
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
+  import Toolbar from './page-blocks/toolbar.vue';
 
   const usersRef = firebase.database().ref('users');
   const companiesRef = firebase.database().ref('companies');
@@ -464,21 +245,21 @@
 
   export default {
     name: 'profile',
-    props: ['auth'],
-    components: { AppLoader, AppInput, AppOnlineStatus, AppAdSidebar, AppUploadImage, TimelinePost, TimelineNewPost },
+    props: ['auth', 'user'],
+    components: { AppLoader, AppOnlineStatus, AppAdSidebar, AppUploadImage, TimelinePost, TimelineNewPost, DefaultText, DefaultNumber, DefaultButton, ProfileSettings, ProfileOverview, Breadcrumbs, Toolbar },
     data() {
-      return { dataReady: false, currentTab: 'profile', settingsTab: 'main', user: '', changedUser: '', posts: {}  }
+      return { dataReady: false, currentTab: 'profile', profile: '', local: '', posts: {} }
     },
-    created() {
+    mounted() {
       usersRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (data) => {
         if ( data.exists() ) {
-          data.forEach( (user) => {
-            this.user = user.val();
-            this.changedUser = user.val();
-            companiesRef.child(this.user.company).on('value', company => {
-              this.$set(this.user, 'company', company.val());
+          data.forEach( (profile) => {
+            this.profile = profile.val();
+            this.local = profile.val();
+            companiesRef.child(this.profile.company).on('value', company => {
+              this.$set(this.profile, 'company', company.val());
             })
-            postsRef.orderByChild('author').equalTo(this.user.key).on('value', posts => {
+            postsRef.orderByChild('author').equalTo(this.profile.key).on('value', posts => {
               posts.forEach( post => {
                 this.$set( this.posts, post.key, post.val() );
               });
@@ -496,23 +277,17 @@
       postsByTimestamp: function() {
         let arr = Object.keys(this.posts).map(key => this.posts[key] );
         return arr.sort((x, y) => y.created - x.created);
-      }
+      },
+      isAdmin() { return ( this.user.role <= 5 && this.user.company === this.profile.company ) || this.user.role === 1 },
+      isUser() { return this.user.key === this.profile.key }
     },
     methods: {
       saveUser() {
-        usersRef.child(this.auth.uid).update(this.changedUser);
-      },
-      removePost(key) {
-        postsRef.child(key).remove();
-      },
-      leaveComment(comment) {
-        comment.created = Firebase.database.ServerValue.TIMESTAMP;
-        comment.key = commentsRef.push().key;
-
-        commentsRef.child(comment.key).update(comment);
+        usersRef.child(this.profile.key).update(this.local)
+          then( ()=> { this.$router.push({ name: 'user', params: { page: local.page } }) })
       },
       updProfileField(el) {
-        usersRef.child(this.user['.key']).update({[el.name]: el.value}, () => {
+        usersRef.child(this.profile['.key']).update({[el.name]: el.value}, () => {
           el.value = '';
           el.blur();
         });

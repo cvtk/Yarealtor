@@ -56,7 +56,7 @@
             </div>
             
             <div :class="$style.form__login">
-              <router-link :to="{ name: 'auth' }" :class="$style.login">Уже есть учетная запись?</router-link>
+              <router-link :to="{ name: 'login' }" :class="$style.login">Уже есть учетная запись?</router-link>
             </div>
           </div>
         </div>
@@ -69,7 +69,7 @@
           <div :class="$style.modal">
             <div :class="$style.modal__row">
               <div :class="$style.row__icon">
-                <img :class="$style.icon" src="./registration-done.svg" alt="Готово" />
+                <img :class="$style.icon" src="./done.svg" alt="Готово" />
               </div>
               <div :class="$style.row__message">Отлично! Регистрация прошла успешно. В ближайшее время администратор рассмотрит Вашу заявку, а пока Вы можете заполнить свой профиль.</div>
             </div>
@@ -137,6 +137,12 @@
     font-size: 28px;
   }
   
+  .form__inputs { /* */ }
+
+  .inputs { /* */ }
+  
+  .inputs__item { /* */ }
+
   .inputs__row {
     margin: 0 -10px;
     &:after { @include clearfix }
@@ -221,6 +227,7 @@
 
 <script>
   import firebase from '../../firebase.js';
+  import Firebase from 'firebase';
   import DefaultText from '../default-inputs/default-text.vue';
   import DefaultNumber from '../default-inputs/default-number.vue';
   import DefaultPassword from '../default-inputs/default-password.vue';
@@ -229,6 +236,7 @@
 
   const usersRef = firebase.database().ref('users');
   const companiesRef = firebase.database().ref('companies');
+  const ticketsRef = firebase.database().ref('tickets');
   const emailRE = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
   export default {
@@ -280,13 +288,21 @@
       },
       setUser(user) {
         if ( user ) {
-          let prep = { about: '', birthday: '', company: this.company,
-            email: this.email, key: user.uid, mobile: this.phone, name: this.name,
+          let prep = { about: 'Немного о себе', active: false, birthday: '', company: this.company, created: Firebase.database.ServerValue.TIMESTAMP,
+            email: this.email, key: user.uid, mobile: this.phone, name: this.name, role: 10,
               page: user.uid, photo: '/static/users/default-1.svg', position: '', surname: this.surname
           }
           usersRef.child(user.uid).set(prep)
-            .then( ()=> this.uid = user.uid )
+            .then( ()=> this.createTicket(user) )
             .catch( error => this.notify = 'Сетевая ошибка (onAuthStateChanged)' )
+        }
+      },
+      createTicket(user) {
+        if ( user ) {
+          let prep = { created: Firebase.database.ServerValue.TIMESTAMP, type: 1, author: user.uid }
+          ticketsRef.push( prep )
+            .then( ()=> this.uid = user.uid )
+            .catch( error => this.notify = 'Сетевая ошибка (createTicket)' )
         }
       }
     }

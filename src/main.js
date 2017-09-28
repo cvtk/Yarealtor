@@ -18,7 +18,11 @@ import List from './components/List.vue';
 import Profile from './components/Profile.vue';
 import AppAuth from './components/App-auth.vue';
 import NotFound from './components/App-404.vue';
+
+// auth-components
 import Registration from './components/user-auth/auth-registration.vue';
+import Login from './components/user-auth/auth-login.vue';
+import Recovery from './components/user-auth/auth-recovery.vue';
 
 
 Vue.use(VueRouter);
@@ -43,7 +47,9 @@ const router = new VueRouter({
     { path: '/users/:page', component: Profile, name: 'user' },
     { path: '/auth', component: AppAuth, name: 'auth' },
     { path: '/404', component: NotFound, name: '404' },
-    { path: '/registration', component: Registration, name: 'registration' }
+    { path: '/registration', component: Registration, name: 'registration' },
+    { path: '/login', component: Login, name: 'login' },
+    { path: '/recovery', component: Recovery, name: 'recovery' }
   ]
 });
 

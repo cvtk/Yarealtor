@@ -1,7 +1,7 @@
 <template>
   <ul :class="$style.breadcrumbs">
     <li :class="$style.breadcrumbs__item" v-for="(item, index) in items" :key="index">
-      <router-link :class="$style.link" v-if="item.to" :to="{ name: item.to }">{{ item.text }}</router-link>
+      <router-link :class="$style.link" v-if="item.to" :to="{ name: item.to, params: item.params }">{{ item.text }}</router-link>
       <span :class="$style.item" v-else :to="{ name: item.to }">{{ item.text }}</span>
     </li>
   </ul>
@@ -55,7 +55,7 @@
     props: {
       items: {
         type: Array,
-        default: () => [ { text: 'Главная', to: 'root'} ]
+        default: () => [ { text: 'Главная', to: 'root', params: {} } ]
       }
     }
   }

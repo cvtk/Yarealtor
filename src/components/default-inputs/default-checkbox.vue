@@ -33,6 +33,7 @@
   .checkbox__label {
     position: relative;
     cursor: pointer;
+    padding-top: 2px;
     padding-left: 30px;
     font-size: 13px;
   }
