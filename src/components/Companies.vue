@@ -1,5 +1,8 @@
 <template>
   <div :class="$style.companies">
+    <modal-overlay :show="showCreateModal" @close="showCreateModal = false">
+      <company-create :company="model" @cancel="showCreateModal = false" />
+    </modal-overlay>
     <div :class="$style.companies__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
@@ -8,7 +11,9 @@
     </div>
     <div :class="$style.companies__toolbar">
       <h1 :class="$style.toolbar__title">Компании<span :class="$style._small">организации портала</span></h1>
-      <div :class="$style.toolbar__actions"></div>
+      <div :class="$style.toolbar__actions">
+        <default-button label="Создать компанию" @click="showCreateModal = true" />
+      </div>
     </div>
 
     <ul :class="[ $style.companies__grid, $style._yasr ]">
@@ -114,15 +119,15 @@
     }
     .links__more {
       color: #fff;
-      background-color: #e7505a;
-      border-color: #e7505a;
+      background-color: #e7505a !important;
+      border-color: #e7505a !important;
       text-transform: uppercase;
       font-weight: 300;
       transition: background-color .2s ease-in-out,
                   border-color .2s ease-in-out;
       &:hover {
-        background-color: #e12330;
-        border-color: #dc1e2b;
+        background-color: #e12330 !important;
+        border-color: #dc1e2b !important;
       }
     }
 
@@ -229,17 +234,23 @@
   import AppLoader from './app-loader.vue';
   import AppInput from './modules/inputs.vue';
   import firebase from '../firebase.js';
+  import companyMdl from '../models/company.js'
+  import CompanyCreate from './company/company-settings.vue';
+  import ModalOverlay from './modal-overlay/modal-overlay.vue';
+  import DefaultButton from './default-inputs/default-button.vue';
 
   const companiesRef = firebase.database().ref('companies');
 
   export default {
     name: 'companies',
     props: ['auth'],
-    components: { AppLoader, AppInput },
+    components: { AppLoader, AppInput, CompanyCreate, ModalOverlay, DefaultButton },
     data() {
       return {
         dataReady: false,
-        companies: {}
+        companies: {},
+        showCreateModal: false,
+        model: companyMdl
       }
     },
     created() {

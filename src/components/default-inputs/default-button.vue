@@ -57,6 +57,15 @@
     font-size: 16px;
     margin-right: 5px;
   }
+
+  .settings:before {
+    content: "\e09a";
+    font-family: "Icons";
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+    margin-right: 5px;
+  }
   
 </style>
 

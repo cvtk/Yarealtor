@@ -23,7 +23,7 @@
 </style>
 
 <style lang="scss" module>
-  @import "../../assets/styles/mixins.scss";
+
   .modal_overlay {
     position: fixed;
     top: 0; bottom: 0;
@@ -45,7 +45,7 @@
     position: absolute;
     top: 26px;
     right: 24px;
-    background-image: url("../../assets/icons/close-button.svg");
+    background-image: url("./close-button.svg");
     background-repeat: no-repeat;
     width: 24px;
     height: 24px;

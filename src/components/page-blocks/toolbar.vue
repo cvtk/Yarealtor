@@ -18,6 +18,9 @@
 
   .toolbar {
     &:after { @include clearfix }
+    @media (max-width: $bp-small) {
+      .toolbar__sub { display: none }
+    }
   }
 
   .toolbar__title {

@@ -36,6 +36,7 @@
     padding-top: 2px;
     padding-left: 30px;
     font-size: 13px;
+    user-select: none;
   }
 
   .checkbox__check {

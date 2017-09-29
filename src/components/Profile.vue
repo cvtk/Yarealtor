@@ -33,7 +33,7 @@
         </div>
         <div :class="$style.content__main">
           <div :class="$style.main" v-if="currentTab === 'profile'">
-            <div :class="$style.main__overview">
+            <div :class="$style.main__overview" @keyup.enter="saveUser">
               <profile-overview :profile="local" />
             </div>
             <div :class="$style.main__post" v-if="isUser">
@@ -248,7 +248,7 @@
     props: ['auth', 'user'],
     components: { AppLoader, AppOnlineStatus, AppAdSidebar, AppUploadImage, TimelinePost, TimelineNewPost, DefaultText, DefaultNumber, DefaultButton, ProfileSettings, ProfileOverview, Breadcrumbs, Toolbar },
     data() {
-      return { dataReady: false, currentTab: 'profile', profile: '', local: '', posts: {} }
+      return { dataReady: false, currentTab: 'profile', profile: {}, local: {}, posts: {} }
     },
     mounted() {
       usersRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (data) => {
@@ -278,13 +278,16 @@
         let arr = Object.keys(this.posts).map(key => this.posts[key] );
         return arr.sort((x, y) => y.created - x.created);
       },
-      isAdmin() { return ( this.user.role <= 5 && this.user.company === this.profile.company ) || this.user.role === 1 },
+      isAdmin() { return ( this.user.role <= 5 && this.user.company.key === this.profile.company.key ) || this.user.role === 1 },
       isUser() { return this.user.key === this.profile.key }
     },
     methods: {
       saveUser() {
         usersRef.child(this.profile.key).update(this.local)
-          then( ()=> { this.$router.push({ name: 'user', params: { page: local.page } }) })
+          .then( ()=> {
+            this.$router.push({ name: 'user', params: { page: this.local.page } });
+            this.currentTab = 'profile'; 
+          })
       },
       updProfileField(el) {
         usersRef.child(this.profile['.key']).update({[el.name]: el.value}, () => {

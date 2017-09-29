@@ -66,7 +66,7 @@
               :options="[{ value: 1, name: 'Администратор' }, { value: 5, name: 'Модератор' }, { value: 10, name: 'Сотрудник' }]"
             />
           </div>
-          <div :class="$style.row__item" v-if="isModer">
+          <div :class="$style.row__item" v-else-if="isModer">
             <default-select v-model="local.role" label="Роль" :options="[{ value: 5, name: 'Модератор' }, { value: 10, name: 'Сотрудник' }]" />
           </div>
           <div :class="$style.row__item" v-if="isAdmin">

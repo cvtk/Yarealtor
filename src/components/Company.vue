@@ -1,16 +1,31 @@
 <template>
   <div :class="$style.company">
+    <modal-overlay :show="showRemoveModal" @close="showRemoveModal = false">
+      <div :class="$style.remove_modal">
+        <div :class="$style.message">Сотрудник будет удален. Восстановить эту запись будет невозможно. Вы уверены?</div>
+        <div :class="$style.actions">
+          <div :class="$style.actions__remove">
+            <default-button red label="Удалить" @click="removeUser(markToRemove)" />
+          </div>
+          <div :class="$style.actions__cancel">
+            <default-button label="Отмена" @click="showRemoveModal = false" />
+          </div>
+        </div>
+      </div>
+    </modal-overlay>
+    <modal-overlay :show="showSettingsModal" @close="showSettingsModal">
+      <company-settings :company="company" />
+    </modal-overlay>
     <div :class="$style.company__bar">
-      <ul :class="$style.bar__breadcrumbs">
-        <router-link :to="{ name: 'companies' }" tag="li" :class="$style.breadcrumbs__item">
-          Компании
-        </router-link><span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item"> {{ company.name }}</li>
-      </ul>
+      <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Компании', to: 'companies'}, { text: company.name, to: '' } ]"/> 
     </div>
     <div :class="$style.company__toolbar">
-      <h1 :class="$style.toolbar__title">{{ company.name }}<span :class="$style._small">{{ company.slogan }}</span></h1>
-      <div :class="$style.toolbar__actions"></div>
+      <div :class="$style.toolbar__header">
+        <toolbar :title="company.name" :sub="company.slogan"></toolbar>
+      </div>
+      <div :class="$style.toolbar__settings" v-if="isModer">
+        <default-button label="Настройки" icon="settings" @click="showSettingsModal = true"/>
+      </div>
     </div>
     <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image + ')' }">
       <div :class="$style.title_wrapper">
@@ -19,61 +34,86 @@
       </div>
     </div>
     
-    <div :class="$style.company_wrapper" v-if="dataReady">
-      <div :class="$style.company__about_us">
-        <h4 :class="$style.about_us__header"><span :class="$style.header__icon"></span> О Компании</h4>
-        <p :class="$style.about_us__description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
-        <div :class="$style.about_us__contacts">
-          <div :class="$style.contacts__item"><span :class="$style.item__icon_address"></span>Адрес: {{ company.address }}</div>
-          <div :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span>Телефон: {{ company.phone }}</div>
-          <div :class="$style.contacts__item"><span :class="$style.item__icon_email"></span>Эл. почта: {{ company.email }}</div>
-        </div>
-        <div :class="$style.about_us__requisites">
-          <h5 :class="$style.requisites__title">Реквизиты</h5>
-          <p :class="$style.requisites__item">Юридический адрес: 150000, г. Ярославль, ул. Большая Октябрьская, 76
-            ИНН: 760214015080
-            ОГРН: 1027700067328
-            Расчетный счет: 40802810002910000776 в  АО "АЛЬФА-БАНК"
-          </p>
-        </div>
-      </div>
-      <div :class="$style.company__employees">
-        <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Сотрудники</h4>
-        <div :class="$style.employees_wrapper">
-          <div :class="$style.employees__principal" v-for="employee in moderators">
-            <img :class="$style.principal__photo" :src="employee.photo">
-            <div :class="$style.principal__meta">
-              <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.meta__name">
-                {{ [ employee.name, employee.surname ].join(' ') }}
-              </router-link>
-              <span :class="$style.meta__position">{{ employee.position }}</span>
-              <p :class="$style.meta__about">{{ employee.about }}</p>
-              <div :class="$style.meta__contacts">
-                <span :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span> {{ employee.phone }}</span>
-                <span :class="$style.contacts__item"><span :class="$style.item__icon_mobile"></span> {{ employee.mobile }}</span>
-                <span :class="$style.contacts__item"><span :class="$style.item__icon_email"></span> {{ employee.email }}</span>
+    <div :class="$style.company__content" v-if="dataReady">
+      <div :class="$style.content">
+        <div :class="$style.content__col">
+          <div :class="$style.company__about_us">
+            <h4 :class="$style.about_us__header"><span :class="$style.header__icon"></span> О Компании</h4>
+            <p :class="$style.about_us__description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+            <div :class="$style.about_us__contacts">
+              <div :class="$style.contacts__item"><span :class="$style.item__icon_address"></span>Адрес: {{ company.address }}</div>
+              <div :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span>Телефон: {{ company.phone }}</div>
+              <div :class="$style.contacts__item"><span :class="$style.item__icon_email"></span>Эл. почта: {{ company.email }}</div>
+            </div>
+            <div :class="$style.about_us__requisites">
+              <h5 :class="$style.requisites__title">Реквизиты</h5>
+              <p :class="$style.requisites__item">Юридический адрес: 150000, г. Ярославль, ул. Большая Октябрьская, 76
+                ИНН: 760214015080
+                ОГРН: 1027700067328
+                Расчетный счет: 40802810002910000776 в  АО "АЛЬФА-БАНК"
+              </p>
+            </div>
+          </div>
+          <div :class="[ $style.company__employees, $style._inactive ]">
+            <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Ожидают подтверждения</h4>
+            <div :class="$style.employees_wrapper">
+              <div :class="$style.employees__notfound" v-if="!inactives.length">Активных заявок нет</div>
+              <div :class="$style.employees__item" v-else v-for="employee in inactives">
+                <transition name="fade" appear>
+                  <div :class="$style.employe__wrapper">
+                    <div :class="$style.photo_wrapper">
+                      <img :class="$style.item__photo" :src="employee.photo">
+                    </div>
+                    
+                    <router-link :to="{ name: 'user', params: { page: employee.page } }"
+                      :class="$style.item__name">{{ [ employee.name, employee.surname ].join(' ') }}</router-link>
+                    <div :class="$style.item__actions" v-if="isModer">
+                      <span :class="$style.item__activate" @click="activateUser(employee.key)">добавить</span>
+                      <span :class="$style.item__remove" @click="markToRemove = employee.key; showRemoveModal = true;">удалить</span>
+                    </div>
+                  </div>
+                </transition>
               </div>
             </div>
           </div>
-          <div :class="$style.employees__search_filter">
-            <app-input v-model="search" placeholder="Поиск сотрудника..." :class="$style.search_filter__input" @keydown.enter.native="searchFilterSelectAll" />
-          </div>
-          <div :class="$style.employees__notfound" v-if="!employees.length">Сотрудники не найдены</div>
-          <div :class="$style.employees__item" v-else v-for="employee in employees">
-            <transition name="fade" appear>
-              <div :class="$style.employe__wrapper">
-                <div :class="$style.photo_wrapper">
-                  <img :class="$style.item__photo" :src="employee.photo">
+        </div>
+        <div :class="$style.content__col">
+          <div :class="$style.company__employees">
+            <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Сотрудники</h4>
+            <div :class="$style.employees_wrapper">
+              <div :class="$style.employees__principal" v-if="!!moderators.length" v-for="employee in moderators">
+                <img :class="$style.principal__photo" :src="employee.photo">
+                <div :class="$style.principal__meta">
+                  <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.meta__name">
+                    {{ [ employee.name, employee.surname ].join(' ') }}</router-link> <span :class="$style.meta__is_admin" title="Модератор компании"></span>
+                  <span :class="$style.meta__position">{{ employee.position }} </span>
+                  <div :class="$style.meta__contacts">
+                    <span :class="$style.contacts__item" v-if="!!employee.phone"><span :class="$style.item__icon_phone"></span> {{ employee.phone }}</span>
+                    <span :class="$style.contacts__item" v-if="!!employee.mobile"><span :class="$style.item__icon_mobile"></span> {{ employee.mobile }}</span>
+                    <span :class="$style.contacts__item" v-if="!!employee.email"><span :class="$style.item__icon_email"></span> {{ employee.email }}</span>
+                  </div>
                 </div>
-                <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.item__name">{{ [ employee.name, employee.surname ].join(' ') }}</router-link>
-                <span :class="$style.item__position">{{ employee.position }}</span>
               </div>
-            </transition>
+              <div :class="$style.employees__search_filter">
+                <app-input v-model="search" placeholder="Поиск..." :class="$style.search_filter__input" @keydown.enter.native="searchFilterSelectAll" />
+              </div>
+              <div :class="$style.employees__notfound" v-if="!employees.length">Сотрудники не найдены</div>
+              <div :class="$style.employees__item" v-else v-for="employee in employees">
+                <transition name="fade" appear>
+                  <div :class="$style.employe__wrapper">
+                    <div :class="$style.photo_wrapper">
+                      <img :class="$style.item__photo" :src="employee.photo">
+                    </div>
+                    <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.item__name">{{ [ employee.name, employee.surname ].join(' ') }}</router-link>
+                    <span :class="$style.item__position">{{ employee.position }}</span>
+                  </div>
+                </transition>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    
   </div>
 </template>
 <style>
@@ -162,22 +202,29 @@
     }
   }
 
-  .company_wrapper {
+  .company__content { position: relative }
+
+  .content {
     position: relative;
-    overflow: hidden;
     margin: 20px -10px;
     &:after { @include clearfix }
   }
 
-  .company__about_us {
+  .content__col {
     float: left;
     width: 50%;
     padding: 0 10px;
+  }
+
+  .company__about_us {
+    position: relative;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #d9534f;
 
     .about_us__header {
       background-color: #d9534f;
       font-size: 24px;
-      font-weight: 400;
+      font-weight: 100;
       color: #fff;
       padding: 1em 20px;
       margin: 0;
@@ -189,7 +236,7 @@
       display: inline-block;
       line-height: 14px;
       -webkit-font-smoothing: antialiased;
-      font-size: 24px;
+      font-size: 22px;
       &:after {
         content: "\e08b";
         font-family: "Icons";
@@ -251,14 +298,19 @@
   }
 
   .company__employees {
-    float: left;
-    width: 50%;
-    padding: 0 10px;
+    position: relative;
+    border-bottom: 3px solid #3598dc;
+    &._inactive {
+      margin-bottom: 20px;
+      border-color: #2ab4c0;
+      .employees__header { background-color: #2ab4c0 }
+      .header__icon:after { content: "\e031" }
+    }
 
     .employees__header {
       background-color: #3598dc;
       font-size: 24px;
-      font-weight: 400;
+      font-weight: 100;
       color: #fff;
       padding: 1em 20px;
       margin: 0;
@@ -270,7 +322,7 @@
       display: inline-block;
       line-height: 14px;
       -webkit-font-smoothing: antialiased;
-      font-size: 24px;
+      font-size: 22px;
       &:after {
         content: "\e001";
         font-family: "Icons";
@@ -279,7 +331,7 @@
 
     .employees_wrapper {
       position: relative;
-      height: 800px;
+      max-height: 100vh;
       overflow-y: auto;
       overflow-x: hidden;
       padding: 20px;
@@ -287,6 +339,7 @@
       background-color: #fff;
       &:after { @include clearfix }
     }
+
     .employees__principal {
       position: relative;
       margin-bottom: 20px;
@@ -296,15 +349,11 @@
 
     .principal__photo {
       display: block;
+      width: 65px;
       float: left;
-      width: 20%;
     }
 
-    .principal__meta {
-      float: left;
-      width: 80%;
-      padding-left: 20px;
-    }
+    .principal__meta { margin-left: 80px }
 
     .meta__name {
       font-size: 16px;
@@ -316,6 +365,15 @@
       &:hover { color: darken(#32c5d2, 15%); text-decoration: underline }
     }
 
+    .meta__is_admin {
+      display: inline-block;
+      background-image: url('./assets/icons/crown.svg');
+      background-size: 100%;
+      background-repeat: no-repeat;
+      width: 18px;
+      height: 18px;
+    }
+
     .meta__position {
       display: block;
       color: #95A5A6;
@@ -323,6 +381,7 @@
       white-space: pre;
       text-overflow: ellipsis;
       overflow: hidden;
+      margin-bottom: 5px;
     }
 
     .meta__about {
@@ -372,13 +431,53 @@
       position: relative;
       float: left;
       padding: 0 10px;
-      width: 33.333333%;
+      width: 25%;
       margin-bottom: 15px;
+    }
+
+    .item__actions {
+      &:after { @include clearfix }
+      text-align: center;
+      max-width: 110px;
+      margin: 0 auto;
+    }
+
+    .item__activate {
+      display: inline-block;
+      color: #169ef4;
+      float: left;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.25;
+      text-align: center;
+      white-space: pre;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      cursor: pointer;
+      &:hover { text-decoration: underline }
+    }
+
+    .item__remove {
+      display: inline-block;
+      color: #e27d79;
+      float: right;
+      text-align: right;
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.25;
+      white-space: pre;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      transition: color .25s;
+      cursor: pointer;
+      &:hover { color: #d9534f; text-decoration: underline; }
     }
 
     .item__photo {
       display: block;
       max-width: 100px;
+      max-height: 100px;
       border: 4px solid #f5f6fa;
       border-radius: 50%;
       margin: 0 auto;
@@ -414,22 +513,12 @@
 
   .company__toolbar {
     margin: 25px 0;
-
-    .toolbar__title {
-      font-size: 24px;
-      color: #666;
-      margin: 0;
-      padding: 0;
-      letter-spacing: -1px;
-      font-weight: 300;
-      > ._small {
-        font-size: 14px;
-        letter-spacing: 0;
-        text-transform: lowercase;
-        margin-left: 5px;
-      }
-    }
+    &:after { @include clearfix }
   }
+
+  .toolbar__header { float: left }
+
+  .toolbar__settings { float: right }
 
   .company__bar {
     border-bottom: 1px solid #e7ecf1;
@@ -438,40 +527,20 @@
     padding: 0 20px;
     margin: -20px -20px 0;
     &:after { @include clearfix }
-
-    .bar__breadcrumbs {
-      padding: 11px 0;
-      display: inline-block;
-      float: left;
-      margin: 0;
-      list-style: none;
-    }
-
-    .breadcrumbs__item {
-      display: inline-block;
-      color: #888;
-      cursor: pointer;
-      line-height: 14px;
-      &:last-child {
-        cursor: default;
-      }
-    }
-
-    .breadcrumbs__icon {
-      color: #888;
-      cursor: default;
-      line-height: 14px;
-      &:after {
-        content: "\e606";
-        display: inline-block;
-        font-family: "Icons";
-        cursor: default;
-        font-size: 7px;
-        margin-left: 5px;
-        vertical-align: middle;
-      }
-    }
   }
+
+  .remove_modal {
+    background-color: #fff;
+    padding: 25px 20px;
+  }
+  .message { margin-bottom: 30px }
+  .actions {
+    margin: 0 auto;
+    max-width: 360px;
+    &:after { @include clearfix }
+  }
+  .actions__remove { float: left; text-align: left; }
+  .actions__cancel { float: right; text-align: right; }
     
   /* responsive */
     .company {
@@ -482,10 +551,11 @@
         .employees__item { width: 33.333333% }
       }
       @media (max-width: $bp-medium) {
-
+        .content__col { width: 100%; float: none;}
       }
       @media (max-width: $bp-small) {
         .employees__item { width: 50% }
+        .banner__name { font-size: 36px }
       }
       @media (max-width: $bp-extra-small) {
 
@@ -497,26 +567,63 @@
   import AppLoader from './app-loader.vue';
   import AppInput from './modules/inputs.vue';
   import firebase from '../firebase.js';
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
+  import Toolbar from './page-blocks/toolbar.vue';
+  import ModalOverlay from './modal-overlay/modal-overlay.vue';
+  import DefaultButton from './default-inputs/default-button.vue';
+  import CompanySettings from './company/company-settings.vue';
 
   const companiesRef = firebase.database().ref('companies');
   const usersRef = firebase.database().ref('users');
 
   export default {
     name: 'company',
-    props: ['auth'],
-    components: { AppLoader, AppInput },
+    props: ['auth', 'user'],
+    components: { AppLoader, AppInput, Breadcrumbs, Toolbar, ModalOverlay, DefaultButton, CompanySettings },
     computed: {
+      isModer() {
+        return this.user.role === 1 || ( this.user.role <= 5 && this.user.company.key === this.company.key );
+      },
+
+      moderators() {
+        return this.users.filter( employee => employee.role <= 5 && employee.active );
+      },
+
+      inactives() {
+        return this.users.filter( employee => !employee.active );
+      },
 
       employees() {
-        let sorted = this.users.sort( (a, b) => a[surname] > b[surname] );
+        let filtered = this.users.filter( employee => employee.role > 5 && employee.active );
 
-        if ( !this.search ) return sorted;
+        if ( !this.search ) return filtered;
 
         let regex = new RegExp(this.search, "i");
-        return sorted.filter( employee => [employee.name, employee.surname].join('').match(regex) );
+        return filtered.filter( employee => [employee.name, employee.surname].join('').match(regex) );
       }
     },
     methods: {
+      activateUser(key) {
+        usersRef.child(key).update({ active: true })
+          .then( () => {
+            console.log("active succeeded.")
+          })
+          .catch( error => {
+            console.log("Active failed: " + error.message)
+          });
+      },
+
+      removeUser() {
+        this.showRemoveModal = false;
+        usersRef.child(this.markToRemove).remove()
+          .then( () => {
+            console.log("Remove succeeded.")
+          })
+          .catch( error => {
+            console.log("Remove failed: " + error.message)
+          });
+      },
+
       searchFilterSelectAll(e) {
         let el = e.target;
         el.setSelectionRange(0, el.value.length)
@@ -525,26 +632,24 @@
     data() {
       return {
         dataReady: false,
+        showRemoveModal: false,
+        showSettingsModal: false,
+        markToRemove: '',
         search: '',
         company: {},
-        users: [],
-        moderators: []
+        users: []
       }
     },
-    mounted() {
+    created() {
       companiesRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (company) => {
         if ( company.exists() ) { company.forEach(item => {
           this.company = item.val();
           usersRef.orderByChild('company').equalTo(this.company.key).on('value', employees => {
-            employees.forEach( employee => {
-              let e = employee.val();
-              if ( e.role <= 5 ) { this.moderators.push(e) }
-              else { this.users.push(e) }
-            })
+            if ( employees.exists() ) {
+              let e = employees.val();
+              this.users = Object.keys(e).map( employee => e[employee] ).sort( (a, b) => a.surname > b.surname );
+            }
           })
-          // usersRef.child(this.company.principal).on('value', principal => {
-          //   this.$set( this.company, 'principal', principal.val() )
-          // })
         })}
         else {
           this.$router.push({ name: '404', query: { redirect: this.$route.params.page } });
