@@ -40,30 +40,33 @@
       <div :class="$style.company__employees">
         <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Сотрудники</h4>
         <div :class="$style.employees_wrapper">
-          <div :class="$style.employees__principal">
-            <img :class="$style.principal__photo" :src="company.principal.photo">
+          <div :class="$style.employees__principal" v-for="employee in moderators">
+            <img :class="$style.principal__photo" :src="employee.photo">
             <div :class="$style.principal__meta">
-              <router-link :to="{ name: 'user', params: { page: company.principal.page } }" :class="$style.meta__name">{{ company.principal.name }}</router-link>
-              <span :class="$style.meta__position">{{ company.principal.position }}</span>
-              <p :class="$style.meta__about">{{ company.principal.about }}</p>
+              <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.meta__name">
+                {{ [ employee.name, employee.surname ].join(' ') }}
+              </router-link>
+              <span :class="$style.meta__position">{{ employee.position }}</span>
+              <p :class="$style.meta__about">{{ employee.about }}</p>
               <div :class="$style.meta__contacts">
-                <span :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span> {{ company.principal.phone }}</span>
-                <span :class="$style.contacts__item"><span :class="$style.item__icon_mobile"></span> {{ company.principal.mobile }}</span>
-                <span :class="$style.contacts__item"><span :class="$style.item__icon_email"></span> {{ company.principal.email }}</span>
+                <span :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span> {{ employee.phone }}</span>
+                <span :class="$style.contacts__item"><span :class="$style.item__icon_mobile"></span> {{ employee.mobile }}</span>
+                <span :class="$style.contacts__item"><span :class="$style.item__icon_email"></span> {{ employee.email }}</span>
               </div>
             </div>
           </div>
           <div :class="$style.employees__search_filter">
-            <app-input v-model="search_filter" placeholder="Поиск сотрудника..." :class="$style.search_filter__input" @keydown.enter.native="searchFilterSelectAll" />
+            <app-input v-model="search" placeholder="Поиск сотрудника..." :class="$style.search_filter__input" @keydown.enter.native="searchFilterSelectAll" />
           </div>
-          <div :class="$style.employees__item" v-for="employe in employees_list">
+          <div :class="$style.employees__notfound" v-if="!employees.length">Сотрудники не найдены</div>
+          <div :class="$style.employees__item" v-else v-for="employee in employees">
             <transition name="fade" appear>
               <div :class="$style.employe__wrapper">
                 <div :class="$style.photo_wrapper">
-                  <img :class="$style.item__photo" :src="employe.photo">
+                  <img :class="$style.item__photo" :src="employee.photo">
                 </div>
-                <router-link :to="{ name: 'user', params: { page: employe.page } }" :class="$style.item__name">{{ employe.name }}</router-link>
-                <span :class="$style.item__position">{{ employe.position }}</span>
+                <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.item__name">{{ [ employee.name, employee.surname ].join(' ') }}</router-link>
+                <span :class="$style.item__position">{{ employee.position }}</span>
               </div>
             </transition>
           </div>
@@ -307,8 +310,7 @@
       font-size: 16px;
       margin: 0;
       color: #32c5d2;
-      text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 400;
       text-decoration: none;
       transition: color .2s ease-in-out;
       &:hover { color: darken(#32c5d2, 15%); text-decoration: underline }
@@ -336,11 +338,11 @@
       display: inline-block;
       color: #32c5d2;
       margin-right: 10px;
+      vertical-align: bottom;
     }
 
     .item__icon_phone, .item__icon_mobile, .item__icon_email {
       display: inline-block;
-      margin-bottom: 5px;
       font-size: 15px;
       &:before {
         content: "\e048";
@@ -358,6 +360,12 @@
     .search_filter__input {
       float: right;
       width: 33.333333%;
+    }
+
+    .employees__notfound {
+      color: #93a1bb;
+      font-style: italic;
+      padding: 10px 0;
     }
 
     .employees__item {
@@ -498,19 +506,14 @@
     props: ['auth'],
     components: { AppLoader, AppInput },
     computed: {
-      employees_list() {
-        if ( this.search_filter ) {
-          let results = [], 
-              regex = new RegExp(this.search_filter, "i");
 
-          for (let i = 0; i < this.employees.length; i++) {
-            if ( this.employees[i].name.match(regex) ) {
-              results.push(this.employees[i]);
-            }
-          }
-          return results;
-        }
-        else return this.employees;
+      employees() {
+        let sorted = this.users.sort( (a, b) => a[surname] > b[surname] );
+
+        if ( !this.search ) return sorted;
+
+        let regex = new RegExp(this.search, "i");
+        return sorted.filter( employee => [employee.name, employee.surname].join('').match(regex) );
       }
     },
     methods: {
@@ -522,96 +525,26 @@
     data() {
       return {
         dataReady: false,
-        search_filter: '',
+        search: '',
         company: {},
-        employees: [
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Владимирович Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-1.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-2.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-3.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-4.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-5.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-6.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-1.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-2.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-3.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-4.svg',
-            position: 'Специалист'
-          },
-          {
-            key: 'asdasdq2341r4eqwrfthd',
-            name: 'Сергей Иванов',
-            page: 'ivanov',
-            photo: '/static/users/default-5.svg',
-            position: 'Специалист'
-          }
-        ]
+        users: [],
+        moderators: []
       }
     },
     mounted() {
       companiesRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (company) => {
         if ( company.exists() ) { company.forEach(item => {
           this.company = item.val();
-          usersRef.child(this.company.principal).on('value', principal => {
-            this.$set( this.company, 'principal', principal.val() )
+          usersRef.orderByChild('company').equalTo(this.company.key).on('value', employees => {
+            employees.forEach( employee => {
+              let e = employee.val();
+              if ( e.role <= 5 ) { this.moderators.push(e) }
+              else { this.users.push(e) }
+            })
           })
+          // usersRef.child(this.company.principal).on('value', principal => {
+          //   this.$set( this.company, 'principal', principal.val() )
+          // })
         })}
         else {
           this.$router.push({ name: '404', query: { redirect: this.$route.params.page } });
