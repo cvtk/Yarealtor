@@ -1,7 +1,7 @@
 <template>
   <label :class="$style.upload" v-if="type === 'hidden'">
     <slot></slot>
-    <input :class="$style.upload__input" type="file" :multiple="multiple === true" @change="upload">
+    <input :class="$style.upload__input" type="file" ref="input" :multiple="multiple === true" @change="upload">
   </label>
   <label :class="$style.upload" v-else>
     <div :class="$style.upload__progress" :style="{ 'width': progress + '%' }" v-show="loading === true"></div>
@@ -81,7 +81,7 @@
     props: ['type', 'multiple', 'value'],
     data() {
       return {
-        tmpPath: '/tmp/' + md5(this.hash()),
+        tmpPath: '/images/',
         images: {},
         progress: 0,
         loading: false

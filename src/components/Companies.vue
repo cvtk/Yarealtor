@@ -26,7 +26,7 @@
               </router-link>
             </div>
           </div>
-          <h3 :class="$style.item__name">{{ company.name }}</h3>
+          <h3 :class="$style.item__name">{{ company.name }} <span :class="$style.item__remove" v-if="isAdmin" @click="removeCompany(company.key)">удалить</span></h3>
           <h4 :class="$style.item__slogan">{{ company.slogan }}</h4>
         </div>
         
@@ -43,7 +43,7 @@
               </router-link>
             </div>
           </div>
-          <h3 :class="$style.item__name">{{ company.name }}</h3>
+          <h3 :class="$style.item__name">{{ company.name }} <span :class="$style.item__remove" v-if="isAdmin" @click="removeCompany(company.key)">удалить</span></h3>
           <h4 :class="$style.item__slogan">{{ company.slogan }}</h4>
         </div>
         
@@ -142,6 +142,20 @@
       text-overflow: ellipsis;
     }
 
+    .item__remove {
+      display: inline-block;
+      color: #e27d79;
+      font-size: 12px;
+      font-weight: 300;
+      white-space: pre;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      transition: color .25s;
+      cursor: pointer;
+      vertical-align: middle;
+      &:hover { color: #d9534f; text-decoration: underline; }
+    }
+
     .item__slogan {
       text-align: center;
       font-size: 12px;
@@ -198,6 +212,7 @@
   import AppLoader from './app-loader.vue';
   import AppInput from './modules/inputs.vue';
   import firebase from '../firebase.js';
+  import fface from './helpers/fireface.js';
   import companyMdl from '../models/company.js'
   import Breadcrumbs from './page-blocks/breadcrumbs.vue';
   import Toolbar from './page-blocks/toolbar.vue';
@@ -225,6 +240,11 @@
         this.companies = Object.keys(c).map( company => c[company]);
         this.dataReady = true;
       })
+    },
+    methods: {
+      removeCompany(key) {
+        fface.company.remove(key);
+      }
     },
     computed: {
       isAdmin() {

@@ -1,8 +1,10 @@
-const functions = require('firebase-functions');
+// require('@google-cloud/debug-agent').start();
+// var functions = require('firebase-functions');
+// exports.imgOptimizer = require("./fireImgOptimizer")();
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+var sampleConfig = {
+imagePath:"/images",
+sizes:{w:80,h:80},
+naming:{postfix:"_80x80",prefix:"thumb_"}
+};
+exports.imgOptimizer = require("./fireImgOptimizer")(sampleConfig);

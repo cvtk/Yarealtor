@@ -6,6 +6,7 @@
           <app-input type="radio" name="type" :option="value" 
             v-model="filter.type"
             v-for="value in filter_options.type"
+            :key="value"
             :class="$style.content__radio">{{ value }}</app-input>
         </div>
       </dropdown-menu>
@@ -18,6 +19,7 @@
           <app-input type="radio" name="object_type" :option="value" 
             v-model="filter.object_type"
             v-for="value in filter_options.object_type"
+            :key="value"
             :class="$style.content__radio">{{ value }}</app-input>
         </div>
       </dropdown-menu>
@@ -30,6 +32,7 @@
           <app-input type="radio" name="rooms" :option="value" 
             v-model="filter.rooms"
             v-for="value in filter_options.rooms"
+            :key="value"
             :class="$style.content__radio">{{ value }}</app-input>
         </div>
       </dropdown-menu>
@@ -48,6 +51,7 @@
           <app-input type="radio" name="district" :option="value" 
             v-model="filter.district"
             v-for="value in filter_options.district"
+            :key="value"
             :class="$style.content__radio">{{ value }}</app-input>
         </div>
       </dropdown-menu>

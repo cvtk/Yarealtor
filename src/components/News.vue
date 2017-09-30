@@ -16,7 +16,7 @@
     
     <div :class="$style.news__main">
       <div :class="$style.main_wrapper">
-        <timeline-new-post :auth="auth" />
+        <timeline-new-post :auth="auth" :user="user" />
         <div :class="$style.main__timeline" v-if="dataReady">
           <timeline-post v-for="post in postsByTimestamp" 
             :key="post.key" 
@@ -303,7 +303,7 @@
 
   export default {
     name: 'news',
-    props: ['auth'],
+    props: ['auth', 'user'],
     components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, TimelinePost, TimelineNewPost  },
     data() {
       return {
@@ -316,7 +316,7 @@
       postsRef.on('value', posts => {
         posts.forEach(post => {
           // TODO убрать эту содомию
-          if ( post.val().inc.poll.length <= 1 ) {
+          if ( typeof post.val().poll === 'undefined' ) {
             this.$set( this.posts, post.key, post.val() );
           }
         });

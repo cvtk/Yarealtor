@@ -1,20 +1,24 @@
 <template>
   <div :class="$style.images">
-    <div :class="$style.images__prev" @click="previous()"></div>
-    <div :class="$style.images__next" @click="next()"></div>
+    <div :class="$style.images__prev" @click="previous()" v-if="isMultiple"></div>
+    <div :class="$style.images__next" @click="next()" v-if="isMultiple"></div>
     <div :class="$style.images__carousel">
       <flickity :class="[ $style.carousel, 'carousel-main' ]" ref="flickity" :options="opt">
-        <div :class="[ $style.carousel__item, index ]" v-for="(image, index) in images">
+        <div :class="$style.carousel__item" v-for="(image, index) in images">
           <div :class="$style.item">
-            <div :class="$style.item__background" :style="{ 'background-image': 'url(' + image.url + ')' }"></div>
-            <img :class="[ $style.item__image, false && $style._portret ]" :src="image.url">
+            <div :class="$style.item__background" :style="{ 'background-image': 'url(' + image + ')' }"></div>
+            <img :class="[ $style.item__image, false && $style._portret ]" :src="image">
           </div>
         </div>
       </flickity>
     </div>
-    <div :class="$style.images__navigation">
+    <div :class="$style.images__navigation" v-if="isMultiple">
       <flickity :class="$style.navigation" ref="navigation" :options="navOpt">
-        <div :class="[ $style.navigation__item, index ]" v-for="(image, index) in images" :style="{ 'background-image': 'url(' + image.url + ')' }"></div>
+        <div :class="$style.navigation__item" 
+          v-for="(image, index) in images" 
+          :style="{ 'background-image': 'url(' + image + ')' }"
+          @click="select(index)">  
+        </div>
       </flickity>
     </div>
   </div>
@@ -139,8 +143,14 @@
     data() {
       return {
         opt: { pageDots: false, prevNextButtons: false },
-        navOpt: { asNavFor: '.carousel-main', contain: true, pageDots: false, prevNextButtons: false },
+        navOpt: { contain: true, pageDots: false, prevNextButtons: false },
         dataReady: false
+      }
+    },
+
+    computed: {
+      isMultiple() {
+        return this.images.length > 1;
       }
     },
 
@@ -149,6 +159,10 @@
     },
 
     methods: {
+      select(index) {
+        this.$refs.flickity.select(index);
+      },
+
       next() {
         this.$refs.flickity.next();
       },

@@ -250,13 +250,16 @@
     data() {
       return { dataReady: false, currentTab: 'profile', profile: {}, local: {}, posts: {} }
     },
+    destroyed() {
+      // \\
+    },
     mounted() {
-      usersRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (data) => {
+      usersRef.orderByChild('page').equalTo(this.$route.params.page).once('value', (data) => {
         if ( data.exists() ) {
           data.forEach( (profile) => {
             this.profile = profile.val();
             this.local = profile.val();
-            companiesRef.child(this.profile.company).on('value', company => {
+            companiesRef.child(this.profile.company).once('value', company => {
               this.$set(this.profile, 'company', company.val());
             })
             postsRef.orderByChild('author').equalTo(this.profile.key).on('value', posts => {

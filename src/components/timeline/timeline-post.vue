@@ -33,12 +33,12 @@
         </div>
         <div :class="$style.body__content">{{ post.message }}</div>
         <div :class="$style.body__images" v-if="imagesCount">
-          <div :class="[ $style.images_wrapper, $style['images_' + imagesCount] ]" v-for="image in post.inc.images">
-            <div :class="$style.images__item"  :style="{ 'background-image': 'url(' + image.url + ')' }"></div>
+          <div :class="$style.images">
+            <post-images :images="post.images" />
           </div>
         </div>
         <div :class="$style.body__poll" v-if="pollCount">
-          <div :class="$style.poll__item" v-for="(poll, index) in post.inc.poll">
+          <div :class="$style.poll__item" v-for="(poll, index) in post.poll">
             <div :class="$style.item__progress">{{ index + 1 }}.{{ poll }}</div>
           </div>
         </div>
@@ -249,86 +249,12 @@
         position: relative;
         overflow: hidden;
         margin: 0 -1px;
+        height: 420px;
         &:after { @include clearfix }
       }
-
-      .images_wrapper.images_6 {
-        width: 15%;
-        height: 100px;
-        &:first-child {
-          width: 70%;
-          height: 300px;
-        }
-        &:last-child {
-          width: 30%;
-          height: 100px;
-        }
-      }
-      .images_wrapper.images_5 {
-        width: 20%;
-        height: 150px;
-        &:first-child {
-          width: 60%;
-          height: 300px;
-        }
-      }
-      .images_wrapper.images_4 {
-        width: 15%;
-        height: 100px;
-        &:first-child {
-          width: 85%;
-          height: 300px;
-        }
-      }
-
-      .images_wrapper.images_3 {
-        width: 30%;
-        height: 150px;
-        &:first-child {
-          width: 70%;
-          height: 300px;
-        }
-      }
-
-      .images_wrapper.images_2 {
-        width: 50%;
-        height: 300px;
-        &:first-child {
-          float: left;
-          width: 50%;
-          height: 300px;
-        }
-      }
-
-      .images_wrapper.images_1 {
-        float: none;
-        &:first-child {
-          width: 100%;
-          height: 350px;
-        }
-      }
-
-      .images_wrapper {
+      .images {
         position: relative;
-        float: left;
-        width: 10%;
-        height: 100px;
-        padding: 1px;
-        overflow: hidden;
-        cursor: pointer;
-        &:first-child {
-          width: 70%;
-          height: 300px;
-        }
-      }
-
-      .images__item {
-        width: 100%;
         height: 100%;
-        background-repeat: no-repeat;
-        background-size: cover;
-        background-position: center;
-        border: 1px solid #f5f6fa;
       }
     }
 
@@ -409,6 +335,7 @@
 <script>
   import AppLoader from '../app-loader.vue';
   import AppComment from './timeline-comment.vue';
+  import PostImages from '../offer/offer-images.vue';
   import AppFilters from '../helpers/filters.js';
   import Firebase from 'firebase';
   import firebase from '../../firebase.js';
@@ -420,7 +347,7 @@
   export default {
     name: 'timeline-post',
     props: ['post', 'auth'],
-    components: { AppLoader, AppComment },
+    components: { AppLoader, AppComment, PostImages },
     filters: AppFilters,
     methods: {
       leaveAnswer(comment) {
@@ -481,27 +408,10 @@
         return length;
       },
       pollCount() {
-        let includes = this.post.inc,
-            pollExist = typeof includes != 'undefined' && typeof includes.poll != 'undefined';
-        if ( pollExist && includes.poll.length > 1 ) {
-          return includes.poll.length;
-        }
-        else return false;
-
+        return typeof this.post.poll !== 'undefined';
       },
       imagesCount() {
-        let includes = this.post.inc,
-            imagesExists = typeof includes != 'undefined' && typeof includes.images != 'undefined';
-        if ( imagesExists ) {
-          let length = 0;
-          for ( let key in includes.images ) {
-            if ( includes.images.hasOwnProperty(key) ) {
-                ++length;
-            }
-          }
-          return length;
-        }
-        else return false;
+        return typeof this.post.images !== 'undefined';
       }
     },
     data() {
@@ -521,10 +431,14 @@
     },
     created() {
       usersRef.child(this.post.author).on('value', author => {
-        this.author = author.val();
-        this.newComment.to = this.author.key;
-        this.commentTo = this.author.name;
-        this.authorReady = true;
+        if ( author.exists() ) {
+          this.author = author.val();
+          this.newComment.to = this.author.key;
+          this.commentTo = this.author.name;
+          this.authorReady = true;
+        } else {
+
+        }
       });
 
       commentsRef.orderByChild('post').equalTo(this.post.key).on('value', comments => {

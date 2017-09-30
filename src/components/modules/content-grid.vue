@@ -2,6 +2,7 @@
   <ul :class="$style.content__grid">
     <router-link v-for="item in data"
       :to="{ name: 'offer', params: { id: item.id } }"
+      :key="item.id"
       :class="$style.grid__item" tag="li">
       <span :class="$style.item__type">Продажа</span>
       <div :class="$style.wrapper_image">

@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.new_post" v-if="dataReady">
+  <div :class="$style.new_post">
     <div :class="$style.new_post__userpic">
       <img :src="user.photo" :alt="user.name" :class="$style.userpic__image">
     </div>
@@ -9,19 +9,19 @@
       </textarea>
     </div>
     <div :class="$style.new_post__images" v-if="isImagesIncluded">
-      <div :class="$style.images_wrapper" v-for="(image, key) in post.inc.images" @click="removeImage(key)">
-        <div :class="$style.images__item" :style="{ 'background-image': 'url(' + image.url + ')' }"></div>
+      <div :class="$style.images_wrapper" v-for="(image, index) in post.images" @click="removeImage(index)">
+        <div :class="$style.images__item" :style="{ 'background-image': 'url(' + image + ')' }"></div>
       </div>
     </div>
     <div :class="$style.new_post__poll" v-if="isPollIncluded">
-      <div :class="$style.poll_wrapper" v-for="(answer, index) in post.inc.poll">
-        <app-input @keydown.enter.native="post.inc.poll.push('Следующий вариант ответа')" v-model="post.inc.poll[index]" placeholder="answer"></app-input>
+      <div :class="$style.poll_wrapper" v-for="(answer, index) in post.poll">
+        <app-input @keydown.enter.native="post.poll.push('Следующий вариант ответа')" v-model="post.poll[index]" placeholder="answer"></app-input>
       </div>
     </div>
     <div :class="$style.new_post__actions">
       <app-input :class="$style.actions__send" type="button" @click="publishPost">Отправить</app-input>
       <div :class="[$style.actions__add_poll, isPollIncluded && $style._active]" title="Добавить опрос" @click="isPollIncluded = !isPollIncluded"></div>
-      <upload-images type="hidden" :class="$style.actions__add_images" v-model="post.inc.images" title="Добавить фотографии" :multiple="true"></upload-images>
+      <upload-images type="hidden" :class="$style.actions__add_images" @input="onImageLoad" title="Добавить фотографии" :multiple="true"></upload-images>
     </div>
   </div>
 </template>
@@ -180,11 +180,14 @@
 
   export default {
     name: 'timeline-new-post',
-    props: ['auth'],
+    props: ['auth', 'user'],
     components: { AppInput, UploadImages },
     methods: {
+      onImageLoad(image) {
+        this.post.images.push(image);
+      },
       removeImage(key) {
-        this.$delete(this.post.inc.images, key);
+        this.$delete(this.post.images, key);
       },
       fieldAutoResize(event) {
         let field = event.target;
@@ -201,38 +204,31 @@
           this.post.created = Firebase.database.ServerValue.TIMESTAMP;
           this.post.key = postsRef.push().key;
           postsRef.child(this.post.key).update(this.post);
-          this.post = { inc: { poll: ['Первый вариант ответа'], images: [] }, message: '', author: this.auth.uid }
+          this.post = {
+            author: this.user.key,
+            author_name: [ this.user.name, this.user.surname ].join(' '),
+            message: '',
+            images: [],
+            poll: []
+          }
         }
       }
     },
     data() {
       return {
-        dataReady: false,
         isPollIncluded: false,
-        user: {},
-        post: { inc: { poll: ['Первый вариант ответа'], images: [] }, message: '', author: this.auth.uid }
+        post: {
+          author: this.user.key,
+          author_name: [ this.user.name, this.user.surname ].join(' '),
+          message: '',
+          images: [],
+          poll: []
+        }
       }
-    },
-    mounted() {
-      usersRef.child(this.auth.uid).on('value', user => {
-        this.user = user.val();
-        this.dataReady = true;
-      });
     },
     computed: {
       isImagesIncluded() {
-        let includes = this.post.inc,
-            imagesExists = typeof includes != 'undefined' && typeof includes.images != 'undefined';
-        if ( imagesExists ) {
-          let length = 0;
-          for ( let key in includes.images ) {
-            if ( includes.images.hasOwnProperty(key) ) {
-                ++length;
-            }
-          }
-          return length > 0;
-        }
-        else return false;
+        return typeof this.post.images !== 'undefined';
       }
     }
   }
