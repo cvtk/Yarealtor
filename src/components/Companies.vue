@@ -4,20 +4,19 @@
       <company-create :company="model" @cancel="showCreateModal = false" />
     </modal-overlay>
     <div :class="$style.companies__bar">
-      <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">Компании</li>
-      </ul>
+      <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Компании', to: ''} ]"/> 
     </div>
     <div :class="$style.companies__toolbar">
-      <h1 :class="$style.toolbar__title">Компании<span :class="$style._small">организации портала</span></h1>
-      <div :class="$style.toolbar__actions">
+      <div :class="$style.toolbar__header">
+        <toolbar title="Компании" sub="организации портала"></toolbar>
+      </div>
+      <div :class="$style.toolbar__settings" v-if="isAdmin">
         <default-button label="Создать компанию" @click="showCreateModal = true" />
       </div>
     </div>
 
-    <ul :class="[ $style.companies__grid, $style._yasr ]">
-      <li :class="$style.grid__item" v-for="company in shuffledCompanies">
+    <ul :class="[ $style.companies__grid, $style._yasr ]" v-if="!!yasrCompanies.length">
+      <li :class="$style.grid__item" v-for="company in yasrCompanies">
         <div :class="$style.item_wrapper">
           <div :class="$style.image_wrapper">
             <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image + ')' }"></div>
@@ -34,7 +33,7 @@
       </li>
     </ul>
     <ul :class="$style.companies__grid">
-      <li :class="$style.grid__item" v-for="company in companies">
+      <li :class="$style.grid__item" v-for="company in otherCompanies">
         <div :class="$style.item_wrapper">
           <div :class="$style.image_wrapper">
             <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image + ')' }"></div>
@@ -166,49 +165,14 @@
     }
 
   /* companies__toolbar */
-    .companies__toolbar { margin: 25px 0 }
-
-    .toolbar__title {
-      font-size: 24px;
-      color: #666;
-      margin: 0;
-      padding: 0;
-      letter-spacing: -1px;
-      font-weight: 300;
-      > ._small { font-size: 14px; letter-spacing: 0; text-transform: lowercase; margin-left: 5px; }
+    .companies__toolbar {
+      margin: 25px 0;
+      &:after { @include clearfix }
     }
 
-  /* bar__breadcrumbs */
-    .bar__breadcrumbs {
-      padding: 11px 0;
-      display: inline-block;
-      float: left;
-      margin: 0;
-      list-style: none;
-    }
-    .breadcrumbs__item {
-      display: inline-block;
-      color: #888;
-      cursor: pointer;
-      line-height: 14px;
-      &:last-child {
-        cursor: default;
-      }
-    }
-    .breadcrumbs__icon {
-      color: #888;
-      cursor: default;
-      line-height: 14px;
-      &:after {
-        content: "\e606";
-        display: inline-block;
-        font-family: "Icons";
-        cursor: default;
-        font-size: 7px;
-        margin-left: 5px;
-        vertical-align: middle;
-      }
-    }
+    .toolbar__header { float: left }
+
+    .toolbar__settings { float: right }
 
   /* responsive */
     .companies__grid {
@@ -235,6 +199,8 @@
   import AppInput from './modules/inputs.vue';
   import firebase from '../firebase.js';
   import companyMdl from '../models/company.js'
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
+  import Toolbar from './page-blocks/toolbar.vue';
   import CompanyCreate from './company/company-settings.vue';
   import ModalOverlay from './modal-overlay/modal-overlay.vue';
   import DefaultButton from './default-inputs/default-button.vue';
@@ -243,32 +209,39 @@
 
   export default {
     name: 'companies',
-    props: ['auth'],
-    components: { AppLoader, AppInput, CompanyCreate, ModalOverlay, DefaultButton },
+    props: ['auth', 'user'],
+    components: { AppLoader, AppInput, CompanyCreate, ModalOverlay, DefaultButton, Breadcrumbs, Toolbar },
     data() {
       return {
         dataReady: false,
-        companies: {},
+        companies: [],
         showCreateModal: false,
         model: companyMdl
       }
     },
     created() {
       companiesRef.on('value', companies => {
-        this.companies = companies.val();
+        let c = companies.val();
+        this.companies = Object.keys(c).map( company => c[company]);
         this.dataReady = true;
       })
     },
     computed: {
-      shuffledCompanies: function() {
-        var array = Object.keys(this.companies).map(key => this.companies[key] );
-        for (var i = array.length - 1; i > 0; i--) {
-          var j = Math.floor(Math.random() * (i + 1));
-          var temp = array[i];
-          array[i] = array[j];
-          array[j] = temp;
+      isAdmin() {
+        return this.user.role === 1;
+      },
+      yasrCompanies() {
+        let yasr = this.companies.filter( company => company.yasr );
+        for (let i = yasr.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1));
+          let temp = yasr[i];
+          yasr[i] = yasr[j];
+          yasr[j] = temp;
         }
-        return array;
+        return yasr;
+      },
+      otherCompanies() {
+        return this.companies.filter( company => !company.yasr );
       }
     }
   }

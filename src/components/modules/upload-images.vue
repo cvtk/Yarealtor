@@ -78,7 +78,7 @@
 
   export default {
     name: 'upload-images',
-    props: ['type', 'multiple'],
+    props: ['type', 'multiple', 'value'],
     data() {
       return {
         tmpPath: '/tmp/' + md5(this.hash()),
@@ -138,7 +138,7 @@
               let currentUrl = task.snapshot.downloadURL;
               this.$set( this.images[name], 'url', currentUrl );
               if ( this.images[name].progress >= 100 ) {
-                this.$emit('imageLoaded', this.images[name]);
+                this.$emit('input', this.images[name].url);
                 this.loading = false;
                 this.$refs.input.value = '';
               }

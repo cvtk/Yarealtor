@@ -5,7 +5,7 @@
       <div :class="$style.inputs">
         <div :class="$style.inputs__row">
           <div :class="$style.row__item">
-            <default-text label="Название компании" :validate="validation.name" msg="Минимум пять символов" v-model="local.name" />
+            <default-text label="Название" :validate="validation.name" msg="Минимум 5 символов" v-model="local.name" />
           </div>
           <div :class="$style.row__item">
             <default-text label="Слоган" :validate="validation.slogan" msg="Не более ста символом" v-model="local.slogan" />
@@ -13,10 +13,10 @@
         </div>
         <div :class="$style.inputs__row">
           <div :class="$style.row__item">
-            <default-text label="Страница на портале" :validate="validation.page" msg="Только латинские символы (максимум 18) " v-model="local.page" />
+            <default-text label="Страница" :validate="validation.page" msg="Только латинские символы (максимум 18) " v-model="local.page" />
           </div>
           <div :class="$style.row__item">
-            <default-text label="Адрес эл.почты" :validate="validation.email" msg="Некорректный адрес эл. почты" v-model="local.email" />
+            <default-text label="Эл. почта" :validate="validation.email" msg="Некорректный адрес эл. почты" v-model="local.email" />
           </div>
         </div>
         <div :class="$style.inputs__row">
@@ -34,7 +34,7 @@
             <default-checkbox label="Участник ЯСР" v-model="local.yasr" />
           </div>
           <div :class="$style.row__item">
-            
+            <upload-image v-model="local.image" />
           </div>
         </div>
       </div>
@@ -63,11 +63,10 @@
     width: 700px;
     @media (max-width: $bp-small) {
       width: 320px;
-      .row__item {
-        float: 100%;
-        padding: 0;
-        width: 100%
-      }
+      padding: 15px;
+      max-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
   }
   .settings__header {
@@ -117,6 +116,8 @@
 <script>
 
   import firebase from '../../firebase.js';
+  import Firebase from 'firebase';
+  import UploadImage from '../modules/upload-images.vue'
   import DefaultText from '../default-inputs/default-text.vue';
   import DefaultTextarea from '../default-inputs/default-textarea.vue';
   import DefaultNumber from '../default-inputs/default-number.vue';
@@ -129,7 +130,7 @@
 
   export default {
     name: 'company-settings',
-    components: { DefaultText, DefaultNumber, DefaultButton, DefaultTextarea, DefaultCheckbox },
+    components: { UploadImage, DefaultText, DefaultNumber, DefaultButton, DefaultTextarea, DefaultCheckbox },
     props: {
       company: { type: Object, default: [] }
     },
@@ -146,7 +147,7 @@
         return {
           name: this.local.name.trim().length > 5,
           slogan: this.local.slogan.length < 100,
-          page: pageRE.test(this.local.page) && this.local.page.length < 18,
+          page: pageRE.test(this.local.page) && this.local.page.length < 17 && this.local.page.length > 4,
           email: emailRE.test(this.local.email),
           phone: this.local.phone.trim().length > 8,
           address: this.local.address.length < 255,
@@ -162,7 +163,19 @@
       }
     },
     methods: {
-      saveCompany() {}
+      saveCompany() {
+        if ( !this.local.key ) {
+          this.local.key = companiesRef.push().key;
+          this.local.created = Firebase.database.ServerValue.TIMESTAMP;
+        }
+        companiesRef.child(this.local.key).update(this.local)
+          .then( () => {
+            console.log('Save complete');
+            this.$router.push({ name: 'company', params: { page: this.local.page } });
+            this.$emit('cancel');
+          })
+          .catch( error => { console.log( error.code ) })
+      }
     }
   }
   

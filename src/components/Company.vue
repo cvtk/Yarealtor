@@ -13,8 +13,8 @@
         </div>
       </div>
     </modal-overlay>
-    <modal-overlay :show="showSettingsModal" @close="showSettingsModal">
-      <company-settings :company="company" />
+    <modal-overlay :show="showSettingsModal" @close="showSettingsModal = false">
+      <company-settings :company="local" @cancel="showSettingsModal = false" />
     </modal-overlay>
     <div :class="$style.company__bar">
       <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Компании', to: 'companies'}, { text: company.name, to: '' } ]"/> 
@@ -29,7 +29,7 @@
     </div>
     <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image + ')' }">
       <div :class="$style.title_wrapper">
-        <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge">Участник ЯСР</span></h2>
+        <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge" v-if="company.yasr">Участник ЯСР</span></h2>
         <h3 :class="$style.banner__slogan">{{ company.slogan }}</h3>
       </div>
     </div>
@@ -39,23 +39,20 @@
         <div :class="$style.content__col">
           <div :class="$style.company__about_us">
             <h4 :class="$style.about_us__header"><span :class="$style.header__icon"></span> О Компании</h4>
-            <p :class="$style.about_us__description">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+            <p :class="$style.about_us__description" v-if="company.overview">{{ company.overview }}</p>
             <div :class="$style.about_us__contacts">
               <div :class="$style.contacts__item"><span :class="$style.item__icon_address"></span>Адрес: {{ company.address }}</div>
               <div :class="$style.contacts__item"><span :class="$style.item__icon_phone"></span>Телефон: {{ company.phone }}</div>
               <div :class="$style.contacts__item"><span :class="$style.item__icon_email"></span>Эл. почта: {{ company.email }}</div>
             </div>
-            <div :class="$style.about_us__requisites">
+            <div :class="$style.about_us__requisites" v-if="company.requisites">
               <h5 :class="$style.requisites__title">Реквизиты</h5>
-              <p :class="$style.requisites__item">Юридический адрес: 150000, г. Ярославль, ул. Большая Октябрьская, 76
-                ИНН: 760214015080
-                ОГРН: 1027700067328
-                Расчетный счет: 40802810002910000776 в  АО "АЛЬФА-БАНК"
+              <p :class="$style.requisites__item">{{ company.requisites }}
               </p>
             </div>
           </div>
           <div :class="[ $style.company__employees, $style._inactive ]">
-            <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Ожидают подтверждения</h4>
+            <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Заявки</h4>
             <div :class="$style.employees_wrapper">
               <div :class="$style.employees__notfound" v-if="!inactives.length">Активных заявок нет</div>
               <div :class="$style.employees__item" v-else v-for="employee in inactives">
@@ -248,6 +245,7 @@
       margin: 0;
       color: #808a94;
       background-color: #fff;
+      white-space: pre-line;
     }
 
     .about_us__contacts {
@@ -637,13 +635,15 @@
         markToRemove: '',
         search: '',
         company: {},
-        users: []
+        users: [],
+        local: {}
       }
     },
     created() {
       companiesRef.orderByChild('page').equalTo(this.$route.params.page).on('value', (company) => {
         if ( company.exists() ) { company.forEach(item => {
           this.company = item.val();
+          this.local = item.val();
           usersRef.orderByChild('company').equalTo(this.company.key).on('value', employees => {
             if ( employees.exists() ) {
               let e = employees.val();

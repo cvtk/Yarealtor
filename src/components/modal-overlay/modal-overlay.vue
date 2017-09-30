@@ -10,6 +10,7 @@
 </template>
 
 <style>
+
   .modal-enter,
   .modal-leave-to {
     opacity: 0;
@@ -23,13 +24,13 @@
 </style>
 
 <style lang="scss" module>
-
+  @import "../../assets/style.scss";
   .modal_overlay {
     position: fixed;
     top: 0; bottom: 0;
     left: 0; right: 0;
     background-color: rgba(0, 0, 0, .65);
-    z-index: 9998;
+    z-index: 9997;
     transition: opacity .3s ease;
     display: flex;
     align-items: center;
@@ -42,15 +43,21 @@
   }
 
   .modal_overlay__close_button {
+    @media (max-width: $bp-extra-small) { background-color: #32c5d2; }
     position: absolute;
     top: 26px;
     right: 24px;
     background-image: url("./close-button.svg");
     background-repeat: no-repeat;
-    width: 24px;
-    height: 24px;
+    width: 36px;
+    height: 36px;
     background-size: 100%;
     cursor: pointer;
+    z-index: 9999;
+    background-size: 50%;
+    background-position: center;
+    border-radius: 50%;
+    background-color: transparent;
   }
 
   .modal_overlay__content_slot {
@@ -58,7 +65,7 @@
     @media (min-width: 992px) { max-width: 970px }
     @media (min-width: 1200px) { max-width: 1170px }
     padding: 0;
-    z-index: 9999;
+    z-index: 9998;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .6);
     transition: all .3s;
   }
