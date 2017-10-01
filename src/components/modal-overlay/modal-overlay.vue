@@ -2,7 +2,7 @@
   <transition name="modal" appear>
     <div :class="[ $style.modal_overlay, layoutImage && $style._image ]" v-if="show" @click.self="closeModal">
       <div :class="$style.modal_overlay__close_button" @click="closeModal" v-if="closeButton"></div>
-      <div :class="$style.modal_overlay__content_slot" id="hR2ykz_">
+      <div :class="[ $style.modal_overlay__content_slot, borderless && $style._borderless ]" id="hR2ykz_">
         <slot></slot>
       </div>
     </div>
@@ -68,6 +68,7 @@
     z-index: 9998;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .6);
     transition: all .3s;
+    &._borderless { box-shadow: none }
   }
 </style>
 
@@ -77,7 +78,8 @@
     props: {
       show: { default: false, type: Boolean },
       layoutImage: { default: false, type: Boolean },
-      closeButton: { default: true, type: Boolean }
+      closeButton: { default: true, type: Boolean },
+      borderless: { default: false, type: Boolean }
     },
     methods: {
       closeModal() {

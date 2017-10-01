@@ -1,7 +1,7 @@
 <template>
   <label :class="$style.upload" v-if="type === 'hidden'">
     <slot></slot>
-    <input :class="$style.upload__input" type="file" ref="input" :multiple="multiple === true" @change="upload">
+    <input :class="$style.upload__input" type="file" accept="image/x-png,image/gif,image/jpeg" ref="input" :multiple="multiple === true" @change="upload">
   </label>
   <label :class="$style.upload" v-else>
     <div :class="$style.upload__progress" :style="{ 'width': progress + '%' }" v-show="loading === true"></div>
@@ -10,7 +10,7 @@
       <span v-if="loading === true">{{ progress }}%</span>
       <span v-else><slot></slot></span>
     </span>
-    <input :class="$style.upload__input" ref="input" type="file" :multiple="multiple === true" @change="upload">
+    <input :class="$style.upload__input" ref="input" accept="image/x-png,image/gif,image/jpeg" type="file" :multiple="multiple === true" @change="upload">
   </label>
 </template>
 
@@ -73,6 +73,7 @@
 <script>
   import md5 from 'js-md5';
   import firebase from '../../firebase.js';
+  import fface from '../helpers/fireface.js';
 
   const ref = firebase.storage().ref();
 
@@ -81,7 +82,7 @@
     props: ['type', 'multiple', 'value'],
     data() {
       return {
-        tmpPath: '/images/',
+        path: '/images/',
         images: {},
         progress: 0,
         loading: false
@@ -116,35 +117,51 @@
         this.loading = true;
         this.images = {};
         Array.prototype.forEach.call(e.target.files, file => {
+          fface.storage.uploadImage(file).then( results => {
+            console.log(results)
+            let images = results.reduce( (result, item) => {
+              let name = item.metadata.name.replace(/\..+$/, '');
+              result[name] = item.downloadURL;
+              return result;
+            }, {});
+            this.$emit('input', images);
+            this.$refs.input.value = '';
+          })
+        })
+        // Array.prototype.forEach.call(e.target.files, file => {
+        //   let name = this.md5file(file),
+        //       dir = this.path + name;
 
-          let name = this.md5file(file),
-              ext = file.name.split('.').pop(),
-              fullRef = this.tmpPath + '/' + name + '.' + ext,
-              task = ref.child(fullRef).put(file);
+        //   ['orig', 'small', 'medium' ].forEach( size => {
 
-          this.$set( this.images, name, { name: name } )
           
-          task.on('state_changed',
-            state => {
-              
-              let currentProgress = Math.round((state.bytesTransferred / state.totalBytes) * 100);
-              this.$set( this.images[name], 'progress', currentProgress );
-              this.progress = this.averageProgress(this.images);
-            }, 
-            error => {
-              console.log(error);
-            },
-            () => {
-              let currentUrl = task.snapshot.downloadURL;
-              this.$set( this.images[name], 'url', currentUrl );
-              if ( this.images[name].progress >= 100 ) {
-                this.$emit('input', this.images[name].url);
-                this.loading = false;
-                this.$refs.input.value = '';
-              }
-            }
-          )
-        });
+        //     let fullRef = dir + '/' + size + '.jpg',
+        //         task = ref.child(fullRef).put(file);
+
+        //     this.$set( this.images, name, { name: name } )
+            
+        //     task.on('state_changed',
+        //       state => {
+                
+        //         let currentProgress = Math.round((state.bytesTransferred / state.totalBytes) * 100);
+        //         this.$set( this.images[name], 'progress', currentProgress );
+        //         this.progress = this.averageProgress(this.images);
+        //       }, 
+        //       error => {
+        //         console.log(error);
+        //       },
+        //       () => {
+        //         let currentUrl = task.snapshot.downloadURL;
+        //         this.$set( this.images[name], size, currentUrl );
+        //         if ( this.images[name].progress >= 100 ) {
+        //           this.$emit('input', this.images[name]);
+        //           this.loading = false;
+        //           this.$refs.input.value = '';
+        //         }
+        //       }
+        //     )
+        //   })
+        // });
       }
     }
   }

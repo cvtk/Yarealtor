@@ -10,7 +10,7 @@
     </div>
     <div :class="$style.new_post__images" v-if="isImagesIncluded">
       <div :class="$style.images_wrapper" v-for="(image, index) in post.images" @click="removeImage(index)">
-        <div :class="$style.images__item" :style="{ 'background-image': 'url(' + image + ')' }"></div>
+        <div :class="$style.images__item" :style="{ 'background-image': 'url(' + image.small + ')' }"></div>
       </div>
     </div>
     <div :class="$style.new_post__poll" v-if="isPollIncluded">

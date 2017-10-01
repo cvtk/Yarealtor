@@ -3,11 +3,12 @@
     <div :class="$style.images__prev" @click="previous()" v-if="isMultiple"></div>
     <div :class="$style.images__next" @click="next()" v-if="isMultiple"></div>
     <div :class="$style.images__carousel">
-      <flickity :class="[ $style.carousel, 'carousel-main' ]" ref="flickity" :options="opt">
+      <flickity :class="[ $style.carousel, fullscreen && $style._full ]"
+        ref="flickity" :options="opt">
         <div :class="$style.carousel__item" v-for="(image, index) in images">
-          <div :class="$style.item">
-            <div :class="$style.item__background" :style="{ 'background-image': 'url(' + image + ')' }"></div>
-            <img :class="[ $style.item__image, false && $style._portret ]" :src="image">
+          <div :class="$style.item" @click="showFullscreen(index)">
+            <div :class="$style.item__background" :style="{ 'background-image': 'url(' + image.small + ')' }"></div>
+            <img :class="[ $style.item__image, false && $style._portret ]" :src="image.orig">
           </div>
         </div>
       </flickity>
@@ -16,11 +17,12 @@
       <flickity :class="$style.navigation" ref="navigation" :options="navOpt">
         <div :class="$style.navigation__item" 
           v-for="(image, index) in images" 
-          :style="{ 'background-image': 'url(' + image + ')' }"
+          :style="{ 'background-image': 'url(' + image.small + ')' }"
           @click="select(index)">  
         </div>
       </flickity>
     </div>
+    <offer-modal-images :showModal="showModal" :current="current" :images="images" @close="showModal = false" />
   </div>
 </template>
 
@@ -40,6 +42,7 @@
     position: relative;
     width: 100%;
     height: 100%;
+    &._full { cursor: pointer; }
   }
 
   .carousel__item {
@@ -132,19 +135,23 @@
 
 <script>
   import Flickity from 'vue-flickity';
+  import OfferModalImages from './offer-modal-images.vue';
 
   export default {
     name: 'offer-images',
     props: {
-      images: { type: Array, default: [] }
+      images: { type: Array, default: [] },
+      fullscreen: { type: Boolean, default: true }
     },
-    components: { Flickity },
+    components: { Flickity, OfferModalImages },
 
     data() {
       return {
         opt: { pageDots: false, prevNextButtons: false },
         navOpt: { contain: true, pageDots: false, prevNextButtons: false },
-        dataReady: false
+        current: 0,
+        dataReady: false,
+        showModal: false
       }
     },
 
@@ -169,6 +176,9 @@
 
       previous() {
         this.$refs.flickity.previous();
+      },
+      showFullscreen(index) {
+        this.current = index; this.showModal = true; 
       }
     }
   }
