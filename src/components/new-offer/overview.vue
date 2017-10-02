@@ -3,18 +3,18 @@
     <div :class="$style.row">
       <div :class="$style.overview__images">
         <div :class="$style.images">
-          <div v-if="images.length === 0"
+          <div v-if="local.images.length === 0"
             :class="$style.images__item" 
             :style="{ 'background-image': 'url(/static/image-placeholder.png)' }">
           </div>
-          <div v-for="(image, index) in images" v-else
+          <div v-for="(image, index) in local.images" v-else
               :class="$style.images__item"
               @click="moveToFrontImage(index)"
-              :style="{ 'background-image': 'url(' + image.url + ')' }">
+              :style="{ 'background-image': 'url(' + image.orig + ')' }">
             <div :class="$style.images__remove" @click.stop="removeImage(index)" title="Удалить изображение"></div>
           </div>
         </div>
-        <app-upload-images @imageLoaded="onImageLoaded" :class="$style.images__upload" :multiple="true">Добавить изображение</app-upload-images>
+        <app-upload-images @input="imagesLoaded" :class="$style.images__upload" :multiple="true">Добавить изображение</app-upload-images>
       </div>
 
       <div :class="$style.overview__content">
@@ -25,37 +25,35 @@
             <div :class="$style.group__row">
               <div :class="$style.row__item_50p" v-for="opt in mdl.type.options">
                 <default-radio name="offerType"
-                  v-model="type"
+                  v-model="local.type"
                   :option="opt.value"
                   :label="opt.title"
-                  :validate="validateType"
+                  :validate="validation.type"
                   msg="Обязательное поле"
                 />
               </div>
             </div>
             <div :class="$style.group__row">
-              <default-number v-model="price" :label="mdl.price.title" :validate="validatePrice" msg="Обязательное поле (минимум тысяча рублей)" />
+              <default-number v-model="local.price" :label="mdl.price.title" :validate="validation.price" msg="Обязательное поле (минимум тысяча рублей)" />
             </div>
             <div :class="$style.group__row">
-              <default-select nameField="title" v-model="object" 
+              <default-select nameField="title" v-model="local.object" 
                 :label="mdl.object.title"
                 :options="mdl.object.options"
-                :validate="validateObject"
+                :validate="validation.object"
                 msg="Обязательное поле"
               />
             </div>
           </div>
           <div :class="$style.content__group">
             <span :class="$style.group__title">{{ mdl.description.title }}</span>
-            <textarea :class="$style.content__description" v-model="description" rows="7"></textarea>
+            <default-textarea 
+              :label="mdl.description.title"
+              :validate="validation.description" 
+              msg="Обязательное поле"
+              v-model="local.description"
+            />
           </div>
-        </div>
-      </div>
-    </div>
-    <div :class="$style.overview__actions">
-      <div :class="$style.actions">
-        <div :class="$style.actions__next">
-          <default-button icon="next" label="Вперёд" :red="!done" @click="onNextStep" />
         </div>
       </div>
     </div>
@@ -67,14 +65,12 @@
   .row {
     position: relative;
     background-color: #fff;
-    overflow: auto;
     &:after { @include clearfix }
   }
 
   .images {
     position: relative;
     background-color: #eef1f5;
-    overflow: auto;
     &:after { @include clearfix }
   }
 
@@ -239,62 +235,64 @@
   import DefaultSelect from '../default-inputs/default-select.vue';
   import DefaultNumber from '../default-inputs/default-number.vue';
   import DefaultButton from '../default-inputs/default-button.vue';
+  import DefaultTextarea from '../default-inputs/default-textarea.vue';
 
   export default {
     name: 'overview',
-    components: { AppInput, AppUploadImages, DefaultRadio, DefaultSelect, DefaultNumber, DefaultButton },
+    components: { AppInput, AppUploadImages, DefaultRadio, DefaultSelect, DefaultNumber, DefaultButton, DefaultTextarea },
+    props: ['value'],
     data() {
       return {
         mdl: {},
-        type: '',
-        price: '',
-        object: '',
-        images: [],
-        description: ''
+        local: this.value
+      }
+    },
+    watch: {
+      value() {
+        this.local = this.value;
+      },
+      isValid(state) {
+        this.$emit('stateChange', state, 'overview');
       }
     },
     computed: {
-      validateType() { return !!this.type },
-      validatePrice() { return !!this.price && this.price > 1000 },
-      validateObject() { return !!this.object },
-      done() { return  !!this.type && ( !!this.price && this.price > 1000 ) && !!this.object  }
+      validation: function () {
+        return {
+          type: !!this.local.type,
+          price: this.local.price > 1000,
+          object: !!this.local.object,
+          description: !!this.local.description.trim(),
+        }
+      },
+      isValid: function () {
+        let validation = this.validation
+        return Object.keys(validation).every(function (key) {
+          return validation[key]
+        })
+      }
     },
-
     created() {
       this.mdl = mdl.getModel( ['offer', 'general'] );
+      this.local.images = [];
     },
 
     methods: {
-      modelSelect() {
-        console.log('ok!');
-      },
       moveToFrontImage(index) {
         if (!!index) {
-          let first = this.images[0];
-          this.$set(this.images, 0, this.images[index]);
-          this.$set(this.images, index, first);
+          let first = this.local.images[0];
+          this.$set(this.local.images, 0, this.local.images[index]);
+          this.$set(this.local.images, index, first);
         }
       },
 
       removeImage(index) {
-        let imgs = this.images.splice(index, 1);
-        this.$set( this.images, imgs );
+        let imgs = this.local.images.splice(index, 1);
+        this.$set( this.local.images, imgs );
       },
 
-      onImageLoaded(image) {
-        let name = image.name, url = image.url;
-        images.push({ name, url });
+      imagesLoaded(image) {
+        this.local.images.push( image );
       },
-
-      onNextStep() {
-        if ( this.done ) {
-          let dataPrepare = {}
-          for ( let field in this.mdl ) {
-            dataPrepare[field] = this[field];
-          }
-          this.$emit('dataEntered', dataPrepare);
-        } 
-      }
     }
   }
 </script>

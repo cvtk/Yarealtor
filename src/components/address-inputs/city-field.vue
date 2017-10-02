@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.city">
     <div :class="$style.text">
-      <input type="text" :class="[ $style.text__input, local && $style._edited ]" :id="id" v-model="local" 
+      <input type="text" :class="[ $style.text__input, local && $style._edited, !validate && $style._error ]" :id="id" v-model="local" 
         @input="onInput"
         @blur="onBlur"
         @keyup="onKeyup">
@@ -80,7 +80,10 @@
     }
   }
 
-  .text__input:focus ~ .text__msg { color: #36c6d3; opacity: 1 }
+  .text__input._error ~ .text__label:after,
+  .text__input._error:focus:not([readonly]) ~ .text__label:after { background: #f36a5a }
+
+  .text__input._error:focus:not([readonly]) ~ .text__msg { color: #f36a5a; opacity: 1 }
 
   .text__label {
     display: inline-block;
@@ -124,7 +127,12 @@
   export default {
     name: 'city-field',
     components: { AutocompleteMenu },
-    props: [ 'label', 'value', 'msg' ],
+    props: {
+      value: { default: 'default' },
+      label: { type: String, default: '' },
+      msg: { type: String, default: '' },
+      validate: { type: Boolean, default: true }
+    },
     data() {
       return {
         local: this.value,
@@ -132,6 +140,11 @@
         query: '',
         dataReady: true,
         showMenu: false
+      }
+    },
+    watch: {
+      value() {
+        this.local = this.value;
       }
     },
     methods: {
@@ -166,7 +179,7 @@
         this.showMenu = false;
         this.local = object.name;
         this.$emit('input', this.local);
-        this.$emit('citySelect', object.id);
+        this.$emit('citySelect', object);
       }
     }
   }

@@ -13,8 +13,8 @@
         </div>
         <div :class="$style.main__current_step">
           <transition :name="stepsDirection" mode="out-in">
-            <first-step v-if="currentStep === 1" @dataEntered="onDataEntered"></first-step>
-            <second-step v-model="offer" v-else-if="currentStep === 2"></second-step>
+            <overview-step v-model="offer" v-if="currentStep === 1" @stateChange="onStateChange" />
+            <details-step v-model="offer" v-else-if="currentStep === 2" @stateChange="onStateChange" />
             <offer-preview :offer="offer" :user="user" v-else-if="currentStep === 3" />
           </transition>  
         </div>
@@ -24,6 +24,16 @@
               <div :class="$style.validate__text">{{ validateMsg }}</div>
             </div>
           </transition>
+        </div>
+        <div :class="$style.main__actions">
+          <div :class="$style.actions">
+            <div :class="$style.actions__previos">
+              <default-button icon="prev" label="Назад" @click="onPreviosStep" />
+            </div>
+            <div :class="$style.actions__next">
+              <default-button icon="next" label="Вперёд" :red="!isDone" @click="onNextStep" />
+            </div>
+          </div>
         </div>
       </div> 
     <app-ad-sidebar :class="$style.create__ad"></app-ad-sidebar>
@@ -90,7 +100,6 @@
   .main {
     position: relative;
     margin-right: 300px;
-    overflow: hidden;
   }
   
   .validate {
@@ -112,7 +121,6 @@
 
   .main__current_step {
     position: relative;
-    overflow: hidden;
   }
 
   .actions {
@@ -137,8 +145,8 @@
   import Breadcrumbs from './page-blocks/breadcrumbs.vue'
   import Toolbar from './page-blocks/toolbar.vue'
   import StepsControls from './new-offer/steps-controls.vue';
-  import FirstStep from './new-offer/overview.vue';
-  import SecondStep from './new-offer/details.vue';
+  import OverviewStep from './new-offer/overview.vue';
+  import DetailsStep from './new-offer/new-offer-details.vue';
   import DefaultButton from './default-inputs/default-button.vue';
   import OfferPreview from './offer/offer.vue';
 
@@ -148,19 +156,27 @@
   export default {
     name: 'new_offer',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, AppInput, FirstStep, SecondStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
+    components: { AppLoader, AppAdSidebar, AppInput, OverviewStep, DetailsStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
     filters: AppFilters,
     data() {
       return {
         dataReady: false,
+        firstStepStatus: false,
         currentStep: 1,
         stepsDirection: 'forward',
         validateMsg: '',
-        offer: {}
+        offer: {},
+        stepsGroup: { overview: false, details: false }
       }
     },
     created() {
       this.dataReady = true;
+      this.offer = mdl.getObject();
+    },
+    computed: {
+      isDone() {
+        return (this.currentStep === 1 && this.stepsGroup.overview) || (this.currentStep === 2 && this.stepsGroup.details)
+      }
     },
     methods: {
       onDataEntered(data) {
@@ -179,14 +195,8 @@
         }
       },
       onNextStep() {
-        if ( this.currentFullfilled() ) {
-          this.validateMsg= '';
-          this.stepsDirection = 'forward';
-          this.currentStep += 1;
-        } else {
-          let curr = this.offer[this.currentField()].title;
-          this.validateMsg = 'Поле \"' + curr + '\" обязательно к заполнению.'
-        }
+        this.stepsDirection = 'forward';
+        this.currentStep += 1;
       },
 
       onPreviosStep() {
@@ -196,6 +206,9 @@
 
       onSave() {
 
+      },
+      onStateChange(value, step) {
+        this.stepsGroup[step] = value;
       }
     }
   }

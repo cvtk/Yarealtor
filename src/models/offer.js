@@ -108,6 +108,17 @@ let model = {
   apartment_balcony: { type: Boolean, default: defs.balcony }
 }
 
+let templates = {
+  address(object) {
+    switch(object) {
+      case 4: return ['locality', 'street', 'building', 'district', 'waymark', 'direction', 'distance', 'cadastral_number' ]; break;
+      case 5: return ['locality', 'street', 'disposition' ]; break;
+      case 6: return ['locality', 'district', 'waymark', 'direction', 'distance', 'cadastral_number' ]; break;
+      default: return ['locality', 'street', 'building', 'district', 'waymark' ];
+    }
+  }
+};
+
 let fields = {};
 
 fields.offer = {
@@ -144,6 +155,7 @@ fields.address = {
   streetId: { title: 'Идентификатор улицы', options: [] },
   building: { title: 'Строение', options: [] },
   buildingId: { title: 'Идентификатор строение', options: [] },
+  buildingType: { title: 'Тип строения', options: [] },
   district : { title: 'Район',
     options: [
       { value: 1, title: 'Дзержинский' },
@@ -172,10 +184,9 @@ fields.address = {
       { value: 12, title: 'Красный Профинтерн' },
       { value: 13, title: 'Диево-городище' },
       { value: 14, title: 'Прусовское' },
-      { value: 15, title: 'Красный Профинтерн' }
     ]
   },
-  distance: { title: 'Расстояние до Ярославля', options: [] },
+  distance: { title: 'До города, км', options: [] },
   cadastral_number : { title: 'Кадастровый номер', options: [] },
   disposition: { title: 'Расположение', 
     options: [
@@ -185,6 +196,87 @@ fields.address = {
       { value: 4, title: 'парковочное место' }
     ]
   }
+}
+
+fields.params = {
+  //Продать квартиру НАЧАЛО
+  building_type: { title: 'Тип дома',
+    options: [
+      { value: 1, title: 'вторичное' },
+      { value: 2, title: 'новостройка' }
+    ]
+  },
+  material: { title: 'Материал',
+    options: [
+      { value: 1, title: 'блочный' },
+      { value: 2, title: 'деревянный' },
+      { value: 3, title: 'кирпич' },
+      { value: 4, title: 'монолит' },
+      { value: 5, title: 'монолит' },
+    ]
+  },
+  rooms: { title: 'Комнат', options: [] },
+  floor: { title: 'Этаж', options: [] },
+  floors: { title: 'Этажность', options: [] },
+  area_full: { title: 'Общая, м²', options: [] },
+  area_living: { title: 'Жилая, м²', options: [] },
+  area_kitchen: { title: 'Кухня, м²', options: [] },
+  furnish: { title: 'Тип отделки', 
+    options: [
+      { value: 1, title: 'требует ремонта' },
+      { value: 2, title: 'черновая' },
+      { value: 3, title: 'от застройщика' },
+      { value: 4, title: 'жилое состояние' },
+      { value: 5, title: 'косметика' },
+      { value: 6, title: 'евро' }
+    ]
+  },
+  bath: { title: 'Санузел',
+    options: [
+      { value: 1, title: 'без удобств' },
+      { value: 2, title: 'раздельный' },
+      { value: 3, title: 'совмещенный' },
+      { value: 4, title: 'только душ / ванна' }
+    ]
+  },
+  balcony: { title: 'Балкон или лоджия',
+    options: [
+      { value: true, title: 'есть' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  //Продать квартиру КОНЕЦ
+  //Продать комнату НАЧАЛО
+  placement_type: { title: 'Тип',
+    options: [
+      { value: 1, title: 'в доме' },
+      { value: 2, title: 'в квартире' },
+      { value: 3, title: 'в коммуналке' },
+      { value: 4, title: 'в общежитии' },
+      { value: 5, title: 'коридорного типа' }
+    ]
+  },
+  // rooms +
+  // material +
+  // floor +
+  // floors +
+  // area_full
+  condition_room: { title: 'Состояние комнаты',
+    options: [
+      { value: 1, title: 'удовлетворительное' },
+      { value: 2, title: 'хорошее' },
+      { value: 3, title: 'отличное' }
+    ]
+  },
+  condition_bath: { title: 'Состояние мест общ. польз.',
+    options: [
+      { value: 1, title: 'удовлетворительное' },
+      { value: 2, title: 'хорошее' },
+      { value: 3, title: 'отличное' }
+    ]
+  },
+  // bath
+  //Продать комнату КОНЕЦ
 }
 
 
@@ -219,6 +311,22 @@ export default {
         return result
       }
     }, {})
+  },
+
+  getFields(obj) {
+    return templates.address(obj);
+
+  },
+  getObject() {
+    let result = {};
+    for ( let field in fields ) {
+      if ( typeof fields[field] !== 'undefined' ) {
+        Object.keys(fields[field]).forEach( item => {
+          result[item] = '';
+        })
+      }
+    }
+    return result;
   },
 
   getOptionTitle(key, item) {

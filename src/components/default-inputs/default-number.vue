@@ -61,6 +61,9 @@
     left: 0;
     bottom: 0;
     pointer-events: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     &:after {
       content: '';
       position: absolute;

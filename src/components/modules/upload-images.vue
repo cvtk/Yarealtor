@@ -118,7 +118,6 @@
         this.images = {};
         Array.prototype.forEach.call(e.target.files, file => {
           fface.storage.uploadImage(file).then( results => {
-            console.log(results)
             let images = results.reduce( (result, item) => {
               let name = item.metadata.name.replace(/\..+$/, '');
               result[name] = item.downloadURL;
