@@ -13,6 +13,10 @@
             <h2 :class="$style.header">Параметры</h2>
             <details-apartment v-model="local" @stateChange="onStateChange" v-if="local.object === 1" />
             <details-room v-model="local" @stateChange="onStateChange" v-if="local.object === 2" />
+            <details-commercial v-model="local" @stateChange="onStateChange" v-if="local.object === 3" />
+            <details-cottage v-model="local" @stateChange="onStateChange" v-if="local.object === 4" />
+            <details-garage v-model="local" @stateChange="onStateChange" v-if="local.object === 5" />
+            <details-land v-model="local" @stateChange="onStateChange" v-if="local.object === 6" />
           </div>
         </div>
       </div>
@@ -66,11 +70,15 @@
   import DetailsAddress from './details-address.vue';
   import DetailsApartment from './details-apartment.vue';
   import DetailsRoom from './details-room.vue';
+  import DetailsCommercial from './details-commercial.vue';
+  import DetailsCottage from './details-cottage.vue';
+  import DetailsGarage from './details-garage.vue';
+  import DetailsLand from './details-land.vue';
 
   export default {
     name: 'new-offer-details',
     props: ['value'],
-    components: { DetailsAddress, DetailsApartment, DetailsRoom },
+    components: { DetailsAddress, DetailsApartment, DetailsRoom, DetailsCommercial, DetailsCottage, DetailsGarage, DetailsLand },
     data() {
       return {
         local: this.value,

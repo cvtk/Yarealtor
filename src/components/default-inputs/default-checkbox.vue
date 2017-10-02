@@ -14,6 +14,9 @@
     
   .checkbox {
     position: relative;
+    min-height: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     .checkbox__input:checked ~ label > .checkbox__check {
       opacity: 1;
       -webkit-transform: scale(1) rotate(45deg);
@@ -37,6 +40,8 @@
     padding-left: 30px;
     font-size: 13px;
     user-select: none;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .checkbox__check {
@@ -72,14 +77,11 @@
 
   export default {
     name: 'default-checkbox',
-    props: {
-      value: { type: Boolean, default: false },
-      label: { type: String, default: ''}
-    },
+    props: ['value', 'label'],
     data() {
       return {
         id: Math.random().toString(36).substring(7),
-        checked: this.value
+        checked: !!this.value
       }
     },
     methods: {

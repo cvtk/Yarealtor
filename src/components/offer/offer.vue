@@ -5,19 +5,19 @@
         <offer-details :offer="offer" />
       </div>
       <div :class="$style.offer__images" v-if="!showMap">
-        <offer-images :images="offer.images.current" />
+        <offer-images :images="offer.images" />
       </div>
       <div :class="$style.offer__map" v-if="showMap">
-        <offer-map :description="offer.house_waymark.current"
-          :address="[ offer.house_city.current, offer.house_address.current, offer.house_number.current ]"
+        <offer-map :description="offer.waymark"
+          :address="[ offer.locality, offer.street, offer.building ]"
         />
       </div>
     </div>
     <div :class="$style.row">
-      <div :class="$style.offer__waymark">{{ offer.house_waymark.current }}</div>
+      <div :class="$style.offer__waymark">{{ offer.waymark }}</div>
     </div>
     <div :class="$style.row">
-      <div :class="$style.offer__description">{{ offer.description.current }}</div>
+      <div :class="$style.offer__description">{{ offer.description }}</div>
     </div>
   </div>
 </template>

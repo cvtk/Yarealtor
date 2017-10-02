@@ -218,8 +218,8 @@ fields.params = {
   rooms: { title: 'Комнат', options: [] },
   floor: { title: 'Этаж', options: [] },
   floors: { title: 'Этажность', options: [] },
-  area_full: { title: 'Общая, м²', options: [] },
-  area_living: { title: 'Жилая, м²', options: [] },
+  area_full: { title: 'Общая пл., м²', options: [] },
+  area_living: { title: 'Жилая пл., м²', options: [] },
   area_kitchen: { title: 'Кухня, м²', options: [] },
   furnish: { title: 'Тип отделки', 
     options: [
@@ -247,7 +247,7 @@ fields.params = {
   },
   //Продать квартиру КОНЕЦ
   //Продать комнату НАЧАЛО
-  placement_type: { title: 'Тип',
+  placement_type: { title: 'Тип помещения',
     options: [
       { value: 1, title: 'в доме' },
       { value: 2, title: 'в квартире' },
@@ -277,8 +277,216 @@ fields.params = {
   },
   // bath
   //Продать комнату КОНЕЦ
-}
+  //Продать коммерческую НАЧАЛО
+  commercial_retail: { title: 'торговое',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  commercial_office: { title: 'офисное',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  commercial_industrial: { title: 'производственное',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  commercial_warehouse: { title: 'складское',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  commercial_business: { title: 'готовый бизнес',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  commercial_land: { title: 'земельный участок',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  commercial_apartments: { title: 'квартиры под перевод',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  commercial_material: { title: 'Материал',
+    options: [
+      { value: 1, title: 'кирпич' },
+      { value: 2, title: 'метало каркас' },
+      { value: 3, title: 'временное сооружение' },
+      { value: 4, title: 'капитальное сооружение' }
+    ]
+  },
+  // floor +
+  special_floor: { title: 'Спец. этаж',
+    options: [
+      { value: 1, title: 'цоколь' },
+      { value: 2, title: 'подвал' },
+      { value: 3, title: 'мансарда' }
+    ]
+  },
+  // floors +
+  // area_full +
+  minimal_area: { title: 'Минимальная площадь продажи/аренды', options: [] },
 
+  line: { title: 'Линия',
+    options: [
+      { value: 1, title: 'первая' },
+      { value: 2, title: 'вторая' },
+    ]
+  },
+  // furnish +
+  planning: { title: 'Планировка',
+    options: [
+      { value: 1, title: 'открытая' },
+      { value: 2, title: 'кабинетная' },
+      { value: 3, title: 'смешанная' }
+    ]
+  },
+  ceilings_height: { title: 'Высота потолков, м', options: [] },
+
+  power: { title: 'Электричество, кВт', options: [] },
+
+  internet: { title: 'Интернет',
+    options: [
+      { value: true, title: 'Да' },
+      { value: false, title: 'Нет' },
+    ]
+  },
+  security_alarm: { title: 'Сигнализация охранная',
+    options: [
+      { value: true, title: 'Да' },
+      { value: false, title: 'Нет' },
+    ]
+  },
+  fire_alarm: { title: 'Пожарная охранная',
+    options: [
+      { value: true, title: 'Да' },
+      { value: false, title: 'Нет' },
+    ]
+  },
+  shutters: { title: 'Роль ставни',
+    options: [
+      { value: true, title: 'Да' },
+      { value: false, title: 'Нет' },
+    ]
+  },
+  monument: { title: 'Памятник архитектуры',
+    options: [
+      { value: true, title: 'Да' },
+      { value: false, title: 'Нет' },
+    ]
+  },
+  windows: { title: 'Окна',
+    options: [
+      { value: 1, title: 'витринные' },
+      { value: 2, title: 'стандартные' }
+    ]
+  },
+  owner: { title: 'Собственник',
+    options: [
+      { value: 1, title: 'физическое лицо' },
+      { value: 2, title: 'организация' },
+      { value: 3, title: 'ИП' },
+      { value: 4, title: 'государство' },
+    ]
+  },
+  //Продать коммерческую КОНЕЦ
+  //Продать дом дачу НАЧАЛО
+  cottage_type: { title: 'Тип',
+    options: [
+      { value: 1, title: 'дача' },
+      { value: 2, title: 'дом' },
+      { value: 3, title: 'таунхаус' }
+    ]
+  },
+  cottage_area: { title: 'Площадь участка, соток', options: [] },
+  // material + 
+  // rooms +
+  // floors +
+  // area_full +
+  // furnish +
+  cottage_gas: { title: 'Газ',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  cottage_power: { title: 'Электричество',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  cottage_water: { title: 'Водоснабжение',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  cottage_sewer: { title: 'Канализация',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  // internet
+  cottage_security: { title: 'Охрана',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  cottage_forest: { title: 'Лес рядом',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  cottage_entrance: { title: 'Круглогодичный подъезд',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  cottage_bus: { title: 'Рядом остановка',
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  //Продать дом дачу КОНЕЦ
+  //Продать гараж НАЧАЛО
+  //area_full
+  garage_material: { title: 'Материал',
+    options: [
+      { value: 1, title: 'блоки' },
+      { value: 2, title: 'кирпич' },
+      { value: 3, title: 'металл' }
+    ]
+  },
+  //Продать гараж КОНЕЦ
+  //Продать участок НАЧАЛО
+  land_type: { title: 'Тип',
+    options: [
+      { value: 1, title: 'под ИЖС' },
+      { value: 2, title: 'под ком. объекты' },
+      { value: 3, title: 'сельхозназначения' }
+    ]
+  },
+  //cottage_area
+}
 
 function is(type, value) {
   if ( typeof type === 'undefined' || typeof value === 'undefined' ) return false;

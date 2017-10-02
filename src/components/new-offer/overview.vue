@@ -273,7 +273,6 @@
     },
     created() {
       this.mdl = mdl.getModel( ['offer', 'general'] );
-      this.local.images = [];
     },
 
     methods: {

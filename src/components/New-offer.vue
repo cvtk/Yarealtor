@@ -173,6 +173,12 @@
       this.dataReady = true;
       this.offer = mdl.getObject();
     },
+    watch: {
+      'offer.object': function(value) {
+        if ( !!this.offer.object ) this.offer = mdl.getObject();
+        this.offer.object = value;
+      }
+    },
     computed: {
       isDone() {
         return (this.currentStep === 1 && this.stepsGroup.overview) || (this.currentStep === 2 && this.stepsGroup.details)

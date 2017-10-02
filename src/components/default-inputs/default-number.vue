@@ -109,8 +109,10 @@
       }
     },
     methods: {
+      isInt(value) { return !isNaN(parseFloat(value)) && isFinite(value) },
       onInput() {
-        this.$emit('input', this.local);
+        //this.$emit('input', this.local);
+        this.$emit('input', ( this.isInt(this.local) ) ? parseFloat(this.local) : this.local );
       },
       onKeyDown(e) {
         if ( ( [46, 8, 9, 27, 13, 110].includes(e.keyCode) ) ||
