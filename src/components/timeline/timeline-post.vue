@@ -17,7 +17,7 @@
       </div>
 
       <div :class="$style.timeline_post__userpic">
-        <img :src="author.photo" :class="$style.userpic__image">
+        <img :src="author.photo.small" :class="$style.userpic__image">
       </div>
 
       <div :class="$style.timeline_post__body">

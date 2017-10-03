@@ -2,10 +2,13 @@
   <div :class="$style.offer">
     <div :class="[$style.row, $style._shadow ]">
       <div :class="$style.offer__details">
-        <offer-details :offer="offer" />
+        <offer-details-apartments :offer="offer" :company="company" :author="author" v-if="offer.object === 1" />
       </div>
       <div :class="$style.offer__images" v-if="!showMap">
-        <offer-images :images="offer.images" />
+        <offer-images :images="offer.images" v-if="imagesAvailable" />
+        <div :class="$style.images" v-else>
+          <img :class="$style.images__placeholder" src="/static/image-not-found.png" alt="Изображение не добавлено">
+        </div>
       </div>
       <div :class="$style.offer__map" v-if="showMap">
         <offer-map :description="offer.waymark"
@@ -51,11 +54,21 @@
     height: 90vh;
   }
 
+  .images {
+    position: relative;
+    padding: 10px;
+  }
+
+  .images__placeholder {
+    max-width: 100%;
+    height: auto;
+  }
+
 </style>
 
 <script>
   import AppLoader from '../app-loader.vue';
-  import OfferDetails from './offer-details.vue';
+  import OfferDetailsApartments from './offer-details-apartments.vue';
   import OfferImages from './offer-images.vue';
   import OfferMap from './offer-map.vue';
   import Icon from 'vue-awesome/components/Icon.vue';
@@ -65,19 +78,36 @@
   import 'vue-awesome/icons/comments-o';
   import 'vue-awesome/icons/star';
   import 'vue-awesome/icons/star-o';
+  import firebase from '../../firebase.js';
+
+  const usersRef = firebase.database().ref('users');
+  const companiesRef = firebase.database().ref('companies');
 
   export default {
     name: 'offer',
     props: ['auth', 'user', 'offer'],
-    components: { AppLoader, OfferDetails, Icon, OfferImages, OfferMap },
+    components: { AppLoader, OfferDetailsApartments, Icon, OfferImages, OfferMap },
     data() {
       return {
         dataReady: false,
-        showMap: false
+        showMap: false,
+        author: {},
+        company: {}
+      }
+    },
+    computed: {
+      imagesAvailable() {
+        return !!this.offer.images.length;
       }
     },
     created() {
-      this.dataReady = true;
+      console.log(this.offer.company)
+      usersRef.child(this.offer.author).once('value', author => this.author = author.val() );
+
+      companiesRef.child(this.offer.company).once('value', company => {
+        this.company = company.val();
+        this.dataReady = true;
+      });
     }
   }
 </script>

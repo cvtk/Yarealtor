@@ -150,9 +150,6 @@
   import DefaultButton from './default-inputs/default-button.vue';
   import OfferPreview from './offer/offer.vue';
 
-  const overviewFields = ['type', 'price', 'object', 'description'];
-  const detailsFields = ['house_city', 'house_address', 'house_number', 'house_district', 'house_waymark', 'house_type', 'house_material', 'apartment_floor', 'house_floors', 'apartment_rooms', 'apartment_furnish', 'apartment_bathroom','apartments_full_area', 'apartments_living_area' ];
-
   export default {
     name: 'new_offer',
     props: ['auth', 'user'],
@@ -166,40 +163,28 @@
         stepsDirection: 'forward',
         validateMsg: '',
         offer: {},
-        stepsGroup: { overview: false, details: false }
+        stepsGroup: { overview: false, address: false, parameters: false }
       }
     },
     created() {
       this.dataReady = true;
-      this.offer = mdl.getObject();
+      this.offer = mdl.init();
+      this.offer.author = this.user.key;
+      this.offer.company = this.user.company.key;
     },
     watch: {
       'offer.object': function(value) {
-        if ( !!this.offer.object ) this.offer = mdl.getObject();
-        this.offer.object = value;
+        Object.assign(this.offer, mdl.init('params'), mdl.init('address'));
+        this.stepsGroup.address = false;
+        this.stepsGroup.parameters = false;
       }
     },
     computed: {
       isDone() {
-        return (this.currentStep === 1 && this.stepsGroup.overview) || (this.currentStep === 2 && this.stepsGroup.details)
+        return (this.currentStep === 1 && this.stepsGroup.overview) || (this.currentStep === 2 && this.stepsGroup.address && this.stepsGroup.parameters )
       }
     },
     methods: {
-      onDataEntered(data) {
-        for ( let field in data ) {
-          this.$set(this.offer, field, data[field]);
-        }
-      },
-      currentField() {
-        let curr = mdl.check(this.offer);
-        return curr;
-      },
-      currentFullfilled() {
-        switch(this.currentStep) {
-          case 1: return !overviewFields.includes( this.currentField() ); break;
-          case 2: return !detailsFields.includes( this.currentField() ); break;
-        }
-      },
       onNextStep() {
         this.stepsDirection = 'forward';
         this.currentStep += 1;
@@ -213,8 +198,8 @@
       onSave() {
 
       },
-      onStateChange(value, step) {
-        this.stepsGroup[step] = value;
+      onStateChange(value, group) {
+        this.stepsGroup[group] = value;
       }
     }
   }

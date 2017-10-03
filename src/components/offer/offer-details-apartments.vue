@@ -2,15 +2,16 @@
   <div :class="$style.details">
     <div :class="$style.details__author">
       <div :class="$style.author">
-        <img :class="$style.author__photo" src="">
+        <div :class="$style.author__photo">
+          <div :class="$style.photo" :style="{ 'background-image': 'url(' + author.photo.small + ')' }"></div>
+        </div>
         <div :class="$style.author__meta">
           <div :class="$style.meta">
-            <router-link :class="$style.meta__name" :to="{ name: 'root' }">
-              Цветков Олег
-              <app-online-status :online="true"></app-online-status>
+            <router-link :class="$style.meta__name" :to="{ name: 'user', params: { page: author.page } }">
+              {{ author.name }} {{ author.surname }}
             </router-link>
-            <router-link :class="$style.meta__company" :to="{ name: 'root' }">
-              ООО "Диджит"
+            <router-link :class="$style.meta__company" :to="{ name: 'company', params: { page: company.page } }">
+              {{ company.name }}
             </router-link>
           </div>
         </div>
@@ -20,11 +21,71 @@
       <ul :class="$style.list">
         <li :class="$style.list__item">
           <div :class="$style.item">
-            <span :class="$style.item__title">{{ offer.type.title }}:</span>
-            <span :class="$style.item__value">{{ humanize( 'type', offer.type.current ) }}</span>
+            <span :class="$style.item__title">Предложение:</span>
+            <span :class="$style.item__value">{{ offerType }}</span>
           </div>
         </li>
         <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">Цена:</span>
+            <span :class="$style.item__value">{{ offer.price }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">Адрес:</span>
+            <span :class="$style.item__value">{{ offer.localityType }}. {{ offer.locality }}, {{ offer.streetType }}. {{ offer.street }}, {{ offer.buildingType }}. {{ offer.building }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">Район:</span>
+            <span :class="$style.item__value">{{ humanize('district', offer.district) }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">{{ mdl.building_type.title }}:</span>
+            <span :class="$style.item__value">{{ humanize('building_type', offer.building_type) }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">{{ mdl.material.title }}:</span>
+            <span :class="$style.item__value">{{ humanize('material', offer.material) }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">{{ mdl.rooms.title }}:</span>
+            <span :class="$style.item__value">{{ offer.rooms }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">{{ mdl.floor.title }}:</span>
+            <span :class="$style.item__value">{{ offer.floor }}/{{ offer.floors }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">{{ mdl.area_full.title }}:</span>
+            <span :class="$style.item__value">{{ offer.area_full }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">{{ mdl.area_living.title }}:</span>
+            <span :class="$style.item__value">{{ offer.area_living }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item">
+          <div :class="$style.item">
+            <span :class="$style.item__title">{{ mdl.area_kitchen.title }}:</span>
+            <span :class="$style.item__value">{{ offer.area_kitchen }}</span>
+          </div>
+        </li>
+<!--         <li :class="$style.list__item">
           <div :class="$style.item">
             <span :class="$style.item__title">{{ offer.price.title }}:</span>
             <span :class="$style.item__value">{{ offer.price.current | price }} руб.</span>
@@ -107,7 +168,7 @@
             <span :class="$style.item__title">{{ offer.apartment_balcony.title }}:</span>
             <span :class="$style.item__value">{{ humanize( 'apartment_balcony', offer.apartment_balcony.current ) }}</span>
           </div>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>
@@ -138,19 +199,22 @@
   }
 
   .author__photo {
-    display: block;
-    max-width: 100%;
-    width: 25%;
-    height: auto;
-    border-radius: 50%;
-    padding-right: 5px;
     float: left;
   }
 
+  .photo {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  }
+
   .author__meta {
-    float: left;
-    width: 75%;
-    padding: 2.5px 0;
+    margin-left: 70px;
+    padding: 4px 0;
   }
 
   .meta {
@@ -223,17 +287,39 @@
 
 <script>
   
-  import AppOnlineStatus from '../modules/online-status.vue';
   import AppFilters from '../helpers/filters.js';
   import mdl from '../../models/offer.js';
 
   export default {
-    name: 'offer-details',
-    props: ['offer'],
+    name: 'offer-details-apartments',
+    props: ['offer', 'company', 'author'],
     filters: AppFilters,
-    components: { AppOnlineStatus },
+    computed: {
+      offerType() {
+        let type = ['', 'Продать', 'Сдать'][this.offer.type];
+        switch(this.offer.object) {
+          case 1: return type + ' квартиру';
+          case 2: return type + ' комнату';
+          case 3: return type + ' коммерческую';
+          case 4: return type + ' дом или дачу';
+          case 5: return type + ' гараж или хозблок';
+          case 6: return type + ' земеьный участок';
+        }
+      }
+    },
+    data() {
+      return {
+        mdl: mdl.getModel(['meta', 'general', 'offer', 'address', 'params'])
+      }
+    },
     methods: {
-      humanize: mdl.getOptionTitle
+      humanize: function(key, value) {
+        console.log(key, value)
+        let r = mdl.getOptionTitle(key, value);
+
+        return r;
+      }
+      
     }
   }
 </script>

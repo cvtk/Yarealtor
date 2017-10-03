@@ -81,31 +81,17 @@
     components: { DetailsAddress, DetailsApartment, DetailsRoom, DetailsCommercial, DetailsCottage, DetailsGarage, DetailsLand },
     data() {
       return {
-        local: this.value,
-        fieldsGroup: {
-          address: false, //TODO ITs BUG!
-          parameters: false
-        }
+        local: this.value
       }
     },
     watch: {
       value() {
         this.local = this.value
-      },
-      isValid(value) {
-        this.$emit('stateChange', value, 'details')
-      }
-    },
-    computed: {
-      isValid() {
-        let fieldsGroup = this.fieldsGroup;
-        let res = Object.keys(fieldsGroup).every( grp => fieldsGroup[grp]);
-        return res;
       }
     },
     methods: {
       onStateChange(value, group) {
-        this.fieldsGroup[group] = value;
+        this.$emit('stateChange', value, group)
       }
     }
   }

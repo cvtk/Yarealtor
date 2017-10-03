@@ -2,7 +2,7 @@
   <transition name="fade">
     <div :class="$style.comment">
       <div :class="$style.comment__userpic">
-        <img :src="comment.author.photo" :class="$style.userpic__image">
+        <img :src="comment.author.photo.small" :class="$style.userpic__image">
       </div>
       <div :class="$style.comment__body">
         <div :class="$style.body__header">

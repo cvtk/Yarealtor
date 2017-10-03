@@ -33,8 +33,27 @@
                 />
               </div>
             </div>
+
             <div :class="$style.group__row">
-              <default-number v-model="local.price" :label="mdl.price.title" :validate="validation.price" msg="Обязательное поле (минимум тысяча рублей)" />
+              <div :class="$style.row__item_50p">
+                <default-number v-model="local.price" 
+                  :label="mdl.price.title" 
+                  :validate="validation.price" 
+                  msg="Одно из полей с ценой обязательно (минимум тысяча рублей)"
+                />
+              </div>
+              <div :class="$style.row__item_50p">
+                <default-number v-model="local.price_permeter" 
+                  :label="mdl.price_permeter.title" 
+                  :validate="validation.price_permeter" 
+                  msg="Одно из полей с ценой обязательно"
+                />
+              </div>
+            </div>
+            <div :class="$style.group__row">
+              <default-number v-model="local.agent_pay" 
+                  :label="mdl.agent_pay.title" 
+                />
             </div>
             <div :class="$style.group__row">
               <default-select nameField="title" v-model="local.object" 
@@ -187,6 +206,7 @@
   }
 
   .group__row {
+
     &:after { @include clearfix }
   }
 
@@ -194,6 +214,7 @@
     width: 50%;
     float: left;
     margin-bottom: 15px;
+    &:first-child { padding-right: 20px; }
   }
   
   .row__item {
@@ -259,7 +280,8 @@
       validation: function () {
         return {
           type: !!this.local.type,
-          price: this.local.price > 1000,
+          price: !!this.local.price_permeter || this.local.price > 1000,
+          price_permeter: !!this.local.price_permeter || this.local.price > 1000,
           object: !!this.local.object,
           description: !!this.local.description.trim(),
         }

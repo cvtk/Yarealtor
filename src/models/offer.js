@@ -121,14 +121,21 @@ let templates = {
 
 let fields = {};
 
+fields.meta = {
+  author: { title: 'Автор', default: '', options: [] },
+  company: { title: 'Компания', default: '', options: [] },
+  created: { title: 'Дата создания', default: null, options: [] },
+  modified: { title: 'Изменен', default: null, options: [] },
+}
+
 fields.offer = {
-  type: { title: 'Тип предложения', 
+  type: { title: 'Тип предложения', default: null,
     options: [
       { value: 1, title: 'Продажа' },
       { value: 2, title: 'Аренда' }
     ]
   },
-  object: { title: 'Тип объекта',
+  object: { title: 'Тип объекта', default: null,
     options: [
       { value: 1, title: 'Квартира' },
       { value: 2, title: 'Комната' },
@@ -141,22 +148,24 @@ fields.offer = {
 };
 
 fields.general = {
-  price: { title: 'Цена', options: [] },
-  images: { title: 'Изображения', options: [] },
-  description: { title: 'Дополнительное описание', options: [] },
+  price: { title: 'Цена', default: null, options: [] },
+  price_permeter: { title: 'Цена за м²', default: null, options: [] },
+  agent_pay: { title: 'Оплата посреднику', default: '', options: [] },
+  images: { title: 'Изображения', default: [], options: [] },
+  description: { title: 'Дополнительное описание', default: '', options: [] },
 };
 
 fields.address = {
-  locality: { title: 'Населенный пункт', options: [] },
-  localityType: { title: 'Тип населенного пункта', options: [] },
-  localityId: { title: 'Идентификатор населенного пункта', options: [] },
-  street: { title: 'Улица', options: [] },
-  streetType: { title: 'Тип улицы', options: [] },
-  streetId: { title: 'Идентификатор улицы', options: [] },
-  building: { title: 'Строение', options: [] },
-  buildingId: { title: 'Идентификатор строение', options: [] },
-  buildingType: { title: 'Тип строения', options: [] },
-  district : { title: 'Район',
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  street: { title: 'Улица', default: '', options: [] },
+  streetType: { title: 'Тип улицы', default: '', options: [] },
+  streetId: { title: 'Идентификатор улицы', default: '', options: [] },
+  building: { title: 'Строение', default: '', options: [] },
+  buildingId: { title: 'Идентификатор строение', default: '', options: [] },
+  buildingType: { title: 'Тип строения', default: '', options: [] },
+  district : { title: 'Район', default: null, 
     options: [
       { value: 1, title: 'Дзержинский' },
       { value: 2, title: 'Заволжский' },
@@ -167,8 +176,8 @@ fields.address = {
       { value: 7, title: 'Ярославская область' },
     ]
   },
-  waymark: { title: 'Ориентир', options: [] },
-  direction: { title: 'Направление', 
+  waymark: { title: 'Ориентир', default: '', options: [] },
+  direction: { title: 'Направление', default: null, 
     options: [
       { value: 1, title: 'Ярославль' },
       { value: 2, title: 'Костромское' },
@@ -186,9 +195,9 @@ fields.address = {
       { value: 14, title: 'Прусовское' },
     ]
   },
-  distance: { title: 'До города, км', options: [] },
-  cadastral_number : { title: 'Кадастровый номер', options: [] },
-  disposition: { title: 'Расположение', 
+  distance: { title: 'До города, км', default: null, options: [] },
+  cadastral_number : { title: 'Кадастровый номер', default: '', options: [] },
+  disposition: { title: 'Расположение', default: null, 
     options: [
       { value: 1, title: 'в ГСК' },
       { value: 2, title: 'в жилом доме' },
@@ -200,13 +209,13 @@ fields.address = {
 
 fields.params = {
   //Продать квартиру НАЧАЛО
-  building_type: { title: 'Тип дома',
+  building_type: { title: 'Тип дома', default: null, 
     options: [
       { value: 1, title: 'вторичное' },
       { value: 2, title: 'новостройка' }
     ]
   },
-  material: { title: 'Материал',
+  material: { title: 'Материал', default: null, 
     options: [
       { value: 1, title: 'блочный' },
       { value: 2, title: 'деревянный' },
@@ -215,13 +224,13 @@ fields.params = {
       { value: 5, title: 'монолит' },
     ]
   },
-  rooms: { title: 'Комнат', options: [] },
-  floor: { title: 'Этаж', options: [] },
-  floors: { title: 'Этажность', options: [] },
-  area_full: { title: 'Общая пл., м²', options: [] },
-  area_living: { title: 'Жилая пл., м²', options: [] },
-  area_kitchen: { title: 'Кухня, м²', options: [] },
-  furnish: { title: 'Тип отделки', 
+  rooms: { title: 'Комнат', default: null, options: [] },
+  floor: { title: 'Этаж', default: null, options: [] },
+  floors: { title: 'Этажность', default: null, options: [] },
+  area_full: { title: 'Общая пл., м²', default: null, options: [] },
+  area_living: { title: 'Жилая пл., м²', default: null, options: [] },
+  area_kitchen: { title: 'Кухня, м²', default: null, options: [] },
+  furnish: { title: 'Тип отделки', default: null, 
     options: [
       { value: 1, title: 'требует ремонта' },
       { value: 2, title: 'черновая' },
@@ -231,7 +240,7 @@ fields.params = {
       { value: 6, title: 'евро' }
     ]
   },
-  bath: { title: 'Санузел',
+  bath: { title: 'Санузел', default: null, 
     options: [
       { value: 1, title: 'без удобств' },
       { value: 2, title: 'раздельный' },
@@ -239,7 +248,7 @@ fields.params = {
       { value: 4, title: 'только душ / ванна' }
     ]
   },
-  balcony: { title: 'Балкон или лоджия',
+  balcony: { title: 'Балкон или лоджия', default: false, 
     options: [
       { value: true, title: 'есть' },
       { value: false, title: 'нет' }
@@ -247,7 +256,7 @@ fields.params = {
   },
   //Продать квартиру КОНЕЦ
   //Продать комнату НАЧАЛО
-  placement_type: { title: 'Тип помещения',
+  placement_type: { title: 'Тип помещения', default: null, 
     options: [
       { value: 1, title: 'в доме' },
       { value: 2, title: 'в квартире' },
@@ -261,14 +270,14 @@ fields.params = {
   // floor +
   // floors +
   // area_full
-  condition_room: { title: 'Состояние комнаты',
+  condition_room: { title: 'Состояние комнаты', default: null, 
     options: [
       { value: 1, title: 'удовлетворительное' },
       { value: 2, title: 'хорошее' },
       { value: 3, title: 'отличное' }
     ]
   },
-  condition_bath: { title: 'Состояние мест общ. польз.',
+  condition_bath: { title: 'Состояние мест общ. польз.', default: null, 
     options: [
       { value: 1, title: 'удовлетворительное' },
       { value: 2, title: 'хорошее' },
@@ -278,49 +287,49 @@ fields.params = {
   // bath
   //Продать комнату КОНЕЦ
   //Продать коммерческую НАЧАЛО
-  commercial_retail: { title: 'торговое',
+  commercial_retail: { title: 'торговое', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  commercial_office: { title: 'офисное',
+  commercial_office: { title: 'офисное', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  commercial_industrial: { title: 'производственное',
+  commercial_industrial: { title: 'производственное', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  commercial_warehouse: { title: 'складское',
+  commercial_warehouse: { title: 'складское', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  commercial_business: { title: 'готовый бизнес',
+  commercial_business: { title: 'готовый бизнес', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  commercial_land: { title: 'земельный участок',
+  commercial_land: { title: 'земельный участок', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  commercial_apartments: { title: 'квартиры под перевод',
+  commercial_apartments: { title: 'квартиры под перевод', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  commercial_material: { title: 'Материал',
+  commercial_material: { title: 'Материал', default: null, 
     options: [
       { value: 1, title: 'кирпич' },
       { value: 2, title: 'метало каркас' },
@@ -329,7 +338,7 @@ fields.params = {
     ]
   },
   // floor +
-  special_floor: { title: 'Спец. этаж',
+  special_floor: { title: 'Спец. этаж', default: null, 
     options: [
       { value: 1, title: 'цоколь' },
       { value: 2, title: 'подвал' },
@@ -338,63 +347,63 @@ fields.params = {
   },
   // floors +
   // area_full +
-  minimal_area: { title: 'Минимальная площадь продажи/аренды', options: [] },
+  minimal_area: { title: 'Минимальная площадь продажи/аренды', default: null, options: [] },
 
-  line: { title: 'Линия',
+  line: { title: 'Линия', default: null, 
     options: [
       { value: 1, title: 'первая' },
       { value: 2, title: 'вторая' },
     ]
   },
   // furnish +
-  planning: { title: 'Планировка',
+  planning: { title: 'Планировка', default: null, 
     options: [
       { value: 1, title: 'открытая' },
       { value: 2, title: 'кабинетная' },
       { value: 3, title: 'смешанная' }
     ]
   },
-  ceilings_height: { title: 'Высота потолков, м', options: [] },
+  ceilings_height: { title: 'Высота потолков, м', default: null, options: [] },
 
-  power: { title: 'Электричество, кВт', options: [] },
+  power: { title: 'Электричество, кВт', default: null, options: [] },
 
-  internet: { title: 'Интернет',
+  internet: { title: 'Интернет', default: false, 
     options: [
       { value: true, title: 'Да' },
       { value: false, title: 'Нет' },
     ]
   },
-  security_alarm: { title: 'Сигнализация охранная',
+  security_alarm: { title: 'Сигнализация охранная', default: false, 
     options: [
       { value: true, title: 'Да' },
       { value: false, title: 'Нет' },
     ]
   },
-  fire_alarm: { title: 'Пожарная охранная',
+  fire_alarm: { title: 'Пожарная охранная', default: false, 
     options: [
       { value: true, title: 'Да' },
       { value: false, title: 'Нет' },
     ]
   },
-  shutters: { title: 'Роль ставни',
+  shutters: { title: 'Роль ставни', default: false, 
     options: [
       { value: true, title: 'Да' },
       { value: false, title: 'Нет' },
     ]
   },
-  monument: { title: 'Памятник архитектуры',
+  monument: { title: 'Памятник архитектуры', default: false, 
     options: [
       { value: true, title: 'Да' },
       { value: false, title: 'Нет' },
     ]
   },
-  windows: { title: 'Окна',
+  windows: { title: 'Окна', default: null, 
     options: [
       { value: 1, title: 'витринные' },
       { value: 2, title: 'стандартные' }
     ]
   },
-  owner: { title: 'Собственник',
+  owner: { title: 'Собственник', default: null, 
     options: [
       { value: 1, title: 'физическое лицо' },
       { value: 2, title: 'организация' },
@@ -404,63 +413,63 @@ fields.params = {
   },
   //Продать коммерческую КОНЕЦ
   //Продать дом дачу НАЧАЛО
-  cottage_type: { title: 'Тип',
+  cottage_type: { title: 'Тип', default: null, 
     options: [
       { value: 1, title: 'дача' },
       { value: 2, title: 'дом' },
       { value: 3, title: 'таунхаус' }
     ]
   },
-  cottage_area: { title: 'Площадь участка, соток', options: [] },
+  cottage_area: { title: 'Площадь участка, соток', default: null, options: [] },
   // material + 
   // rooms +
   // floors +
   // area_full +
   // furnish +
-  cottage_gas: { title: 'Газ',
+  cottage_gas: { title: 'Газ', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  cottage_power: { title: 'Электричество',
+  cottage_power: { title: 'Электричество', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  cottage_water: { title: 'Водоснабжение',
+  cottage_water: { title: 'Водоснабжение', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  cottage_sewer: { title: 'Канализация',
+  cottage_sewer: { title: 'Канализация', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
   // internet
-  cottage_security: { title: 'Охрана',
+  cottage_security: { title: 'Охрана', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  cottage_forest: { title: 'Лес рядом',
+  cottage_forest: { title: 'Лес рядом', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  cottage_entrance: { title: 'Круглогодичный подъезд',
+  cottage_entrance: { title: 'Круглогодичный подъезд', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
     ]
   },
-  cottage_bus: { title: 'Рядом остановка',
+  cottage_bus: { title: 'Рядом остановка', default: false, 
     options: [
       { value: true, title: 'да' },
       { value: false, title: 'нет' }
@@ -469,7 +478,7 @@ fields.params = {
   //Продать дом дачу КОНЕЦ
   //Продать гараж НАЧАЛО
   //area_full
-  garage_material: { title: 'Материал',
+  garage_material: { title: 'Материал', default: null, 
     options: [
       { value: 1, title: 'блоки' },
       { value: 2, title: 'кирпич' },
@@ -478,7 +487,7 @@ fields.params = {
   },
   //Продать гараж КОНЕЦ
   //Продать участок НАЧАЛО
-  land_type: { title: 'Тип',
+  land_type: { title: 'Тип', default: null, 
     options: [
       { value: 1, title: 'под ИЖС' },
       { value: 2, title: 'под ком. объекты' },
@@ -504,13 +513,6 @@ function is(type, value) {
 }
 
 export default {
-  init: ()=> {
-    let mdl = {};
-    for ( let obj in model ) {
-      mdl[obj] = model[obj].default;
-    }
-    return mdl;
-  },
 
   getModel(modelsSet) {
     return modelsSet.reduce( (result, field) => {
@@ -525,25 +527,46 @@ export default {
     return templates.address(obj);
 
   },
-  getObject() {
+  init(group) {
     let result = {};
-    for ( let field in fields ) {
-      if ( typeof fields[field] !== 'undefined' ) {
-        Object.keys(fields[field]).forEach( item => {
-          result[item] = '';
+    if ( typeof group !== 'undefined' && typeof fields[group] !== 'undefined' ) {
+      Object.keys(fields[group]).forEach( field => {
+          result[field] = fields[group][field].default;
+        })
+      return result;
+    }
+    
+    for ( let group in fields ) {
+      if ( typeof fields[group] !== 'undefined' ) {
+        Object.keys(fields[group]).forEach( field => {
+          result[field] = fields[group][field].default;
         })
       }
     }
     return result;
   },
 
-  getOptionTitle(key, item) {
-    if ( typeof model[key] === 'undefined'
-        || typeof item === 'undefined'
-        || typeof model[key].default.items === 'undefined' ) return false;
+  getOptionTitle(key, value) {
+    for ( let group in fields ) {
+      if ( typeof fields[group][key] !== 'undefined' ) {
+        let options = fields[group][key].options;
+        for ( let i = 0; i < options.length; i++ ) {
+          console.log( group, ' -> ', key, ' -> ', options[i] )
+          console.log(options[i].value, '===', value )
+          if ( options[i].value === value ) {
+            return options[i].title
+          };
+        }
+      }
+    }
+    return value;
 
-    let items = model[key].default.items;
-    return items.reduce( ( acc, el ) => (el.value === item) ? el.title : acc, '') || false;
+    // if ( typeof fields[key] === 'undefined'
+    //     || typeof item === 'undefined'
+    //     || typeof model[key].default.items === 'undefined' ) return false;
+
+    // let items = model[key].default.items;
+    // return items.reduce( ( acc, el ) => (el.value === item) ? el.title : acc, '') || false;
   },
   check(mdl) {
     if ( typeof mdl === 'undefined' ) return false;

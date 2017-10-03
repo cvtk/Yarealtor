@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.number">
     <input type="text" @keydown="onKeyDown" @input="onInput" v-mask="mask"
-      :class="[ $style.number__input, local !== '' && $style._edited, !validate && $style._error ]" :id="id" v-model="local"
+      :class="[ $style.number__input, !!local && $style._edited, !validate && $style._error ]" :id="id" v-model="local"
     >
     <label :class="$style.number__label">{{ label }}</label>
     <span :class="$style.number__msg">{{ msg }}</span>

@@ -18,7 +18,7 @@
       <div :class="$style.content">
         <div :class="$style.content__sidebar">
           <aside :class="$style.sidebar">
-            <img :class="$style.sidebar__img" :src="profile.photo">
+            <img :class="$style.sidebar__img" :src="profile.photo.small">
             <div :class="$style.sidebar__user_title">
               <div :class="$style.user_title__name">{{ profile.name }} {{ profile.surname }}<app-online-status :online="true"></app-online-status></div>
               <router-link :to="{ name: 'company', params: { page: profile.company.page } }" :class="$style.user_title__company">
