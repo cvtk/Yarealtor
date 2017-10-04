@@ -48,10 +48,12 @@
           </div>
         </transition>
         <transition name="layout-switcher" appear>
-          <ul :class="$style.content__list" v-if="!currentLayout">
+          <ul :class="$style.content__list" v-if="currentLayout">
             <list-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" />
           </ul>
-          <app-content-grid :data="filteredOffers" v-else></app-content-grid>
+          <ul :class="$style.content__grid" v-else>
+            <grid-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" />
+          </ul>
         </transition>
       </div>
       <app-loader v-else></app-loader>
@@ -116,6 +118,24 @@
     margin: 0;
     padding: 0;
     &:after { @include clearfix }
+  }
+
+  .content__grid {
+    position: relative;
+    list-style: none;
+    margin: 0 -10px;
+    padding: 0;
+    cursor: pointer;
+    &:after { @include clearfix }
+    @media (min-width: $bp-extra-large) {
+      .grid__item { width: 25% }
+    }
+    @media (max-width: $bp-large) {
+      .grid__item { width: 50% }
+    }
+    @media (max-width: $bp-extra-small) {
+      .grid__item { width: 100% }
+    }
   }
 
   .offers__ad {
@@ -277,8 +297,7 @@
   import AppLoader from './app-loader.vue';
   import firebase from '../firebase.js';
   import ListLayoutItem from './offers/list-layout-item.vue';
-  import AppContentGrid from './modules/content-grid.vue';
-  import AppContentList from './modules/content-list.vue';
+  import GridLayoutItem from './offers/grid-layout-item.vue';
   import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import ApartmentsFilter from './apartments/apartments-filter.vue'
@@ -288,7 +307,7 @@
   export default {
     name: 'offers',
     props: ['auth'],
-    components: { AppLoader, AppContentGrid, ListLayoutItem, AppInput, AppAdSidebar, ApartmentsFilter },
+    components: { AppLoader, GridLayoutItem, ListLayoutItem, AppInput, AppAdSidebar, ApartmentsFilter },
     data() {
       return {
         dataReady: false,

@@ -13,15 +13,13 @@
     <div :class="$style.item__content">
       <div :class="$style.row">
         <router-link :class="$style.content__title" :to="{ name: 'offer', params: { id: offer.key } }">
-          <span :class="$style.title" v-for="offer.object === 1">
-            {{ offer.rooms }}-к квартира, {{ offer.area_full }} м², {{ offer.floor }}/{{ offer.floors }} эт.
-          </span>
+          <span :class="$style.title">{{title}}</span>
         </router-link>
         <span :class="$style.content__price">{{ offer.price | price }} руб.</span>
       </div>
       <div :class="$style.row">
         <div :class="$style.content__meta">
-          <div :class="$style.meta__address">{{ offer.localityType }}. {{ offer.locality }}, {{ offer.streetType }}. {{ offer.street }}, {{ offer.building }}</div>
+          <div :class="$style.meta__address">{{ address }}</div>
         </div>
         <span :class="$style.content__date">{{ offer.created | unixToDate }}</span>
       </div>
@@ -276,7 +274,7 @@
   const usersRef = firebase.database().ref('users');
 
   export default {
-    name: 'app-content-list',
+    name: 'grid-layout-item',
     props: ['offer'],
     filters: AppFilters,
     data() {
@@ -287,7 +285,39 @@
       }
     },
     methods: {
+      commercialType() {
+        let types = [ 'commercial_retail', 'commercial_office', 'commercial_industrial',
+          'commercial_warehouse', 'commercial_business', 'commercial_land', 'commercial_apartments' ];
+
+        for ( let i = 0; i < types.length; i++ ) {
+          let key = types[i];
+
+          if ( typeof this.offer[key] !== 'undefined' && this.offer[key] ) {
+            return this.mdl[key].title;
+          }
+        }
+      },
       humanize: mdl.getOptionTitle
+    },
+    computed: {
+      title() {
+        switch( this.offer.object ) {
+          case 1: return `${this.offer.rooms}-к квартира, ${this.offer.area_full} м², ${this.offer.floor}/${this.offer.floors} эт.`;
+          case 2: return `Комната, ${this.offer.area_full} м², ${this.offer.floor}/${this.offer.floors} эт.`;
+          case 3: return `Коммерческая, ${this.commercialType()}, ${this.offer.area_full} м²`;
+          case 4: return `${ this.humanize( 'cottage_type', this.offer.cottage_type) }, ${this.offer.area_full} м², ${this.offer.floors} этажа`;
+          case 5: return `Гараж, ${ this.humanize( 'garage_material', this.offer.garage_material) }, ${this.offer.area_full} м²`;
+          case 6: return `Участок ${ this.humanize( 'land_type', this.offer.land_type) }, ${this.offer.cottage_area} сот.`;
+        }
+      },
+      address() {
+        switch( this.offer.object ) {
+          case 4: return `${this.offer.localityType}. ${this.offer.locality}, ${this.offer.streetType}. ${this.offer.street}`;
+          case 5: return `${this.offer.localityType}. ${this.offer.locality}, ${this.offer.streetType}. ${this.offer.street}`;
+          case 6: return `${this.offer.localityType}. ${this.offer.locality}`;
+          default: return `${this.offer.localityType}. ${this.offer.locality}, ${this.offer.streetType}. ${this.offer.street}, ${this.offer.building}`;
+        }
+      }
     },
     created() {
       this.thumb = this.offer.images[0].small || '/static/image-placeholder.png';
