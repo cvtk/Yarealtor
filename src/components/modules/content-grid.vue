@@ -1,22 +1,22 @@
 <template>
   <ul :class="$style.content__grid">
-    <router-link v-for="item in data"
-      :to="{ name: 'offer', params: { id: item.id } }"
-      :key="item.id"
+    <router-link v-for="offer in data"
+      :to="{ name: 'offer', params: { id: offer.key } }"
+      :key="offer.key"
       :class="$style.grid__item" tag="li">
-      <span :class="$style.item__type">Продажа</span>
+      <span :class="$style.item__type">{{ humanize( 'type', offer.type) }}</span>
       <div :class="$style.wrapper_image">
-        <div :class="$style.item__image" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
+        <div :class="$style.item__image" :style="{ 'background-image': 'url(' + offer.images[0].small + ')' }"></div>
         <div :class="$style.item__details">
           
         </div>
       </div>
       <div :class="$style.item__meta">
-        <h3 :class="$style.meta__title">{{ item.rooms }}-к квартира, {{ item.area }} м², {{ item.floor }}/{{ item.estate.floors }} эт.</h3>
-        <span :class="$style.meta__address">г. {{ item.estate.city }}, {{ item.estate.address }}</span>
+        <h3 :class="$style.meta__title">{{ offer.rooms }}-к квартира, {{ offer.area_full }} м², {{ offer.floor }}/{{ offer.floors }} эт.</h3>
+        <span :class="$style.meta__address">{{ offer.localityType }}. {{ offer.locality }}, {{ offer.streetType }}. {{ offer.street }}, {{ offer.buildingType }}. {{ offer.building }}</span>
         <span :class="$style.meta__contacts">ЗАО «ГАЗПРОМ», 8 (987) 654-43-21</span>
-        <span :class="$style.item__favorites">12</span>
-        <span :class="$style.item__price">{{ item.price | price }} руб.</span>
+        <!-- <span :class="$style.item__favorites">12</span> -->
+        <span :class="$style.item__price">{{ offer.price | price }} руб.</span>
       </div>
     </router-link>
   </ul>
@@ -191,11 +191,20 @@
 </style>
 
 <script>
+  import mdl from '../../models/offer.js';
   import AppFilters from '../helpers/filters.js';
 
   export default {
     name: 'app-content-grid',
     props: ['data'],
-    filters: AppFilters
+    filters: AppFilters,
+    data() {
+      return {
+        mdl: mdl.getModel(['meta', 'general', 'offer', 'address', 'params'])
+      }
+    },
+    methods: {
+      humanize: mdl.getOptionTitle
+    }
   }
 </script>

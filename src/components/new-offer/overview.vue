@@ -21,8 +21,8 @@
         <div :class="$style.row">
           <div :class="$style.content__group">
             <span :class="$style.group__title">{{ mdl.type.title }}</span>
-            
             <div :class="$style.group__row">
+              <span :class="[ $style.validation, $style._group ]" v-if="currentField === 'type'"></span>
               <div :class="$style.row__item_50p" v-for="opt in mdl.type.options">
                 <default-radio name="offerType"
                   v-model="local.type"
@@ -35,20 +35,12 @@
             </div>
 
             <div :class="$style.group__row">
-              <div :class="$style.row__item_50p">
-                <default-number v-model="local.price" 
-                  :label="mdl.price.title" 
-                  :validate="validation.price" 
-                  msg="Одно из полей с ценой обязательно (минимум тысяча рублей)"
-                />
-              </div>
-              <div :class="$style.row__item_50p">
-                <default-number v-model="local.price_permeter" 
-                  :label="mdl.price_permeter.title" 
-                  :validate="validation.price_permeter" 
-                  msg="Одно из полей с ценой обязательно"
-                />
-              </div>
+              <span :class="$style.validation" v-if="currentField === 'price'"></span>
+              <default-number v-model="local.price" 
+                :label="mdl.price.title" 
+                :validate="validation.price" 
+                msg="Обязательное поле (минимум тысяча рублей)"
+              />
             </div>
             <div :class="$style.group__row">
               <default-number v-model="local.agent_pay" 
@@ -56,6 +48,7 @@
                 />
             </div>
             <div :class="$style.group__row">
+              <span :class="$style.validation" v-if="currentField === 'object'"></span>
               <default-select nameField="title" v-model="local.object" 
                 :label="mdl.object.title"
                 :options="mdl.object.options"
@@ -66,12 +59,14 @@
           </div>
           <div :class="$style.content__group">
             <span :class="$style.group__title">{{ mdl.description.title }}</span>
-            <default-textarea 
-              :label="mdl.description.title"
-              :validate="validation.description" 
-              msg="Обязательное поле"
-              v-model="local.description"
-            />
+            <div :class="$style.group__row">
+              <default-textarea 
+                :label="mdl.description.title"
+                :validate="validation.description" 
+                msg="Обязательное поле"
+                v-model="local.description"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -206,7 +201,7 @@
   }
 
   .group__row {
-
+    position: relative;
     &:after { @include clearfix }
   }
 
@@ -246,6 +241,51 @@
   
   .actions__next { float: right }
 
+  .validation {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 28px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ee6052;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(204,169,44, 0.4);
+    animation: pulse .75s infinite;
+    &._group { top: 5px }
+  }
+
+  .validation:hover {
+    animation: none;
+  }
+
+  @-webkit-keyframes pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
+  }
+  @keyframes pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+      box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+        box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+        box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
+  }
+
 </style>
 
 <script>
@@ -280,10 +320,9 @@
       validation: function () {
         return {
           type: !!this.local.type,
-          price: !!this.local.price_permeter || this.local.price > 1000,
-          price_permeter: !!this.local.price_permeter || this.local.price > 1000,
+          price: this.local.price > 1000,
           object: !!this.local.object,
-          description: !!this.local.description.trim(),
+          //description: !!this.local.description.trim(),
         }
       },
       isValid: function () {
@@ -291,6 +330,12 @@
         return Object.keys(validation).every(function (key) {
           return validation[key]
         })
+      },
+      currentField: function() {
+        let validation = this.validation;
+        for ( let key in validation ) {
+          if ( !validation[key] ) return key;
+        }
       }
     },
     created() {

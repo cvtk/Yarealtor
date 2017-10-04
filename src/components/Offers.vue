@@ -47,9 +47,11 @@
             <apartments-filter />
           </div>
         </transition>
-        <transition name="layout-switcher" appear> 
-          <app-content-list :data="tmpHomes" v-if="currentLayout"></app-content-list>
-          <app-content-grid :data="tmpHomes" v-else></app-content-grid>
+        <transition name="layout-switcher" appear>
+          <ul :class="$style.content__list" v-if="!currentLayout">
+            <list-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" />
+          </ul>
+          <app-content-grid :data="filteredOffers" v-else></app-content-grid>
         </transition>
       </div>
       <app-loader v-else></app-loader>
@@ -106,6 +108,14 @@
   .content__filter {
     position: relative;
     margin-bottom: 20px;
+  }
+
+  .content__list {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    &:after { @include clearfix }
   }
 
   .offers__ad {
@@ -265,196 +275,43 @@
 
 <script>
   import AppLoader from './app-loader.vue';
+  import firebase from '../firebase.js';
+  import ListLayoutItem from './offers/list-layout-item.vue';
   import AppContentGrid from './modules/content-grid.vue';
   import AppContentList from './modules/content-list.vue';
   import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import ApartmentsFilter from './apartments/apartments-filter.vue'
 
+  const offersRef = firebase.database().ref('offers');
+
   export default {
     name: 'offers',
     props: ['auth'],
-    components: { AppLoader, AppContentGrid, AppContentList, AppInput, AppAdSidebar, ApartmentsFilter },
+    components: { AppLoader, AppContentGrid, ListLayoutItem, AppInput, AppAdSidebar, ApartmentsFilter },
     data() {
       return {
         dataReady: false,
         currentLayout: true,
         filterToggled: false,
         authorFilter: 'all',
-        tmpHomes: [
-          {
-            image: '/static/apartments/1.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112323,
-            type: 0,
-            rooms: 3,
-            price: 4500000,
-            date: 1498740907332,
-            area: 90.2,
-            floor: 7,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 13 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/2.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112324,
-            type: 1,
-            rooms: 2,
-            price: 2600000,
-            date: 1498740907332,
-            area: 77.3,
-            floor: 2,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/3.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112325,
-            type: 0,
-            rooms: 1,
-            price: 1000000,
-            date: 1498740907332,
-            area: 60,
-            floor: 5,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/4.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112326,
-            type: 0,
-            rooms: 2,
-            price: 1400000,
-            date: 1498740907332,
-            area: 45.2,
-            floor: 6,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/5.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112327,
-            type: 0,
-            rooms: 1,
-            price: 1750000,
-            date: 1498740907332,
-            area: 45.7,
-            floor: 3,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Советская, 26', city: 'Ярославль', floors: 9 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/6.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112328,
-            type: 0,
-            rooms: 2,
-            price: 3200000,
-            date: 1498740907332,
-            area: 50.4,
-            floor: 3,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/7.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112329,
-            type: 1,
-            rooms: 2,
-            price: 1300000,
-            date: 1498740907332,
-            area: 45.9,
-            floor: 6,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/8.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112310,
-            type: 0,
-            rooms: 4,
-            price: 6700000,
-            date: 1498740907332,
-            area: 127.6,
-            floor: 4,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 11 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112311,
-            type: 0,
-            rooms: 2,
-            price: 4500000,
-            date: 1498740907332,
-            area: 70.8,
-            floor: 2,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112312,
-            type: 1,
-            rooms: 3,
-            price: 3400000,
-            date: 1498740907332,
-            area: 56.3,
-            floor: 4,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112313,
-            type: 0,
-            rooms: 2,
-            price: 340000,
-            date: 1498740907332,
-            area: 66,
-            floor: 5,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 9 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/4.jpg' ],
-            id: 112314,
-            type: 1,
-            rooms: 2,
-            price: 2500000,
-            date: 1498740907332,
-            area: 56.1,
-            floor: 2,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'ул. Бабича, 7', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-        ]
+        ref: '',
+        offers: {},
       }
     },
     created() {
+      this.ref = offersRef.on('value', this.onOffersValue);
       this.dataReady = true;
+    },
+    computed: {
+      filteredOffers() {
+        return Object.keys(this.offers).map( e => this.offers[e] );
+      }
+    },
+    methods: {
+      onOffersValue(offers) {
+        this.offers = offers.val();
+      }
     }
   }
 </script>

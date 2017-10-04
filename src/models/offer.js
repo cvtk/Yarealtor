@@ -123,6 +123,7 @@ let fields = {};
 
 fields.meta = {
   author: { title: 'Автор', default: '', options: [] },
+  key: { title: 'Ключ базы', default: '', options: [] },
   company: { title: 'Компания', default: '', options: [] },
   created: { title: 'Дата создания', default: null, options: [] },
   modified: { title: 'Изменен', default: null, options: [] },
@@ -149,7 +150,6 @@ fields.offer = {
 
 fields.general = {
   price: { title: 'Цена', default: null, options: [] },
-  price_permeter: { title: 'Цена за м²', default: null, options: [] },
   agent_pay: { title: 'Оплата посреднику', default: '', options: [] },
   images: { title: 'Изображения', default: [], options: [] },
   description: { title: 'Дополнительное описание', default: '', options: [] },
@@ -287,6 +287,8 @@ fields.params = {
   // bath
   //Продать комнату КОНЕЦ
   //Продать коммерческую НАЧАЛО
+  price_permeter: { title: 'Цена за м²', default: null, options: [] },
+
   commercial_retail: { title: 'торговое', default: false, 
     options: [
       { value: true, title: 'да' },
@@ -551,8 +553,6 @@ export default {
       if ( typeof fields[group][key] !== 'undefined' ) {
         let options = fields[group][key].options;
         for ( let i = 0; i < options.length; i++ ) {
-          console.log( group, ' -> ', key, ' -> ', options[i] )
-          console.log(options[i].value, '===', value )
           if ( options[i].value === value ) {
             return options[i].title
           };

@@ -1,52 +1,44 @@
 <template>
-  <ul :class="$style.content__list">
-    <li v-for="offer in data" :class="$style.list__item">
-      <span :class="$style.item__type">{{ humanize( 'type', offer.type) }}</span>
-      <router-link :to="{ name: 'offer', params: { id: offer.key } }" :class="$style.wrapper_image">
-        <nav :class="$style.item__thumbnails_navigation">
-          <div :class="$style.thumbnails_navigation__item"
-            v-for="index in offer.images"
-            @mouseover="thumb = offer.images[index].small">    
-          </div>
-        </nav>
-        <div :class="$style.item__image" :style="{ 'background-image': 'url(' + thumb + ')' }"></div>
-      </router-link>
-      <div :class="$style.item__content">
-        <div :class="$style.row">
-          <router-link :class="$style.content__title" :to="{ name: 'offer', params: { id: offer.key } }">
+  <li :class="$style.item" v-if="dataReady">
+    <span :class="$style.item__type">{{ humanize( 'type', offer.type) }}</span>
+    <router-link :to="{ name: 'offer', params: { id: offer.key } }" :class="$style.wrapper_image">
+      <nav :class="$style.item__thumbnails_navigation">
+        <div :class="$style.thumbnails_navigation__item"
+          v-for="(item, index) in offer.images"
+          @mouseover="thumb = offer.images[index].small">    
+        </div>
+      </nav>
+      <div :class="$style.item__image" :style="{ 'background-image': 'url(' + thumb + ')' }"></div>
+    </router-link>
+    <div :class="$style.item__content">
+      <div :class="$style.row">
+        <router-link :class="$style.content__title" :to="{ name: 'offer', params: { id: offer.key } }">
+          <span :class="$style.title" v-for="offer.object === 1">
             {{ offer.rooms }}-к квартира, {{ offer.area_full }} м², {{ offer.floor }}/{{ offer.floors }} эт.
-          </router-link>
-          <span :class="$style.content__price">{{ offer.price | price }} руб.</span>
-        </div>
-        <div :class="$style.row">
-          <div :class="$style.content__meta">
-            <div :class="$style.meta__address">{{ offer.localityType }}. {{ offer.locality }}, {{ offer.streetType }}. {{ offer.street }}, {{ offer.building }}</div>
-          </div>
-          <span :class="$style.content__date">{{ offer.created | unixToDate }}</span>
-        </div>
-         <div :class="$style.content__description">{{ offer.description }}</div>
-         <div :class="$style.content__foot">
-           <!-- <router-link :to="{ name: 'offer', params: { id: offer.key } }" :class="[$style.foot__item, $style._favorites]">43</router-link> -->
-           <router-link :to="{ name: 'user', params: { page: 'ivanov' } }"  :class="[$style.foot__item, $style._author]">Дмитрий Петров</router-link>
-           <router-link :to="{ name: 'company', params: { page: 'gazprom' } }"  :class="[$style.foot__item, $style._company]">ЗАО «ГАЗПРОМ»</router-link>
-           <span :class="[$style.foot__item, $style._phone]">8 (987) 654-43-21</span>
-         </div>
+          </span>
+        </router-link>
+        <span :class="$style.content__price">{{ offer.price | price }} руб.</span>
       </div>
-    </li>
-  </ul>
+      <div :class="$style.row">
+        <div :class="$style.content__meta">
+          <div :class="$style.meta__address">{{ offer.localityType }}. {{ offer.locality }}, {{ offer.streetType }}. {{ offer.street }}, {{ offer.building }}</div>
+        </div>
+        <span :class="$style.content__date">{{ offer.created | unixToDate }}</span>
+      </div>
+       <div :class="$style.content__description">{{ offer.description }}</div>
+       <div :class="$style.content__foot">
+         <!-- <router-link :to="{ name: 'offer', params: { id: offer.key } }" :class="[$style.foot__item, $style._favorites]">43</router-link> -->
+         <router-link :to="{ name: 'user', params: { page: author.page } }"  :class="[$style.foot__item, $style._author]">{{ author.name }} {{ author.surname }}</router-link>
+         <router-link :to="{ name: 'company', params: { page: company.page } }"  :class="[$style.foot__item, $style._company]">{{ company.name }}</router-link>
+         <span :class="[$style.foot__item, $style._phone]">{{ author.mobile }}</span>
+       </div>
+    </div>
+  </li>
 </template>
 <style lang="scss" module>
   @import "../../assets/style.scss";
 
-  .content__list {
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    &:after { @include clearfix }
-  }
-
-  .list__item {
+  .item {
     display: block;
     position: relative;
     background-color: #fff;
@@ -285,11 +277,12 @@
 
   export default {
     name: 'app-content-list',
-    props: ['data'],
+    props: ['offer'],
     filters: AppFilters,
     data() {
       return {
-        thumb: '',
+        dataReady: false,
+        thumb: '', author: {}, company: {},
         mdl: mdl.getModel(['meta', 'general', 'offer', 'address', 'params'])
       }
     },
@@ -297,7 +290,15 @@
       humanize: mdl.getOptionTitle
     },
     created() {
-      this.thumb = this.data[0].images[0].small;
+      this.thumb = this.offer.images[0].small || '/static/image-placeholder.png';
+
+      usersRef.child(this.offer.author).once('value', user => {
+        this.author = user.val();
+        companiesRef.child(this.offer.company).once('value', company => {
+          this.company = company.val();
+          this.dataReady = true;
+        });
+      })
     }
   }
 </script>

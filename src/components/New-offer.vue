@@ -28,10 +28,13 @@
         <div :class="$style.main__actions">
           <div :class="$style.actions">
             <div :class="$style.actions__previos">
-              <default-button icon="prev" label="Назад" @click="onPreviosStep" />
+              <default-button icon="previos" label="Назад" @click="onPreviosStep" v-if="currentStep !== 1"/>
             </div>
             <div :class="$style.actions__next">
-              <default-button icon="next" label="Вперёд" :red="!isDone" @click="onNextStep" />
+              <default-button icon="next" label="Вперёд" :red="!isDone" @click="onNextStep" v-if="currentStep !== 3" />
+            </div>
+            <div :class="$style.actions__save">
+              <default-button icon="save" label="Сохранить" :red="!isDone" @click="onSave" v-if="currentStep === 3" />
             </div>
           </div>
         </div>
@@ -100,6 +103,7 @@
   .main {
     position: relative;
     margin-right: 300px;
+    overflow: hidden;
   }
   
   .validate {
@@ -138,6 +142,7 @@
 
 <script>
   import mdl from '../models/offer.js';
+  import firebase from '../firebase.js';
   import AppLoader from './app-loader.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppInput from './modules/inputs.vue';
@@ -150,10 +155,13 @@
   import DefaultButton from './default-inputs/default-button.vue';
   import OfferPreview from './offer/offer.vue';
 
+  const offersRef = firebase.database().ref('offers');
+
   export default {
     name: 'new_offer',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, AppInput, OverviewStep, DetailsStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
+    components: { AppLoader, AppAdSidebar, AppInput, OverviewStep, 
+      DetailsStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
     filters: AppFilters,
     data() {
       return {
@@ -181,11 +189,14 @@
     },
     computed: {
       isDone() {
-        return (this.currentStep === 1 && this.stepsGroup.overview) || (this.currentStep === 2 && this.stepsGroup.address && this.stepsGroup.parameters )
+        return (this.currentStep === 1 && this.stepsGroup.overview) ||
+                (this.currentStep === 2 && this.stepsGroup.address && this.stepsGroup.parameters ) ||
+                  (this.stepsGroup.overview && this.stepsGroup.address && this.stepsGroup.parameters )
       }
     },
     methods: {
       onNextStep() {
+        if ( !this.isDone ) return false;
         this.stepsDirection = 'forward';
         this.currentStep += 1;
       },
@@ -196,7 +207,11 @@
       },
 
       onSave() {
-
+        this.offer.key = this.offer.key || offersRef.push().key;
+        
+        offersRef.child(this.offer.key).update(this.offer)
+          .then( () => { console.log('Offer saved') })
+          .catch( () => { console.log('Offer saved') })
       },
       onStateChange(value, group) {
         this.stepsGroup[group] = value;

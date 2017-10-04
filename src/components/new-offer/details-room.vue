@@ -3,6 +3,7 @@
     <div :class="$style.room__row">
       <div :class="$style.row">
         <div :class="$style.row__50">
+          <span :class="$style.validation" v-if="currentField === 'placement_type'"></span>
           <default-select v-model="local.placement_type"
             :label="mdl.placement_type.title"
             :options="mdl.placement_type.options"
@@ -13,6 +14,7 @@
           
         </div>
         <div :class="$style.row__50">
+          <span :class="$style.validation" v-if="currentField === 'material'"></span>
           <default-select v-model="local.material"
             :label="mdl.material.title"
             :options="mdl.material.options"
@@ -32,6 +34,7 @@
           
         </div>
         <div :class="$style.row__33">
+          <span :class="$style.validation" v-if="currentField === 'floor'"></span>
           <default-number v-model="local.floor"
             :label="mdl.floor.title"
             :validate="validation.floor"
@@ -39,6 +42,7 @@
           />
         </div>
         <div :class="$style.row__33">
+          <span :class="$style.validation" v-if="currentField === 'floors'"></span>
           <default-number v-model="local.floors"
             :label="mdl.floors.title"
             :validate="validation.floors"
@@ -65,6 +69,7 @@
       </div>
       <div :class="$style.row">
         <div :class="$style.row__50">
+          <span :class="$style.validation" v-if="currentField === 'area_full'"></span>
           <default-number v-model="local.area_full"
             :label="mdl.area_full.title"
             :validate="validation.area_full"
@@ -72,6 +77,7 @@
           />
         </div>
         <div :class="$style.row__50">
+          <span :class="$style.validation" v-if="currentField === 'bath'"></span>
           <default-select v-model="local.bath"
             :label="mdl.bath.title"
             :options="mdl.bath.options"
@@ -99,15 +105,59 @@
   }
 
   .row {
-    position: relative;
+    position: relative; 
     &:after { @include clearfix }
   }
-  .row__33 { padding: 0 10px; float: left; width: 33.333333% }
-  .row__50 { padding: 0 10px; float: left; width: 50% }
-  .row__100 { padding: 0 10px; width: 100% }
+  .row__33 { position: relative; padding: 0 10px; float: left; width: 33.333333% }
+  .row__50 { position: relative; padding: 0 10px; float: left; width: 50% }
+  .row__100 { position: relative; padding: 0 10px; width: 100% }
 
   .wrapper {
     padding: 12px 0;
+  }
+
+  .validation {
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 28px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ee6052;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(204,169,44, 0.4);
+    animation: pulse .75s infinite;
+  }
+
+  .validation:hover {
+    animation: none;
+  }
+
+  @-webkit-keyframes pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
+  }
+  @keyframes pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+      box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+        box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+        box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
   }
 </style>
 
@@ -144,7 +194,6 @@
         return {
           placement_type: !!this.local.placement_type,
           material: !!this.local.material,
-          rooms: !!this.local.rooms,
           floor: !!this.local.floor,
           floors: !!this.local.floors,
           area_full: !!this.local.area_full,
@@ -156,6 +205,12 @@
         return Object.keys(validation).every(function (key) {
           return validation[key]
         })
+      },
+      currentField: function() {
+        let validation = this.validation;
+        for ( let key in validation ) {
+          if ( !validation[key] ) return key;
+        }
       }
     }
   }

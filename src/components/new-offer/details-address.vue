@@ -2,6 +2,7 @@
   <div :class="$style.address">
     <div :class="$style.address__row">
       <div :class="$style.row">
+        <span :class="$style.validation" v-if="currentField === 'locality'"></span>
         <div :class="$style.row__100">
           <city-field v-model="local.locality"
             v-if="tmplt.includes('locality')"
@@ -16,6 +17,7 @@
     <div :class="$style.address__row">
       <div :class="$style.row">
         <div :class="$style.row__70">
+          <span :class="$style.validation" v-if="currentField === 'street'"></span>
           <street-field v-model="local.street"
             v-if="tmplt.includes('street')"
             :label="mdl.street.title"
@@ -26,6 +28,7 @@
           />
         </div>
         <div :class="$style.row__30">
+          <span :class="$style.validation" v-if="currentField === 'building'"></span>
           <building-field v-model="local.building"
             v-if="tmplt.includes('building')"
             :label="mdl.building.title"
@@ -40,6 +43,7 @@
     <div :class="$style.address__row">
       <div :class="$style.row">
         <div :class="$style.row__50">
+          <span :class="$style.validation" v-if="currentField === 'district'"></span>
           <default-select v-model="local.district"
             v-if="tmplt.includes('district')"
             :label="mdl.district.title"
@@ -110,11 +114,55 @@
     &:after { @include clearfix }
   }
 
-  .row__100 { padding: 0 10px }
-  .row__70 { padding: 0 10px; float: left; width: 66.6666667% }
-  .row__60 { padding: 0 10px; float: left; width: 60% }
-  .row__50 { padding: 0 10px; float: left; width: 50% }
-  .row__30 { padding: 0 10px; float: left; width: 33.333333% }
+  .row__100 { position: relative; padding: 0 10px }
+  .row__70 { position: relative; padding: 0 10px; float: left; width: 66.6666667% }
+  .row__60 { position: relative; padding: 0 10px; float: left; width: 60% }
+  .row__50 { position: relative; padding: 0 10px; float: left; width: 50% }
+  .row__30 { position: relative; padding: 0 10px; float: left; width: 33.333333% }
+
+  .validation {
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 28px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ee6052;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(204,169,44, 0.4);
+    animation: pulse .75s infinite;
+  }
+
+  .validation:hover {
+    animation: none;
+  }
+
+  @-webkit-keyframes pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
+  }
+  @keyframes pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+      box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+        box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+        box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
+  }
 </style>
 
 <script>
@@ -196,9 +244,10 @@
       validation: function () {
         return {
           locality: !!this.local.locality && !!this.local.localityType && !!this.local.localityId,
-          street: !!this.local.street && !!this.local.streetType && !!this.local.streetId,
-          building: !!this.local.building && !!this.local.buildingType && !!this.local.buildingId,
-          district: !!this.local.district
+          street: this.local.object === 6 || !!this.local.street && !!this.local.streetType && !!this.local.streetId,
+          building: this.local.object === 6 || this.local.object === 5 ||
+            (!!this.local.building && !!this.local.buildingType && !!this.local.buildingId),
+          district: this.local.object === 5 || this.local.object === 6 || !!this.local.district
         }
       },
       isValid: function () {
@@ -206,6 +255,12 @@
         return Object.keys(validation).every(function (key) {
           return validation[key]
         })
+      },
+      currentField: function() {
+        let validation = this.validation;
+        for ( let key in validation ) {
+          if ( !validation[key] ) return key;
+        }
       }
     }
   }

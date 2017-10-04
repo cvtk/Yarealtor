@@ -84,7 +84,7 @@
       return {
         path: '/images/',
         images: {},
-        progress: 0,
+        progress: Math.floor(Math.random() * (100 - 2)) + 1,
         loading: false
       }
     },
@@ -125,6 +125,7 @@
             }, {});
             this.$emit('input', images);
             this.$refs.input.value = '';
+            this.loading = false;
           })
         })
         // Array.prototype.forEach.call(e.target.files, file => {

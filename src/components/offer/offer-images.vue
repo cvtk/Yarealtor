@@ -1,12 +1,13 @@
 <template>
   <div :class="$style.images">
-    <div :class="$style.images__prev" @click="previous()" v-if="isMultiple"></div>
-    <div :class="$style.images__next" @click="next()" v-if="isMultiple"></div>
+    <div :class="$style.images__fullscreen" @click="showFullscreen"></div>
+    <div :class="$style.images__prev" @click="previous" v-if="isMultiple"></div>
+    <div :class="$style.images__next" @click="next" v-if="isMultiple"></div>
     <div :class="$style.images__carousel">
       <flickity :class="[ $style.carousel, fullscreen && $style._full ]"
         ref="flickity" :options="opt">
         <div :class="$style.carousel__item" v-for="(image, index) in images">
-          <div :class="$style.item" @click="showFullscreen(index)">
+          <div :class="$style.item">
             <div :class="$style.item__background" :style="{ 'background-image': 'url(' + image.small + ')' }"></div>
             <img :class="[ $style.item__image, false && $style._portret ]" :src="image.orig">
           </div>
@@ -22,7 +23,10 @@
         </div>
       </flickity>
     </div>
-    <offer-modal-images :showModal="showModal" :current="current" :images="images" @close="showModal = false" />
+    <div :class="$style.images__modal">
+      <offer-modal-images :showModal="showModal" :current="current" :images="images" @close="showModal = false" />
+    </div>
+    
   </div>
 </template>
 
@@ -33,16 +37,23 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    * { height: 100%; outline: none; }
   }
   
-  .images__carousel { /* */ }
+  .images__carousel {
+    height: 100%;
+    * { height: 100%; outline: none; }
+  }
+
+
+  .images__modal {
+    height: 100%;
+    * { height: 100%; }
+  }
 
   .carousel {
     position: relative;
     width: 100%;
     height: 100%;
-    &._full { cursor: pointer; }
   }
 
   .carousel__item {
@@ -57,7 +68,7 @@
     justify-content: center;
   }
 
-  .images__prev, .images__next {
+  .images__prev, .images__next, .images__fullscreen {
     position: absolute;
     top: 45%;
     right: 20px;
@@ -65,22 +76,27 @@
     cursor: pointer;
     padding: 12px 15px;
     text-align: center;
-    background-color: #fff;
-    opacity: .35;
+    background-color: #364150;
+    opacity: 0.8;
     transition: opacity, .35s;
     z-index: 5;
-    &:hover { opacity: .5 }
+    &:hover { opacity: .65 }
     &:after {
       content: "\e606";
       font-family: "Icons";
       font-size: 22px;
-      color: #191c1f;
+      color: #fff;
     }
   }
 
   .images__prev {
     left: 20px; right: auto;
     &:after { content: "\e605" }
+  }
+
+  .images__fullscreen {
+    top: 20px;
+    &:after { content: "\e090" }
   }
 
   .item__background {
@@ -112,6 +128,8 @@
     height: 100px;
     width: 100%;
     z-index: 10;
+    outline: none;
+    * { outline: none !important }
   }
 
   .navigation { 
@@ -126,6 +144,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     transition: transform .2s;
+    border: 1px solid #364150;
     &:hover {
       transform: scale(1.1);
     }
@@ -178,7 +197,7 @@
         this.$refs.flickity.previous();
       },
       showFullscreen(index) {
-        this.current = index; this.showModal = true; 
+        this.current = this.$refs.flickity.selectedIndex(); this.showModal = true; 
       }
     }
   }

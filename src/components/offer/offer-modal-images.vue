@@ -131,11 +131,12 @@
 
     watch: {
       current() {
-        this.select(this.current);
+        //this.select(this.current);
       }
-      
     },
-
+    mounted() {
+      //this.select(this.current);
+    },
     methods: {
       select(index) {
         this.$refs.flick.select(index);

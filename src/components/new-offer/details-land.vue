@@ -3,6 +3,7 @@
     <div :class="$style.land__row">
       <div :class="$style.row">
         <div :class="$style.row__50">
+          <span :class="$style.validation" v-if="currentField === 'land_type'"></span>
           <default-select v-model="local.land_type"
             :label="mdl.land_type.title"
             :options="mdl.land_type.options"
@@ -10,6 +11,7 @@
           />
         </div>
         <div :class="$style.row__50">
+          <span :class="$style.validation" v-if="currentField === 'cottage_area'"></span>
           <default-number v-model="local.cottage_area"
             :label="mdl.cottage_area.title"
             :validate="validation.cottage_area"
@@ -101,12 +103,56 @@
     position: relative;
     &:after { @include clearfix }
   }
-  .row__33 { padding: 0 10px; float: left; width: 33.333333% }
-  .row__50 { padding: 0 10px; float: left; width: 50% }
-  .row__100 { padding: 0 10px; width: 100% }
+  .row__33 {  position: relative; padding: 0 10px; float: left; width: 33.333333% }
+  .row__50 {  position: relative; padding: 0 10px; float: left; width: 50% }
+  .row__100 {  position: relative; padding: 0 10px; width: 100% }
 
   .wrapper {
     padding: 12px 0;
+  }
+
+  .validation {
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 28px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ee6052;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(204,169,44, 0.4);
+    animation: pulse .75s infinite;
+  }
+
+  .validation:hover {
+    animation: none;
+  }
+
+  @-webkit-keyframes pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
+  }
+  @keyframes pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+      box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+        box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+        box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
   }
 </style>
 
@@ -142,7 +188,8 @@
     computed: {
       validation: function () {
         return {
-
+          land_type: !!this.local.land_type,
+          cottage_area: !!this.local.cottage_area
         }
       },
       isValid: function () {
@@ -150,6 +197,12 @@
         return Object.keys(validation).every(function (key) {
           return validation[key]
         })
+      },
+      currentField: function() {
+        let validation = this.validation;
+        for ( let key in validation ) {
+          if ( !validation[key] ) return key;
+        }
       }
     }
   }

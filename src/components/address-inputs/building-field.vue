@@ -31,10 +31,10 @@
 
   .building__loader {
     position: absolute;
-    top: 24px;
-    right: 0px;
-    width: 26px;
-    height: 26px;
+    top: 25px;
+    right: 18px;
+    width: 21px;
+    height: 20px;
     z-index: 6;
   }
 

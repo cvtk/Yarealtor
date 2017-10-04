@@ -4,6 +4,7 @@
       <div :class="$style.row">
         <div :class="$style.group">
           <h3 :class="$style.group__title">Тип</h3>
+          <span :class="[ $style.validation, $style._group]" v-if="currentField === 'commercial_type'"></span>
           <div :class="$style.row__50">
             <div :class="$style.item">
               <default-checkbox v-model="local.commercial_retail" :label="mdl.commercial_retail.title" />
@@ -32,24 +33,31 @@
         </div>
       </div>
       <div :class="$style.row">
-        <div :class="$style.row__50">
+        <div :class="$style.row__33">
+          <span :class="$style.validation" v-if="currentField === 'commercial_material'"></span>
           <default-select v-model="local.commercial_material"
             :label="mdl.commercial_material.title"
             :options="mdl.commercial_material.options"
             nameField="title"
           />
         </div>
-        <div :class="$style.row__50">
+        <div :class="$style.row__33">
           <default-select v-model="local.special_floor"
             :label="mdl.special_floor.title"
             :options="mdl.special_floor.options"
             nameField="title"
           />
         </div>
+        <div :class="$style.row__33">
+          <default-number v-model="local.price_permeter" 
+            :label="mdl.price_permeter.title" 
+          />
+        </div>
       </div>
       <div :class="$style.row">
         
         <div :class="$style.row__33">
+          <span :class="$style.validation" v-if="currentField === 'floor'"></span>
           <default-number v-model="local.floor"
             :label="mdl.floor.title"
             :validate="validation.floor"
@@ -57,6 +65,7 @@
           />
         </div>
         <div :class="$style.row__33">
+          <span :class="$style.validation" v-if="currentField === 'floors'"></span>
           <default-number v-model="local.floors"
             :label="mdl.floors.title"
             :validate="validation.floors"
@@ -64,6 +73,7 @@
           />
         </div>
         <div :class="$style.row__33">
+          <span :class="$style.validation" v-if="currentField === 'area_full'"></span>
           <default-number v-model="local.area_full"
             :label="mdl.area_full.title"
             :validate="validation.area_full"
@@ -198,15 +208,60 @@
   }
 
   .row {
-    position: relative;
+    position: relative; 
     &:after { @include clearfix }
   }
-  .row__33 { padding: 0 10px; float: left; width: 33.333333% }
-  .row__50 { padding: 0 10px; float: left; width: 50% }
-  .row__100 { padding: 0 10px; width: 100% }
+  .row__33 { position: relative; padding: 0 10px; float: left; width: 33.333333% }
+  .row__50 { position: relative; padding: 0 10px; float: left; width: 50% }
+  .row__100 { position: relative; padding: 0 10px; width: 100% }
 
   .wrapper {
     padding: 12px 0;
+  }
+
+  .validation {
+    display: block;
+    position: absolute;
+    right: 10px;
+    top: 28px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #ee6052;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(204,169,44, 0.4);
+    animation: pulse .75s infinite;
+    &._group { top: 10px }
+  }
+
+  .validation:hover {
+    animation: none;
+  }
+
+  @-webkit-keyframes pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
+  }
+  @keyframes pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+      box-shadow: 0 0 0 0 rgba(238,96,82, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+        box-shadow: 0 0 0 10px rgba(238,96,82, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+        box-shadow: 0 0 0 0 rgba(238,96,82, 0);
+    }
   }
 </style>
 
@@ -242,7 +297,14 @@
     computed: {
       validation: function () {
         return {
-
+          commercial_type: !!this.local.commercial_retail || !!this.local.commercial_office || 
+            !!this.local.commercial_industrial || !!this.local.commercial_warehouse || 
+            !!this.local.commercial_business || !!this.local.commercial_land || 
+            !!this.local.commercial_apartments,
+          commercial_material: !!this.local.commercial_material,
+          floor: !!this.local.floor,
+          floors: !!this.local.floors,
+          area_full: !!this.local.area_full
         }
       },
       isValid: function () {
@@ -250,6 +312,12 @@
         return Object.keys(validation).every(function (key) {
           return validation[key]
         })
+      },
+      currentField: function() {
+        let validation = this.validation;
+        for ( let key in validation ) {
+          if ( !validation[key] ) return key;
+        }
       }
     }
   }
