@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.polls">
+  <div :class="$style.polls" v-if="dataReady">
     <div :class="$style.polls__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Соц. опросы</li>
@@ -16,13 +16,9 @@
     
     <div :class="$style.polls__main">
       <div :class="$style.main_wrapper">
-        <timeline-new-post :auth="auth" />
+        <polls-new :auth="auth" :user="user" />
         <div :class="$style.main__timeline" v-if="dataReady">
-          <timeline-post v-for="post in postsByTimestamp" 
-            :key="post.key" 
-            :post="post" 
-            :auth="auth">
-          </timeline-post>
+          <polls-timeline :poll="poll" :user="user" v-for="poll in pollsyTimestamp" :key="poll.key" />
         </div>
       </div>
       
@@ -297,40 +293,45 @@
   import TimelineNewPost from './timeline/timeline-new-post.vue';
   import AppInput from './modules/inputs.vue';
   import AppUploadImages from './modules/upload-images.vue';
+  import PollsNew from './polls/polls-new.vue';
+  import PollsTimeline from './polls/polls-timeline.vue';
   import firebase from '../firebase.js';
 
-  const postsRef = firebase.database().ref('posts');
+  const pollsRef = firebase.database().ref('polls');
 
   export default {
     name: 'polls',
-    props: ['auth'],
-    components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, TimelinePost, TimelineNewPost  },
+    props: ['auth', 'user'],
+    components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, PollsNew, PollsTimeline  },
     data() {
       return {
         filter: 'all',
         dataReady: false,
-        posts: {}
+        local: [],
+        currentRef: null
+      }
+    },
+    methods: {
+      initRef() {
+        this.dataReady = false;
+        if ( this.currentRef ) currentRef.off('value', onValue);
+        this.currentRef = pollsRef.on('value', this.onValue);
+      },
+      onValue(polls) {
+        if ( polls.exists() ) {
+          console.log(polls.exists())
+          let tmp = polls.val();
+          this.local = Object.keys(tmp).map( key => tmp[key] );
+        } else this.local = [];
+        this.dataReady = true;
       }
     },
     created() {
-      postsRef.on('value', posts => {
-        posts.forEach(post => {
-          // TODO убрать эту содомию
-          if ( post.val().inc.poll.length > 1 ) {
-            this.$set( this.posts, post.key, post.val() );
-          }
-        });
-        this.dataReady = true;
-      });
-      postsRef.on('child_removed', post => {
-        this.$delete(this.posts, post.key);
-      });
-      
+      this.initRef();
     },
     computed: {
-      postsByTimestamp: function() {
-        let arr = Object.keys(this.posts).map(key => this.posts[key] );
-        return arr.sort((x, y) => y.created - x.created);
+      pollsyTimestamp: function() {
+        return this.local.sort( (a, b) => b.created - a.created );
       }
     }
   }

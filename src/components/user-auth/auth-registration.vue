@@ -24,7 +24,7 @@
                 </div>
                 <div :class="$style.inputs__row">
                   <div :class="$style.row__item">
-                    <default-number mask="(###) ###-##-##" label="Телефон" 
+                    <default-text mask="(###) ###-##-##" label="Телефон" 
                       msg="Некорректный номер" v-model="phone" :validate="validation.phone" />
                   </div>
                   <div :class="$style.row__item">
@@ -287,11 +287,25 @@
           })
       },
       setUser(user) {
+        let pht= '/static/default-user.png';
         if ( user ) {
-          let prep = { about: 'Немного о себе', active: false, birthday: '', company: this.company, created: Firebase.database.ServerValue.TIMESTAMP,
-            email: this.email, key: user.uid, mobile: this.phone, name: this.name, role: 10,
-              page: user.uid, photo: '/static/users/default-1.svg', position: '', surname: this.surname
+          let prep = {
+            about: '',
+            active: false,
+            birthday: '', 
+            company: this.company, created: Firebase.database.ServerValue.TIMESTAMP,
+            email: this.email,
+            key: user.uid,
+            mobile: this.phone,
+            name: this.name,
+            role: 10,
+            page: user.uid,
+            photo: { small: pht, medium: pht, orig: pht} ,
+            position: '',
+            surname: this.surname,
+            deleted: false
           }
+
           usersRef.child(user.uid).set(prep)
             .then( ()=> this.createTicket(user) )
             .catch( error => this.notify = 'Сетевая ошибка (onAuthStateChanged)' )

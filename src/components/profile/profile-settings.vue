@@ -45,7 +45,7 @@
         <div :class="$style.content__avatar">
           <div :class="$style.avatar">
             <upload-image v-model="local.photo" type="hidden" :multiple="false">
-              <img :src="local.photo" alt="Аватар" :class="$style.avatar__image">
+              <img :src="local.photo.small" alt="Аватар" :class="$style.avatar__image">
               Сменить фото
             </upload-image>
           </div>

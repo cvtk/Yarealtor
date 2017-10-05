@@ -324,7 +324,7 @@
     },
     computed: {
       filteredOffers() {
-        return Object.keys(this.offers).map( e => this.offers[e] );
+        return Object.keys(this.offers).map( e => this.offers[e] ).sort( (a, b) => b.created - a.created );
       }
     },
     methods: {

@@ -1,133 +1,22 @@
 <template>
-  <div :class="$style.offer">
+  <div :class="$style.offer" v-if="dataReady">
     <div :class="$style.offer__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
         <router-link tag="li" :to="{ name: 'offers' }" :class="$style.breadcrumbs__item">Предложения</router-link >
         <span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">{{ item.estate.city }}, {{ item.estate.address }} ({{ item.id }})</li>
+        <li :class="$style.breadcrumbs__item">{{ title }}</li>
       </ul>
     </div>
     <div :class="$style.offer__toolbar">
-      <h1 :class="$style.toolbar__title">{{ item.estate.city }}, {{ item.estate.address }}<span :class="$style._small">Предложение #{{ item.id }}</span></h1>
+      <h1 :class="$style.toolbar__title">{{ title }}<span :class="$style._small">{{ humanize( 'type', this.offer.type) }}</span></h1>
       <div :class="$style.toolbar__actions"></div>
     </div>
     
     <div :class="$style.offer__main">
       <div :class="$style.main__content">
-        <div :class="$style.content__background" :style="{ 'background-image': 'url(' + item.image + ')' }"></div>
-        <aside :class="$style.content__details">
-          <div :class="$style.details__author">
-            <img :class="$style.author__photo" :src="item.author.photo">
-            <div :class="$style.author__meta">
-              <router-link :class="$style.meta__name" :to="{ name: 'user', params: { page: item.author.page } }">
-                {{ item.author.name }}
-                <app-online-status :online="true"></app-online-status>
-              </router-link>
-              <router-link :class="$style.meta__company" :to="{ name: 'company', params: { page: item.author.page } }">
-                {{ item.author.company }}
-              </router-link>
-            </div>
-          </div>
-
-          <ul :class="$style.details__list">
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Цена:</span>
-              <span :class="$style.item__value">{{ item.price | price }} руб.</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Населенный пункт:</span>
-              <span :class="$style.item__value">гор. Ярославль</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Адрес:</span>
-              <span :class="$style.item__value">{{ item.estate.address }}</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Район:</span>
-              <span :class="$style.item__value">Красноперекопский</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Тип:</span>
-              <span :class="$style.item__value">новостройка</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Материал:</span>
-              <span :class="$style.item__value">деревянный</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Комнат:</span>
-              <span :class="$style.item__value">2</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Этаж:</span>
-              <span :class="$style.item__value">8 / 11</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Общая площадь:</span>
-              <span :class="$style.item__value">90.2 м²</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Жилая площадь:</span>
-              <span :class="$style.item__value">80 м²</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Площадь кухни:</span>
-              <span :class="$style.item__value">10 м²</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Отделка:</span>
-              <span :class="$style.item__value">от застройщика</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Санузел:</span>
-              <span :class="$style.item__value">совмещенный</span>
-            </li>
-            <li :class="$style.list__item">
-              <span :class="$style.item__title">Балкон:</span>
-              <span :class="$style.item__value">есть</span>
-            </li>
-          </ul>
-        </aside>
-        <div :class="$style.content__carousel">
-          <div :class="$style.carousel__thumbnails">
-            <div :class="$style.thumbnails__item" v-for="thumbnail in item.thumbs" :style="{ 'background-image': 'url(' + thumbnail + ')' }"></div>
-          </div>
-          <div :class="[$style.carousel__menu, !carouselMenuActive || $style.__active]">
-            <div :class="$style.menu__switcher" @click="carouselMenuActive=!carouselMenuActive"></div>
-            <div :class="$style.menu__item" @click="item.favorites=!item.favorites" v-show="carouselMenuActive">
-              <div :class="$style.item__top">
-                <icon :class="$style.top__icon" name="star" v-if="item.favorites"></icon>
-                <icon :class="$style.top__icon" name="star-o" v-else></icon>
-                <span :class="$style.top__text">241</span>
-              </div>
-              <span :class="$style.item__title">Избранное</span>
-            </div>
-            <div :class="$style.menu__item" v-show="carouselMenuActive">
-              <div :class="$style.item__top">
-                <icon :class="$style.top__icon" name="comments-o"></icon>
-                <span :class="$style.top__text">87</span>
-              </div>
-              <span :class="$style.item__title">Обсудить</span>
-            </div>
-            <div :class="$style.menu__item" v-show="carouselMenuActive">
-              <div :class="$style.item__top">
-                <icon :class="$style.top__icon" name="map-o"></icon>
-              </div>
-              <span :class="$style.item__title">Карта</span>
-            </div>
-          </div>
-          <div :class="$style.carousel__controls">
-            <span :class="$style.controls__fullscreen"></span>
-            <span :class="$style.controls__prev"></span>
-            <span :class="$style.controls__next"></span>
-          </div>
-          <img :src="item.image" alt="" :class="$style.carousel__slide">
-        </div>
+        <offer-content :offer="offer" />
       </div>
-    <div :class="$style.main__description">
-      Сергей, оно зависит от количества текста. Больше текста - больше места. Или Вы не это имели ввиду? Много-много текста, оооочень много текста. Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.Много-много текста, оооочень много текста.
-    </div>
     <div :class="$style.main__h_ad"><img src="/static/ad_2.gif" alt="" ></div>
     <app-ad-sidebar :class="$style.main__ad"></app-ad-sidebar>
     </div>
@@ -186,7 +75,6 @@
     .main__content {
       position: relative;
       margin-right: 300px;
-      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
       height: auto;
       overflow: hidden;
       &:after { @include clearfix }
@@ -480,47 +368,64 @@
 </style>
 
 <script>
+  import firebase from '../firebase.js';
+  import mdl from '../models/offer.js';
   import AppLoader from './app-loader.vue';
-  import AppOnlineStatus from './modules/online-status.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppFilters from './helpers/filters.js';
-  import Icon from 'vue-awesome/components/Icon.vue';
-  import 'vue-awesome/icons/map';
-  import 'vue-awesome/icons/map-o';
-  import 'vue-awesome/icons/comments';
-  import 'vue-awesome/icons/comments-o';
-  import 'vue-awesome/icons/star';
-  import 'vue-awesome/icons/star-o';
+  import OfferContent from './offer/offer.vue';
+
+  const offersRef = firebase.database().ref('offers');
 
   export default {
     name: 'offer',
     props: ['auth'],
-    components: { AppLoader, AppOnlineStatus, AppAdSidebar, Icon },
+    components: { AppLoader, AppAdSidebar, OfferContent },
     filters: AppFilters,
     data() {
       return {
         dataReady: false,
-        carouselMenuActive: false,
-        item:
-          {
-            image: '/static/apartments/7.jpg',
-            thumbs: ['/static/apartments/1.jpg', '/static/apartments/2.jpg', '/static/apartments/3.jpg', '/static/apartments/5.jpg', '/static/apartments/6.jpg' ],
-            favorites: false,
-            id: 112313,
-            type: 0,
-            rooms: 3,
-            price: 4500000,
-            date: 1497852079,
-            area: 90.2,
-            floor: 7,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Тестовая компания"', photo: '/static/users/default-3.svg' },
-            estate: { address: 'ул. Строителей, 7', city: 'Ярославль', floors: 13 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          }
+        mdl: mdl.getModel(['meta', 'general', 'offer', 'address', 'params']),
+        offer: {}
+      }
+    },
+    computed: {
+      title() {
+        switch( this.offer.object ) {
+          case 1: return `${this.offer.rooms}-к квартира, ${this.offer.area_full} м², ${this.offer.floor}/${this.offer.floors} эт.`;
+          case 2: return `Комната, ${this.offer.area_full} м², ${this.offer.floor}/${this.offer.floors} эт.`;
+          case 3: return `Коммерческая, ${this.commercialType()}, ${this.offer.area_full} м²`;
+          case 4: return `${ this.humanize( 'cottage_type', this.offer.cottage_type) }, ${this.offer.area_full} м², ${this.offer.floors} этажа`;
+          case 5: return `Гараж, ${ this.humanize( 'garage_material', this.offer.garage_material) }, ${this.offer.area_full} м²`;
+          case 6: return `Участок ${ this.humanize( 'land_type', this.offer.land_type) }, ${this.offer.cottage_area} сот.`;
+        }
       }
     },
     created() {
-      this.dataReady = true;
+      offersRef.child(this.$route.params.id).once('value', (offer) => {
+        if ( offer.exists() ) {
+          this.offer = offer.val();
+          this.dataReady = true;
+        }
+        else {
+          this.$router.push({ name: '404', query: { redirect: this.$route.params.id } });
+        }
+      });
+    },
+    methods: {
+      commercialType() {
+        let types = [ 'commercial_retail', 'commercial_office', 'commercial_industrial',
+          'commercial_warehouse', 'commercial_business', 'commercial_land', 'commercial_apartments' ];
+
+        for ( let i = 0; i < types.length; i++ ) {
+          let key = types[i];
+
+          if ( typeof this.offer[key] !== 'undefined' && this.offer[key] ) {
+            return this.mdl[key].title;
+          }
+        }
+      },
+      humanize: mdl.getOptionTitle
     }
   }
 </script>

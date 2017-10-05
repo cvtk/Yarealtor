@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.company">
+  <div :class="$style.company" v-if="dataReady">
     <modal-overlay :show="showRemoveModal" @close="showRemoveModal = false">
       <div :class="$style.remove_modal">
         <div :class="$style.message">Сотрудник будет удален. Восстановить эту запись будет невозможно. Вы уверены?</div>
@@ -27,7 +27,7 @@
         <default-button label="Настройки" icon="settings" @click="showSettingsModal = true"/>
       </div>
     </div>
-    <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image + ')' }">
+    <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image.orig + ')' }">
       <div :class="$style.title_wrapper">
         <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge" v-if="company.yasr">Участник ЯСР</span></h2>
         <h3 :class="$style.banner__slogan">{{ company.slogan }}</h3>

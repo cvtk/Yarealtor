@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.offer">
+  <div :class="$style.offer" v-if="dataReady">
     <div :class="[$style.row, $style._shadow ]">
     
       <div :class="[ $style.offer__toggler, showMap && $style._pic ]" @click="showMap = !showMap"></div>
@@ -41,7 +41,7 @@
   .offer {
     position: relative;
     height: 100%;
-    margin: 20px 2px;
+    margin: 2px;
     @media (max-width: $bp-medium) {
       .offer__toggler { left: 20px }
       .offer__map, .offer__images {
@@ -73,7 +73,7 @@
 
   .offer__map, .offer__images {
     margin-left: 280px;
-    height: 65vh;
+    height: 80vh;
   }
 
   .offer__toggler {

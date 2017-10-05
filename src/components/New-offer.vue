@@ -142,6 +142,7 @@
 
 <script>
   import mdl from '../models/offer.js';
+  import Firebase from 'firebase';
   import firebase from '../firebase.js';
   import AppLoader from './app-loader.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
@@ -207,11 +208,26 @@
       },
 
       onSave() {
+        let unix = Firebase.database.ServerValue.TIMESTAMP;
         this.offer.key = this.offer.key || offersRef.push().key;
-        
+
+        if ( !this.offer.created ) {
+          this.offer.created = unix;
+        } else {
+          this.offer.modified = unix;
+        }
+
+        if ( !this.offer.images.length ) {
+          let img = '/static/image-placeholder.png';
+          this.offer.images.push({small: img, medium: img, orig: img});
+        }
+
         offersRef.child(this.offer.key).update(this.offer)
-          .then( () => { console.log('Offer saved') })
-          .catch( () => { console.log('Offer saved') })
+          .then( () => {
+            console.log('Offer saved');
+            this.$router.push({ name: 'offers'});
+          })
+          .catch( error => { console.log('Offer save error: ', error) })
       },
       onStateChange(value, group) {
         this.stepsGroup[group] = value;

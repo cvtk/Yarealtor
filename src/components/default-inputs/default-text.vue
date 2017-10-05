@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.text">
     <input type="text" :class="[ $style.text__input, local && $style._edited, !validate && $style._error ]"
-      :id="id" v-model="local" @input="onChange">
+      :id="id" v-model="local" v-mask="mask" @input="onChange">
     <label :class="$style.text__label">{{ label }}</label>
     <span :class="$style.text__msg">{{ msg }}</span>
   </div>
@@ -86,13 +86,18 @@
 </style>
 
 <script>
+  import Vue from 'vue'
+  import VueMask from 'v-mask'
+  Vue.use(VueMask);
+  
   export default {
     name: 'default-text',
     props: {
       value: { default: 'default' },
       label: { type: String, default: '' },
       msg: { type: String, default: '' },
-      validate: { type: Boolean, default: true }
+      validate: { type: Boolean, default: true },
+      mask: { type: String, default: '' }
     },
     data() {
       return {
