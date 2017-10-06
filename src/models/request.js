@@ -4,12 +4,12 @@ fields.meta = {
   author: { title: 'Автор', default: '', options: [] },
   key: { title: 'Ключ базы', default: '', options: [] },
   company: { title: 'Компания', default: '', options: [] },
-  created: { title: 'Дата создания', default: null, options: [] },
-  modified: { title: 'Изменен', default: null, options: [] },
+  created: { title: 'Дата создания', default: 0, options: [] },
+  modified: { title: 'Изменен', default: 0, options: [] },
 }
 
 fields.general = {
-  request: { title: 'Тип заявки', default: [],
+  op: { title: 'Тип заявки', default: [],
     options: [
       { value: 1, label: 'Покупка' },
       { value: 2, label: 'Аренда' },
@@ -25,8 +25,8 @@ fields.general = {
       { value: 6, label: 'Земельный участок' },
     ]
   },
-  price_from: { title: 'Цена от', default: 0, options: [] },
-  price_to: { title: 'до', default: 0, options: [] },
+  price_from: { title: 'Цена от', default: null, options: [] },
+  price_to: { title: 'до', default: null, options: [] },
   description: { title: 'Дополнительное описание', default: '', options: [] },
 };
 
@@ -54,18 +54,96 @@ fields.apartment = {
       { value: 4, label: '4' },
       { value: 5, label: '5' },
       { value: 6, label: '6' },
-      { value: 7, label: '7' },
+      { value: 8, label: '>7' },
     ]
   },
 
-  area_from: { title: 'Площадь от', default: 0, options: [] },
+  area_from: { title: 'Площадь от', default: null, options: [] },
 
-  area_to: { title: 'до', default: 0, options: [] },
+  area_to: { title: 'до', default: null, options: [] },
 
   type: { title: 'Тип дома', default: [], 
     options: [
       { value: 1, label: 'вторичное' },
       { value: 2, label: 'новостройка' }
+    ]
+  },
+  material: { title: 'Материал дома', default: [], 
+    options: [
+      { value: 1, label: 'блочный' },
+      { value: 2, label: 'деревянный' },
+      { value: 3, label: 'кирпич' },
+      { value: 4, label: 'монолит' },
+      { value: 5, label: 'монолит' },
+    ]
+  },
+  furnish: { title: 'Тип отделки', default: [], 
+    options: [
+      { value: 1, label: 'требует ремонта' },
+      { value: 2, label: 'черновая' },
+      { value: 3, label: 'от застройщика' },
+      { value: 4, label: 'жилое состояние' },
+      { value: 5, label: 'косметика' },
+      { value: 6, label: 'евро' }
+    ]
+  },
+  bath: { title: 'Санузел', default: [], 
+    options: [
+      { value: 1, label: 'без удобств' },
+      { value: 2, label: 'раздельный' },
+      { value: 3, label: 'совмещенный' },
+      { value: 4, label: 'только душ / ванна' }
+    ]
+  },
+  floor: { title: 'Этаж', default: [], 
+    options: [
+      { value: 1, label: 'первый' },
+      { value: 2, label: 'не первый' },
+      { value: 3, label: 'не последний' },
+      { value: 4, label: 'кроме крайних' }
+    ]
+  },
+}
+
+fields.room = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { value: 1, label: 'Дзержинский' },
+      { value: 2, label: 'Заволжский' },
+      { value: 3, label: 'Кировский' },
+      { value: 4, label: 'Красноперекопский' },
+      { value: 5, label: 'Ленинский' },
+      { value: 6, label: 'Ярославский' },
+      { value: 7, label: 'Ярославская область' },
+    ]
+  },
+  rooms: { title: 'Всего комнат', default: [], 
+    options: [
+      { value: 1, label: '1' },
+      { value: 2, label: '2' },
+      { value: 3, label: '3' },
+      { value: 4, label: '4' },
+      { value: 5, label: '5' },
+      { value: 6, label: '6' },
+      { value: 7, label: '7' },
+      { value: 8, label: '>7' },
+    ]
+  },
+
+  area_from: { title: 'Площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  type: { title: 'Тип помещения', default: [], 
+    options: [
+      { value: 1, label: 'в доме' },
+      { value: 2, label: 'в квартире' },
+      { value: 3, label: 'в коммуналке' },
+      { value: 4, label: 'в общежитии' },
+      { value: 5, label: 'коридорного типа' }
     ]
   },
   material: { title: 'Материал дома', default: [], 
@@ -480,6 +558,11 @@ export default {
     return templates.address(obj);
 
   },
+
+  objectTypes() {
+    return ['apartment', 'room', 'commercial', 'cottage', 'garage', 'land'];
+  },
+
   init(group) {
     let result = {};
     if ( typeof group !== 'undefined' && typeof fields[group] !== 'undefined' ) {

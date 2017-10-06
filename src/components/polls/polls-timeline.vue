@@ -34,7 +34,7 @@
         <div :class="$style.body__content">{{ poll.question }}</div>
         <div :class="$style.content">
           <div :class="$style.content__results" v-if="voted">
-            <div :class="$style.result" v-for="(item, index) in poll.items" :key="index + '_result'">
+            <div :class="$style.result" v-for="(item, index) in poll.items" :key="id()">
               <div :class="$style.result__title">{{ item.text }} (Голосов: {{ voters[index] }})</div>
               <div :class="$style.result__progress">
                 <div :class="$style.progress" :style="{ 'width': + progress[index] +'%' }">{{ progress[index] }} %</div>
@@ -42,7 +42,7 @@
             </div>
           </div>
           <div :class="$style.content__answers" v-else>
-            <div :class="$style.answer" v-for="(item, index) in poll.items" :key="index + '_answer'" @click.once="vote(index)">
+            <div :class="$style.answer" v-for="(item, index) in poll.items" :key="id()" @click.once="vote(index)">
               <default-radio :label="item.text" name="answers" :option="index" />
             </div>
           </div>
@@ -359,6 +359,9 @@
     components: { AppLoader, DefaultRadio, PollsComment },
     filters: AppFilters,
     methods: {
+      id() {
+        return '_' + Math.random().toString(36).substr(2, 9);
+      },
       isUserVoted() {
         return this.poll.items.some( answer => {
           if ( typeof answer.voters !== 'undefined' ) {

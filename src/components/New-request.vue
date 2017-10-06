@@ -19,11 +19,11 @@
                       <div :class="$style.group__row">
                         <div :class="$style.row">
                           <div :class="$style.col">
-                            <span :class="$style.validation" v-if="currentField === 'request'"></span>
+                            <span :class="$style.validation" v-if="currentField === 'op'"></span>
                             <ui-select floating-label
-                              :label="mdl.request.title"
-                              :options="mdl.request.options"
-                              v-model="general.request">
+                              :label="mdl.op.title"
+                              :options="mdl.op.options"
+                              v-model="general.op">
                             </ui-select>
                           </div>
                           <div :class="$style.col">
@@ -38,18 +38,18 @@
                         <div :class="$style.row">
                           <div :class="$style.col">
                             <span :class="$style.validation" v-if="currentField === 'price_from'"></span>
-                            <ui-textbox
+                            <ui-textbox floating-label
                               type="number"
-                              :min="1000"
+                              :min=1000
                               :label="mdl.price_from.title"
                               v-model="general.price_from">
                             </ui-textbox>
                           </div>
                           <div :class="$style.col">
                             <span :class="$style.validation" v-if="currentField === 'price_to'"></span>
-                            <ui-textbox
+                            <ui-textbox floating-label
                               type="number"
-                              :min="0"
+                              :min=0
                               :label="mdl.price_to.title"
                               v-model="general.price_to">
                             </ui-textbox>
@@ -71,7 +71,16 @@
                 </div>
               </div>
               <div :class="$style.col_resp">
-                <request-apartment v-model="object" v-if="general.object.value === 1" />
+                <request-apartment 
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 1"
+                />
+                <request-room 
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 2"
+                />
               </div>
             </div>
           </transition>  
@@ -79,7 +88,9 @@
         <div :class="$style.main__actions">
           <div :class="$style.actions">
             <div :class="$style.actions__save">
-              <default-button icon="save" label="Сохранить" :red="!isValid" @click="onSave" />
+              <ui-button :color="!isValid && 'red' || 'green'" :loading="saving" @click="onSave">
+                Сохранить
+              </ui-button>
             </div>
           </div>
         </div>
@@ -246,11 +257,6 @@
 </style>
 
 <script>
-  import Vue from 'vue';
-  import 'keen-ui/src/bootstrap';
-  import UiRadioGroup from 'keen-ui/lib/UiRadioGroup';
-  import UiSelect from 'keen-ui/lib/UiSelect';
-  import UiTextbox from 'keen-ui/lib/UiTextbox';
 
   import mdl from '../models/request.js';
   import Firebase from 'firebase';
@@ -259,34 +265,28 @@
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import Breadcrumbs from './page-blocks/breadcrumbs.vue'
   import Toolbar from './page-blocks/toolbar.vue'
-  import DefaultRadio from './default-inputs/default-radio.vue';
-  import DefaultSelect from './default-inputs/default-select.vue';
-  import DefaultNumber from './default-inputs/default-number.vue';
-  import DefaultButton from './default-inputs/default-button.vue';
-  import DefaultTextarea from './default-inputs/default-textarea.vue';
   import RequestApartment from './new-request/request-apartment.vue';
+  import RequestRoom from './new-request/request-room.vue';
 
   const requestsRef = firebase.database().ref('requests');
 
   export default {
     name: 'new-request',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, Breadcrumbs, Toolbar, DefaultButton, DefaultSelect, DefaultRadio, DefaultNumber, DefaultTextarea, RequestApartment, UiTextbox, UiSelect, UiRadioGroup },
+    components: { AppLoader, AppAdSidebar, Breadcrumbs, Toolbar, RequestApartment, RequestRoom },
     data() {
       return {
         dataReady: false,
         mdl: mdl.model(['meta', 'general']),
         general: {},
         meta: {},
-        object: {}
+        object: {},
+        saving: false,
+        objectState: false
       }
     },
     created() {
-      this.general = mdl.init('general');
-      this.meta = mdl.init('meta');
-      this.meta.author = this.user.key;
-      this.meta.company = this.user.company.key;
-      this.initModel(this.general.object);
+      this.initData();
       this.dataReady = true;
     },
     watch: {
@@ -298,7 +298,7 @@
     computed: {
       validation: function () {
         return {
-          request: !!this.general.request.value,
+          op: !!this.general.op.value,
           price_from: parseInt(this.general.price_from) > 1000,
           price_to: parseInt(this.general.price_to) > parseInt(this.general.price_from),
           object: !!this.general.object.value
@@ -308,7 +308,7 @@
         let validation = this.validation
         return Object.keys(validation).every(function (key) {
           return validation[key]
-        })
+        }) && this.objectState;
       },
       currentField: function() {
         let validation = this.validation;
@@ -319,11 +319,28 @@
     },
 
     methods: {
+      onStateChange(state) {
+        this.objectState = state;
+      },
+      initData() {
+        this.general = mdl.init('general');
+        this.meta = mdl.init('meta');
+        this.meta.author = this.user.key;
+        this.meta.company = this.user.company.key;
+        this.initModel(this.general.object);
+      },
       initModel(object) {
         let type = [ '', 'apartment', 'room', 'commercial' ][object.value];
         this.object = mdl.init(type);
       },
       onSave() {
+        if ( !this.isValid ) {
+          this.$parent.$refs.notify.createSnackbar({
+            message: 'Заполните все необходимые поля (отмечены красным индикатором)',
+          });
+          return;
+        }
+        this.saving = true;
         let unix = Firebase.database.ServerValue.TIMESTAMP;
         this.meta.key = this.meta.key || requestsRef.push().key;
 
@@ -337,7 +354,14 @@
         Object.assign(prep, this.meta, this.general, this.object);
 
         requestsRef.child(this.meta.key).update(prep)
-          .then( () => this.request = mdl.init() )
+          .then( () => {
+            this.$parent.$refs.notify.createSnackbar({
+              message: 'Создана новая заявка',
+            });
+            this.initData();
+            this.saving = false;
+            this.$router.push({name: 'requests'});
+          })
           .catch( error => console.log('Request save error: ', error) );
         
       },

@@ -41,7 +41,9 @@
           <default-select :options="access" v-model="local.access" />
         </div>
         <div :class="$style.controls__submit">
-          <default-button :red="!isValid" label="Отправить" @click="publishPoll" />
+          <ui-button :color="!isValid && 'red' || 'green'" :loading="saving" @click="publishPoll">
+            Отправить
+          </ui-button>
         </div>
       </div>
     </div>
@@ -271,7 +273,7 @@
           { value: 5, name: 'Только для коллег' },
           { value: 1, name: 'Только модераторам' },
         ],
-        local: {}
+        local: {}, saving: false
       }
     },
     computed: {
@@ -308,6 +310,7 @@
       },
       publishPoll() {
         if ( this.isValid ) {
+          this.saving = true;
           this.local.author = this.user.key;
           this.local.company = this.user.company.key;
           this.local.created = Firebase.database.ServerValue.TIMESTAMP;
@@ -315,10 +318,19 @@
 
           pollsRef.child(this.local.key).update(this.local)
             .then( () => {
+              this.$parent.$parent.$refs.notify.createSnackbar({
+                message: 'Новый опрос создан',
+              });
+              this.saving = false;
               this.local = init();
               this.notify = false;
             })
-            .catch( error => console.log('Poll save error: ', error) );
+            .catch( error => {
+              this.$parent.$parent.$refs.notify.createSnackbar({
+                message: 'Ошибка сети: ' + error.message,
+              });
+              this.saving = false;
+            });
         }
         else { this.notify = true }
       },

@@ -30,7 +30,9 @@
           <div :class="$style.content__filter" v-if="filterToggled"></div>
         </transition>
         <transition name="layout-switcher" appear> 
-          <app-content-list :data="tmpHomes"></app-content-list>
+          <ul :class="$style.content__list">
+            <list-layout-item v-for="request in filteredRequests" :key="request.key" :request="request" />
+          </ul>
         </transition>
       </div>
       <app-loader v-else></app-loader>
@@ -88,6 +90,14 @@
     position: relative;
     margin-right: 300px;
     margin-bottom: 25px;
+  }
+
+  .content__list {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    &:after { @include clearfix }
   }
 
   .content__filter {
@@ -245,181 +255,40 @@
 
 <script>
   import AppLoader from './app-loader.vue';
-  import AppContentList from './modules/requests-list.vue';
+  import firebase from '../firebase.js';
+  import ListLayoutItem from './requests/list-layout-item.vue';
   import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
+
+  const requestsRef = firebase.database().ref('requests');
 
   export default {
     name: 'offers',
     props: ['auth'],
-    components: { AppLoader, AppContentList, AppInput, AppAdSidebar },
+    components: { AppLoader, ListLayoutItem, AppInput, AppAdSidebar },
     data() {
       return {
         dataReady: false,
         currentLayout: true,
         filterToggled: false,
-        tmpHomes: [
-          {
-            image: '',
-            id: 112323,
-            type: 0,
-            rooms: 3,
-            price: 4500000,
-            date: 1498740907332,
-            area: 90.2,
-            floor: 7,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Дзержинский район', city: 'Ярославль', floors: 13 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/2.jpg',
-            id: 112324,
-            type: 1,
-            rooms: 2,
-            price: 2600000,
-            date: 1498740907332,
-            area: 77.3,
-            floor: 2,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/3.jpg',
-            id: 112325,
-            type: 0,
-            rooms: 1,
-            price: 1000000,
-            date: 1498740907332,
-            area: 60,
-            floor: 5,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Заволжский район', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/4.jpg',
-            id: 112326,
-            type: 0,
-            rooms: 2,
-            price: 1400000,
-            date: 1498740907332,
-            area: 45.2,
-            floor: 6,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Ленинский район', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/5.jpg',
-            id: 112327,
-            type: 0,
-            rooms: 1,
-            price: 1750000,
-            date: 1498740907332,
-            area: 45.7,
-            floor: 3,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 9 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/6.jpg',
-            id: 112328,
-            type: 0,
-            rooms: 2,
-            price: 3200000,
-            date: 1498740907332,
-            area: 50.4,
-            floor: 3,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/7.jpg',
-            id: 112329,
-            type: 1,
-            rooms: 2,
-            price: 1300000,
-            date: 1498740907332,
-            area: 45.9,
-            floor: 6,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/8.jpg',
-            id: 112310,
-            type: 0,
-            rooms: 4,
-            price: 6700000,
-            date: 1498740907332,
-            area: 127.6,
-            floor: 4,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 11 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            id: 112311,
-            type: 0,
-            rooms: 2,
-            price: 4500000,
-            date: 1498740907332,
-            area: 70.8,
-            floor: 2,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 5 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            id: 112312,
-            type: 1,
-            rooms: 3,
-            price: 3400000,
-            date: 1498740907332,
-            area: 56.3,
-            floor: 4,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            id: 112313,
-            type: 0,
-            rooms: 2,
-            price: 340000,
-            date: 1498740907332,
-            area: 66,
-            floor: 5,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 9 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-          {
-            image: '/static/apartments/9.jpg',
-            id: 112314,
-            type: 1,
-            rooms: 2,
-            price: 2500000,
-            date: 1498740907332,
-            area: 56.1,
-            floor: 2,
-            author: { name: 'Иванов Сергей', page: 'ivanov', company: 'ООО "Длинное название компании"' },
-            estate: { address: 'Красноперекопский район', city: 'Ярославль', floors: 7 },
-            description: 'Вам будут завидовать! Невероятный жилой комплекс БИЗНЕС-КЛАССА на улице Савушкина с видами на Финский залив! Элитное расположение вблизи центра! Евродвушка с кухней-гостиной 19.58 м2, раздельным санузлом и большим застекленным балконом 7.26 м2! Отличный 11й этаж!'
-          },
-        ]
+        authorFilter: 'all',
+        ref: '',
+        requests: {},
       }
     },
     created() {
+      this.ref = requestsRef.on('value', this.onRequestsValue);
       this.dataReady = true;
+    },
+    computed: {
+      filteredRequests() {
+        return Object.keys(this.requests).map( e => this.requests[e] ).sort( (a, b) => b.created - a.created );
+      }
+    },
+    methods: {
+      onRequestsValue(requests) {
+        this.requests = requests.val();
+      }
     }
   }
 </script>

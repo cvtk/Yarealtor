@@ -3,6 +3,13 @@
     <router-view></router-view>
   </div>
   <div :class="{ [$style.app]:true, [$style._toggled]: isToggled }" v-else>
+    <div :class="$style.snackbar">
+      <ui-snackbar-container
+        ref="notify"
+        position="right"
+        :queue-snackbars="true">
+      </ui-snackbar-container>
+    </div>
     <header :class="$style.app__header">
       <div :class="$style.header__logo">
         <img src="/static/logo.png" alt="Логотип" :class="$style.logo__pic">
@@ -34,6 +41,7 @@
         </div>
       </div>
     </header>
+    
     <aside :class="[$style.app__sidebar]">
       <form :class="$style.sidebar__search">
         <input :class="$style.search__input" type="text" placeholder="Поиск...">
@@ -130,9 +138,17 @@
     }
   }
 
+  .snackbar {
+    position: fixed;
+    width: 100%;
+    top: 115px;
+    right: -10px;
+    z-index: 9999;
+  }
+
   .app__header {
     position: fixed;
-    z-index: 3;
+    z-index: 8999;
     background-color: #2b3643;
     width: 100%;
     min-width: 320px;
@@ -461,8 +477,14 @@
 </style>
 
 <script>
-import firebase from './firebase.js';
-import AppLoader from './components/app-loader.vue';
+  import Vue from 'vue';
+  import KeenUI from 'keen-ui';
+  import 'keen-ui/dist/keen-ui.css';
+
+  Vue.use(KeenUI);
+  
+  import firebase from './firebase.js';
+  import AppLoader from './components/app-loader.vue';
 
 const usersRef = firebase.database().ref('users');
 const companiesRef = firebase.database().ref('companies');

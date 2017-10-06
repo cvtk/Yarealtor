@@ -23,6 +23,11 @@ module.exports = {
         }
       },
       {
+        test: /\.css$/,
+        // exclude: /node_modules/,
+        loaders: ['style-loader', 'css-loader'],
+      },
+      {
         test: /\.(eot|ttf|woff|woff2)$/,
         loader: 'file-loader',
         options: {

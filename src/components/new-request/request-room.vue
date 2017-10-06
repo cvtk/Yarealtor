@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.apartment">
+  <div :class="$style.room">
     <div :class="$style.fieldgroups">
       <div :class="$style.fieldgroups__group">
         <div :class="$style.group">
@@ -112,7 +112,7 @@
   
   @import "../../assets/style.scss";
 
-  .apartment {
+  .room {
     position: relative;
   }
   
@@ -220,12 +220,12 @@
   import geo from '../helpers/geo.js';
 
   export default {
-    name: 'request-apartment',
+    name: 'request-room',
     props: ['value'],
     components: { },
     data() {
       return {
-        mdl: mdl.model(['apartment']),
+        mdl: mdl.model(['room']),
         local: this.value,
         results: {}, selected: {}
       }
