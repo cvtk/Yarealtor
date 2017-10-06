@@ -14,7 +14,7 @@
           <span :class="$style.filter__icon"></span>
           <span :class="$style.filter__text">Фильтр</span>
         </app-input>
-        <router-link :to="{ name: 'new-offer' }">
+        <router-link :to="{ name: 'new-request' }">
           <app-input type="button" :class="$style.actions__new">
             <span :class="$style.new__icon"></span>
             <span :class="$style.new__text">Создать заявку</span>

@@ -11,6 +11,7 @@ import Offers from './components/Offers.vue';
 import NewOffer from './components/New-offer.vue';
 import Offer from './components/Offer.vue';
 import Requests from './components/Requests.vue';
+import NewRequest from './components/New-request.vue';
 import Companies from './components/Companies.vue';
 import Yasr from './components/Yasr.vue';
 import Company from './components/Company.vue';
@@ -40,6 +41,7 @@ const router = new VueRouter({
     { path: '/offers/new', component: NewOffer, name: 'new-offer' },
     { path: '/offers/:id', component: Offer, name: 'offer' },
     { path: '/requests', component: Requests, name: 'requests' },
+    { path: '/requests/new', component: NewRequest, name: 'new-request' },
     { path: '/companies', component: Companies, name: 'companies' },
     { path: '/yasr', component: Yasr, name: 'yasr' },
     { path: '/companies/:page', component: Company, name: 'company' },
