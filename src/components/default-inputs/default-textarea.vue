@@ -89,7 +89,7 @@
   export default {
     name: 'default-text',
     props: {
-      value: { default: 'default' },
+      value: { default: '' },
       label: { type: String, default: '' },
       msg: { type: String, default: '' },
       validate: { type: Boolean, default: true }

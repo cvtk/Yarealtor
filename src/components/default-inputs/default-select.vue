@@ -94,7 +94,7 @@
   export default {
     name: 'default-select',
     props: {
-      value: { default: 'default' },
+      value: { default: null },
       label: { type: String, default: '' },
       msg: { type: String, default: '' },
       valueField: { type: String, default: 'value' },
@@ -110,7 +110,9 @@
     },
     methods: {
       onChange() {
-        this.$emit('input', ( this.isInt(event.target.value) ) ? parseInt(event.target.value) : event.target.value );
+        let value = ( this.isInt(event.target.value) ) ? parseInt(event.target.value) : event.target.value;
+        this.$emit('input', value );
+        this.$emit('change', value )
       },
       isInt(value) { return !isNaN(parseFloat(value)) && isFinite(value) }
     }

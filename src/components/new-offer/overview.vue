@@ -53,6 +53,7 @@
                 :label="mdl.object.title"
                 :options="mdl.object.options"
                 :validate="validation.object"
+                @change="onChange"
                 msg="Обязательное поле"
               />
             </div>
@@ -341,8 +342,14 @@
     created() {
       this.mdl = mdl.getModel( ['offer', 'general'] );
     },
-
     methods: {
+      initImages() {
+        //убрать содомию
+        this.local.images = [];
+      },
+      onChange(value) {
+        this.$emit('objectChanged', value);
+      },
       moveToFrontImage(index) {
         if (!!index) {
           let first = this.local.images[0];
@@ -352,8 +359,9 @@
       },
 
       removeImage(index) {
-        let imgs = this.local.images.splice(index, 1);
-        this.$set( this.local.images, imgs );
+        this.local.images.splice(index, 1);
+        // let imgs = this.local.images.splice(index, 1);
+        // this.$set( this.local.images, imgs );
       },
 
       imagesLoaded(image) {

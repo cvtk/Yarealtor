@@ -52,9 +52,9 @@
 
   .wrapper_image {
     position: relative;
-    width: 10%;
+    width: 20%;
     float: left;
-    padding-top: 10%;
+    padding-top: 20%;
   }
   .item__thumbnails_navigation {
     position: absolute;
@@ -116,7 +116,7 @@
   }
 
   .item__content {
-    width: 90%;
+    width: 80%;
     float: left;
     padding-left: 15px;
   }

@@ -1,5 +1,16 @@
 <template>
   <div :class="$style.offer" v-if="dataReady">
+    <ui-confirm
+      confirm-button-icon="delete"
+      confirm-button-text="Удалить"
+      deny-button-text="Отмена"
+      ref="deleteConfirm"
+      title="Удалить предложение"
+      type="danger"
+
+      @confirm="remove"
+    >Вы уверены, что хотите удалить это предложение?
+    </ui-confirm>
     <div :class="$style.offer__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
@@ -9,8 +20,37 @@
       </ul>
     </div>
     <div :class="$style.offer__toolbar">
-      <h1 :class="$style.toolbar__title">{{ title }}<span :class="$style._small">{{ humanize( 'type', this.offer.type) }}</span></h1>
-      <div :class="$style.toolbar__actions"></div>
+      <h1 :class="$style.toolbar__title">{{ title }}<span :class="$style._small">добавлено: {{ offer.created | unixToDate }}</span></h1>
+      <div :class="$style.toolbar__actions">
+        <div :class="$style.actions">
+          <ui-fab
+            @click="report"
+            icon="gavel"
+            tooltip-position="top center"
+            tooltip="Жалоба"
+            size="small"
+          ></ui-fab>
+          <ui-fab
+            @click="$router.push({ name: 'edit-offer', params: { id: offer.key } })"
+            icon="edit"
+            tooltip-position="top center"
+            tooltip="Правка"
+            size="small"
+            :class="$style.uifab"
+            v-if="isOwner || isModer || isAdmin"
+          ></ui-fab>
+          <ui-fab
+            @click="showConfirm"
+            icon="delete"
+            tooltip-position="top center"
+            tooltip="Удалить"
+            size="small"
+            :class="$style.uifab"
+            v-if="isOwner || isModer || isAdmin"
+          ></ui-fab>
+        </div>
+        
+      </div>
     </div>
     
     <div :class="$style.offer__main">
@@ -59,7 +99,10 @@
     }
 
   /* offer__toolbar */
-    .offer__toolbar { margin: 25px 0 }
+    .offer__toolbar {
+      &:after { @include clearfix }
+      margin: 25px 0;
+    }
 
     .toolbar__title {
       font-size: 24px;
@@ -68,8 +111,20 @@
       padding: 0;
       letter-spacing: -1px;
       font-weight: 300;
+      float: left;
       > ._small { font-size: 14px; letter-spacing: 0; text-transform: lowercase; margin-left: 5px; }
     }
+
+    .toolbar__actions {
+      float: right;
+    }
+
+    .actions {
+      align-items: flex-end;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .uifab { margin-left: 10px; }
   
   /* main__content */
     .main__content {
@@ -379,7 +434,7 @@
 
   export default {
     name: 'offer',
-    props: ['auth'],
+    props: ['auth', 'user'],
     components: { AppLoader, AppAdSidebar, OfferContent },
     filters: AppFilters,
     data() {
@@ -390,6 +445,9 @@
       }
     },
     computed: {
+      isOwner() { return this.user.key === this.offer.key },
+      isModer() { return this.user.company === this.offer.company && this.user.role === 5 },
+      isAdmin() { return this.user.role === 1 },
       title() {
         switch( this.offer.object ) {
           case 1: return `${this.offer.rooms}-к квартира, ${this.offer.area_full} м², ${this.offer.floor}/${this.offer.floors} эт.`;
@@ -425,7 +483,27 @@
           }
         }
       },
-      humanize: mdl.getOptionTitle
+      humanize: mdl.getOptionTitle,
+      remove() {
+        offersRef.child(this.offer.key).remove()
+          .then( () => {
+            this.$parent.$refs.notify.createSnackbar({
+              message: 'Предложение удалено',
+            });
+            this.$router.push({ name: 'offers'});
+          })
+          .catch( error => {
+            this.$parent.$refs.notify.createSnackbar({
+              message: `Ошибка сети: ${error.message}`,
+            });
+          })
+      },
+      report() {
+
+      },
+      showConfirm() {
+        this.$refs.deleteConfirm.open();
+      },
     }
   }
 </script>

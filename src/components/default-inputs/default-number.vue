@@ -96,7 +96,7 @@
   export default {
     name: 'default-number',
     props: {
-      value: { default: 'default' },
+      value: { default: null },
       label: { type: String, default: '' },
       msg: { type: String, default: '' },
       validate: { type: Boolean, default: true },

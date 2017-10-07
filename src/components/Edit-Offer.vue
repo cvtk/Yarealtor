@@ -1,21 +1,23 @@
 <template>
   <div :class="$style.create">
     <div :class="$style.create__bar">
-      <breadcrumbs :items="[{ text: 'Главная', to: 'root'}, { text: 'Предложения', to: 'offers'}, { text: 'Создать новое', to: ''}]" /> 
+      <breadcrumbs :items="[{ text: 'Главная', to: 'root'}, { text: 'Предложения', to: 'offers'}, { text: 'Изменить предложение', to: ''}]" /> 
     </div>
     <div :class="$style.create__toolbar">
-      <toolbar title="Создать" sub="новое предложение"></toolbar>
+      <toolbar title="Правка" sub="изменить предложение"></toolbar>
     </div>
     <div :class="$style.create__main">
       <div :class="$style.main">
         <div :class="$style.main__steps_controls">
           <steps-controls v-model="currentStep" />
         </div>
-        <div :class="$style.main__current_step">
+        <div :class="$style.main__current_step" v-if="dataReady">
           <transition :name="stepsDirection" mode="out-in">
-            <overview-step ref="overview" v-model="offer" v-if="currentStep === 1" @stateChange="onStateChange" />
+            <overview-step v-model="offer" v-if="currentStep === 1"
+              @stateChange="onStateChange"
+              @objectChanged="onObjectChange"
+            />
             <details-step v-model="offer" v-else-if="currentStep === 2" @stateChange="onStateChange" />
-            <offer-preview :offer="offer" :user="user" v-else-if="currentStep === 3" />
           </transition>  
         </div>
         <div :class="$style.main__validate">
@@ -31,10 +33,10 @@
               <default-button icon="previos" label="Назад" @click="onPreviosStep" v-if="currentStep !== 1"/>
             </div>
             <div :class="$style.actions__next">
-              <default-button icon="next" label="Вперёд" :red="!isDone" @click="onNextStep" v-if="currentStep !== 3" />
+              <default-button icon="next" label="Вперёд" :red="!isDone" @click="onNextStep" v-if="currentStep !== 2" />
             </div>
             <div :class="$style.actions__save">
-              <default-button icon="save" label="Сохранить" :red="!isDone" @click="onSave" v-if="currentStep === 3" />
+              <default-button icon="save" label="Сохранить" :red="!canSave" @click="onSave" />
             </div>
           </div>
         </div>
@@ -135,7 +137,7 @@
   }
   
   .actions__save { float: right }
-  .actions__next { float: right }
+  .actions__next { float: right; margin-left: 20px; }
   .actions__previos { float: left }
 
 </style>
@@ -154,15 +156,14 @@
   import OverviewStep from './new-offer/overview.vue';
   import DetailsStep from './new-offer/new-offer-details.vue';
   import DefaultButton from './default-inputs/default-button.vue';
-  import OfferPreview from './offer/offer.vue';
 
   const offersRef = firebase.database().ref('offers');
 
   export default {
-    name: 'new_offer',
+    name: 'edit-offer',
     props: ['auth', 'user'],
     components: { AppLoader, AppAdSidebar, AppInput, OverviewStep, 
-      DetailsStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
+      DetailsStep, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
     filters: AppFilters,
     data() {
       return {
@@ -172,26 +173,24 @@
         stepsDirection: 'forward',
         validateMsg: '',
         offer: {},
-        stepsGroup: { overview: false, address: false, parameters: false }
+        stepsGroup: { overview: true, address: true, parameters: true }
       }
     },
     created() {
-      this.dataReady = true;
-      this.offer = mdl.init();
-      this.offer.author = this.user.key;
-      this.offer.company = this.user.company.key;
-    },
-    mounted() {
-      this.$refs.overview.initImages();
-    },
-    watch: {
-      'offer.object': function(value) {
-        Object.assign(this.offer, mdl.init('params'), mdl.init('address'));
-        this.stepsGroup.address = false;
-        this.stepsGroup.parameters = false;
-      }
+      offersRef.child(this.$route.params.id).once('value', (offer) => {
+        if ( offer.exists() ) {
+          this.offer = offer.val();
+          this.dataReady = true;
+        }
+        else {
+          this.$router.push({ name: '404', query: { redirect: this.$route.params.id } });
+        }
+      });
     },
     computed: {
+      canSave() {
+        return this.stepsGroup.overview && this.stepsGroup.address && this.stepsGroup.parameters;
+      },
       isDone() {
         return (this.currentStep === 1 && this.stepsGroup.overview) ||
                 (this.currentStep === 2 && this.stepsGroup.address && this.stepsGroup.parameters ) ||
@@ -199,6 +198,12 @@
       }
     },
     methods: {
+      onObjectChange() {
+        Object.assign(this.offer, mdl.init('params'), mdl.init('address'));
+        this.stepsGroup.address = false;
+        this.stepsGroup.parameters = false;
+      },
+
       onNextStep() {
         if ( !this.isDone ) return false;
         this.stepsDirection = 'forward';
@@ -211,24 +216,13 @@
       },
 
       onSave() {
+        if ( !this.canSave ) return;
         let unix = Firebase.database.ServerValue.TIMESTAMP;
-        this.offer.key = this.offer.key || offersRef.push().key;
-
-        if ( !this.offer.created ) {
-          this.offer.created = unix;
-        } else {
-          this.offer.modified = unix;
-        }
-
-        if ( !this.offer.images.length ) {
-          let img = '/static/image-placeholder.png';
-          this.offer.images.push({small: img, medium: img, orig: img});
-        }
-
+        this.offer.modified = unix;
         offersRef.child(this.offer.key).update(this.offer)
           .then( () => {
             this.$parent.$refs.notify.createSnackbar({
-              message: 'Предложение создано',
+              message: 'Предложение изменено',
             });
             this.$router.push({ name: 'offers'});
           })

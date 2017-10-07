@@ -10,6 +10,7 @@ import Rules from './components/Rules.vue';
 import Offers from './components/Offers.vue';
 import NewOffer from './components/New-offer.vue';
 import Offer from './components/Offer.vue';
+import EditOffer from './components/Edit-Offer.vue';
 import Requests from './components/Requests.vue';
 import NewRequest from './components/New-request.vue';
 import Request from './components/Request.vue';
@@ -41,6 +42,7 @@ const router = new VueRouter({
     { path: '/offers', component: Offers, name: 'offers' },
     { path: '/offers/new', component: NewOffer, name: 'new-offer' },
     { path: '/offers/:id', component: Offer, name: 'offer' },
+    { path: '/offers/edit/:id', component: EditOffer, name: 'edit-offer' },
     { path: '/requests', component: Requests, name: 'requests' },
     { path: '/requests/new', component: NewRequest, name: 'new-request' },
     { path: '/request/:id', component: Request, name: 'request' },

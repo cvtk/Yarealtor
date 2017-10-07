@@ -26,16 +26,19 @@
         <span :class="[ $style.actions__author_filter, authorFilter === 'my' && $style._active ]" @click="authorFilter = 'my'">Мои</span>
         <span :class="[ $style.actions__author_filter, authorFilter === 'yasr' && $style._active ]" @click="authorFilter = 'yasr'">Ан ЯСР</span>
         <span :class="[ $style.actions__author_filter, authorFilter === 'all' && $style._active ]" @click="authorFilter = 'all'">Все</span>
-        <app-input type="button" :class="[ $style.actions__filter, filterToggled && $style._active ]" @click="filterToggled = !filterToggled">
-          <span :class="$style.filter__icon"></span>
-          <span :class="$style.filter__text">Фильтр</span>
-        </app-input>
-        <router-link :to="{ name: 'new-offer' }">
-          <app-input type="button" :class="$style.actions__new">
-            <span :class="$style.new__icon"></span>
-            <span :class="$style.new__text">Создать предложение</span>
-          </app-input>
-        </router-link>
+        
+        <div :class="$style.actions__filter">
+          <ui-switch v-model="filterToggled">Фильтр</ui-switch>
+        </div>
+        <div :class="$style.actions__create">
+          <ui-fab
+            @click="$router.push({ name: 'new-offer' })"
+            icon="edit"
+            tooltip-position="top center"
+            tooltip="Создать"
+            size="small"
+          ></ui-fab>
+        </div>
       </div>
     </div>
     
@@ -258,16 +261,14 @@
   }
 
   .actions__filter {
-    margin-right: 10px;
-    margin-left: 20px;
-    background-color: #fff;
-    color: #32c5d2;
-    &._active { background-color: #32c5d2; color: #fff; border: 1px solid #32c5d2; }
-    > .filter__icon:before {
-      content: "\e06c";
-      font-family: "Icons";
-      margin-right: 5px;
-    }
+    display: inline-block;
+    margin-right: 50px;
+    vertical-align: middle;
+  }
+
+  .actions__create {
+    display: inline-block;
+    vertical-align: middle;
   }
 
   .actions__author_filter {
