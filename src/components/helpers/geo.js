@@ -5,6 +5,8 @@ let delayTimer;
 
 export default {
   getCity: function(query, callback) {
+    if ( query.length < 2 ) return;
+
   	clearTimeout(delayTimer);
   	delayTimer = setTimeout( function() {
   		let url = `${apiUrl}?contentType=city&query=${query}&withParent=1`;

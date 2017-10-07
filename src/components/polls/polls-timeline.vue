@@ -4,7 +4,7 @@
 
       <div :class="[$style.dropdown_wrapper, dropdownToggled || $style.__hidden]" @mouseleave="dropdownToggled = false">
         <ul :class="$style.timeline_post__dropdown">
-          <li :class="$style.dropdown__item" v-if="isOwner" @click="removePoll">
+          <li :class="$style.dropdown__item" v-if="isOwner || isModer || isAdmin" @click="removePoll">
             <span :class="$style.item__title">Удалить</span>
           </li>
           <li :class="$style.dropdown__item" @click="focusCommentField">
@@ -17,7 +17,9 @@
       </div>
 
       <div :class="$style.timeline_post__userpic">
-        <img :src="author.photo.small" :class="$style.userpic__image">
+        <div :style="{ 'background-image': 'url(' + author.photo + ')' }"
+          :class="$style.userpic__image">
+        </div>
       </div>
 
       <div :class="$style.timeline_post__body">
@@ -189,10 +191,14 @@
       height: 80px;
 
       .userpic__image {
-        width: 100%;
-        height: 100%;
-        border: 4px solid #f5f6fa;
+        display: inline-block;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
+        border: 4px solid #f5f6fa;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
       }
     }
 
@@ -264,6 +270,7 @@
       .body__content {
         margin-bottom: 5px;
         color: #777;
+        word-break: break-all;
       }
     }
 
@@ -443,6 +450,8 @@
       isOwner() {
         return this.author.key === this.user.key;
       },
+      isModer() { return this.author.company === this.user.company && this.user.role === 5 },
+      isAdmin() { return this.user.role === 1 },
       dataReady() {
         return this.authorReady && this.commentsReady;
       },
@@ -475,7 +484,6 @@
       }
     },
     created() {
-      console.log('created');
       this.voted = this.isUserVoted();
 
       usersRef.child(this.poll.author).once('value', author => {

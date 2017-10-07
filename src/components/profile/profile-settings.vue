@@ -43,17 +43,25 @@
     <div :class="$style.settings__content" v-show="tab === 2">
       <div :class="$style.content">
         <div :class="$style.content__avatar">
-          <div :class="$style.avatar">
-            <upload-image v-model="local.photo" type="hidden" :multiple="false">
-              <img :src="local.photo.small" alt="Аватар" :class="$style.avatar__image">
-              Сменить фото
-            </upload-image>
-          </div>
+          <div :class="$style.avatar" :style="{ 'background-image': 'url(' + local.photo + ')' }"></div>
+          <upload-image type="hidden" @input="onImageLoad">Сменить фото</upload-image>
         </div>
         <div :class="$style.content__bio">
           <div :class="$style.bio">
-            <default-text label="День рождения" v-model="local.birthday" />
-            <default-textarea label="Расскажите о себе" v-model="local.about" />
+            <div :class="$style.bio__item">
+              <ui-datepicker floatingLabel
+                label="Ваш день рождения"
+                v-model="birthday"
+              >День рождения</ui-datepicker>
+            </div>
+            <div :class="$style.bio__item">
+              <ui-textbox floating-label
+                type="text"
+                :multiLine="true"
+                label="Расскажите о себе"
+                v-model="local.about">
+              </ui-textbox>
+            </div>
           </div>
         </div>
       </div>
@@ -157,7 +165,7 @@
 
   .content__avatar {
     float: left;
-    width: 150px;
+    text-align: center;
   }
 
   .content__bio {
@@ -166,7 +174,14 @@
 
   .avatar {
     position: relative;
-    text-align: center;
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid #f5f6fa;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
   }
 
   .avatar__image {
@@ -179,10 +194,15 @@
     position: relative;
   }
 
+  .bio__item {
+    padding: 10px 0;
+  }
+
 </style>
 
 <script>
   import firebase from '../../firebase.js';
+  // import _h from '../helpers/filters.js';
   import DefaultText from '../default-inputs/default-text.vue';
   import DefaultTextarea from '../default-inputs/default-textarea.vue';
   import DefaultNumber from '../default-inputs/default-number.vue';
@@ -203,14 +223,28 @@
     created() {
       firebase.database().ref('companies').once('value', companies => {
         this.companies = companies.val();
-      })
+      });
+
+      this.birthday = new Date(this.profile.birthday * 1000);
     },
 
     data() {
       return {
         local: this.profile,
         tab: 1,
-        companies: {}
+        companies: {},
+        birthday: '',
+        // ruLang: {
+        //   months: {
+        //     full: _h.moment().months(),
+        //     abbreviated: _h.moment().monthsShort()
+        //   },
+        //   days: {
+        //     full: _h.moment().weekdays(),
+        //     abbreviated: _h.moment().weekdaysShort(),
+        //     initials: _h.moment().weekdaysShort()
+        //   }
+        // }
       }
     },
     watch: {
@@ -221,6 +255,11 @@
     computed: {
       isAdmin() { return this.user.role === 1 },
       isModer() { return ( this.user.role <= 5 && this.user.company.key === this.profile.company ) }
+    },
+    methods: {
+      onImageLoad(image) {
+        this.local.photo = image.small;
+      }
     }
   }
 </script>

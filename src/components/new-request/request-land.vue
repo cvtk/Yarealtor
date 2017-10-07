@@ -29,26 +29,6 @@
               </div>
               <div :class="$style.row">
                 <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'area_from'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.area_from.title"
-                    v-model="local.area_from">
-                  </ui-textbox>
-                </div>
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'area_to'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.area_to.title"
-                    v-model="local.area_to">
-                  </ui-textbox>
-                </div>
-              </div>
-              <div :class="$style.row">
-                <div :class="$style.col">
                   <span :class="$style.validation" v-if="currentField === 'cottage_area_from'"></span>
                   <ui-textbox floating-label
                     type="number"
@@ -68,59 +48,12 @@
                 </div>
               </div>
               <div :class="$style.row">
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'floor_from'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.floor_from.title"
-                    v-model="local.floor_from">
-                  </ui-textbox>
-                </div>
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'floor_to'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.floor_to.title"
-                    v-model="local.floor_to">
-                  </ui-textbox>
-                </div>
-              </div>
-              <div :class="$style.row">
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'rooms'"></span>
-                  <ui-select multiple
-                    floating-label
-                    :label="mdl.rooms.title"
-                    :options="mdl.rooms.options"
-                    v-model="local.rooms">
-                  </ui-select>
-                </div>
-                <div :class="$style.col">
+                <div :class="$style.col_full">
                   <ui-select multiple
                     floating-label
                     :label="mdl.type.title"
                     :options="mdl.type.options"
                     v-model="local.type">
-                  </ui-select>
-                </div>
-              </div>
-              <div :class="$style.row">
-                <div :class="$style.col">
-                  <ui-select multiple
-                    floating-label
-                    :label="mdl.material.title"
-                    :options="mdl.material.options"
-                    v-model="local.material">  
-                  </ui-select>
-                </div>
-                <div :class="$style.col">
-                  <ui-select multiple
-                    floating-label
-                    :label="mdl.furnish.title"
-                    :options="mdl.furnish.options"
-                    v-model="local.furnish">
                   </ui-select>
                 </div>
               </div>
@@ -263,12 +196,12 @@
   import geo from '../helpers/geo.js';
 
   export default {
-    name: 'request-cottage',
+    name: 'request-land',
     props: ['value'],
     components: { },
     data() {
       return {
-        mdl: mdl.model(['cottage']),
+        mdl: mdl.model(['land']),
         local: this.value,
         results: {}, selected: {}
       }

@@ -8,9 +8,11 @@
     <div :class="$style.news__toolbar">
       <h1 :class="$style.toolbar__title">Новости<span :class="$style._small">лента событий</span></h1>
       <div :class="$style.toolbar__actions">
-        <div :class="[$style.actions__buttons, filter === 'all' && $style._active]" @click="filter='all'">Все</div>
-        <div :class="$style.actions__buttons">Руководители</div>
-        <div :class="$style.actions__buttons">Моя компания</div>
+        <div :class="[ $style.actions__buttons, filter === 10 && $style._active ]" @click="filter=10">Общие новости</div>
+        <div :class="[ $style.actions__buttons, filter === 1 && $style._active ]"
+          v-if="user.role <= 5"
+          @click="filter=1">Руководители</div>
+        <div :class="[ $style.actions__buttons, filter === 5 && $style._active ]" @click="filter=5">Моя компания</div>
       </div>
     </div>
     
@@ -21,7 +23,8 @@
           <timeline-post v-for="post in postsByTimestamp" 
             :key="post.key" 
             :post="post" 
-            :auth="auth">
+            :auth="auth"
+            :user="user">
           </timeline-post>
         </div>
       </div>
@@ -47,6 +50,9 @@
       position: relative;
       height: 100%;
       padding: 20px;
+      @media (max-width: $bp-medium) {
+        .main_wrapper { margin-right: 0 }
+      }
     }
 
   /* news__main */
@@ -309,28 +315,60 @@
       return {
         filter: 'all',
         dataReady: false,
-        posts: {}
+        local: {},
+        currentRef: ''
+      }
+    },
+    watch: {
+      filter(filter){
+        switch(filter) {
+          case 10: {
+            this.currentRef = postsRef.orderByChild('access').equalTo(10);
+            this.initRef(); break;
+          };
+          case 1: {
+            this.currentRef = postsRef.orderByChild('access').equalTo(1);
+            this.initRef(); break;
+          };
+          case 5: {
+            this.currentRef = postsRef.orderByChild('access').equalTo(5);
+            this.initRef(); break;
+          }
+        }
+      }
+    },
+    methods: {
+      initRef() {
+        if ( this.currentRef ) this.currentRef.off('value', this.onValue);
+        this.currentRef.on('value', this.onValue);
+      },
+      onValue(posts) {
+        this.dataReady = false;
+        if ( posts.exists() ) {
+          let tmp = posts.val();
+          this.local = Object.keys(tmp).map( key => {
+
+            if ( tmp[key].access === 1 && this.filter === 1 ) {
+              return  tmp[key];
+            } 
+            else if ( tmp[key].access === 5 && this.filter === 5 && this.user.company.key === tmp[key].company ) {
+              return  tmp[key];
+            }
+            else if ( tmp[key].access === 10 && this.filter === 10 ) {
+              return  tmp[key];
+            }
+          });
+          this.dataReady = true;
+        } else this.local = [];
       }
     },
     created() {
-      postsRef.on('value', posts => {
-        posts.forEach(post => {
-          // TODO убрать эту содомию
-          if ( typeof post.val().poll === 'undefined' ) {
-            this.$set( this.posts, post.key, post.val() );
-          }
-        });
-        this.dataReady = true;
-      });
-      postsRef.on('child_removed', post => {
-        this.$delete(this.posts, post.key);
-      });
-      
+      this.filter = 10;
     },
     computed: {
       postsByTimestamp: function() {
-        let arr = Object.keys(this.posts).map(key => this.posts[key] );
-        return arr.sort((x, y) => y.created - x.created);
+        if ( !this.local.length ) return [];
+        return this.local.sort( (a, b) => b.created - a.created );
       }
     }
   }

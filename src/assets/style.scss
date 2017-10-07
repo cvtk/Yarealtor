@@ -4,6 +4,9 @@
   $bp-large: 1200px;
   $bp-extra-large: 1600px;
 
+  $brand-primary-color: #36c6d3;
+  $brand-accent-color: #FF4081;
+
   @mixin clearfix {
     content: "";
     display: table;

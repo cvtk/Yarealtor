@@ -1,10 +1,10 @@
 <template>
-  <div :class="$style.timeline_post" v-if="dataReady">
+  <div :class="$style.timeline_post">
     <div :class="$style.timeline_post_wrapper">
 
       <div :class="[$style.dropdown_wrapper, dropdownToggled || $style.__hidden]" @mouseleave="dropdownToggled = false">
         <ul :class="$style.timeline_post__dropdown">
-          <li :class="$style.dropdown__item" v-if="isOwner" @click="removePost">
+          <li :class="$style.dropdown__item" v-if="isOwner || isModer || isAdmin" @click="removePost">
             <span :class="$style.item__title">Удалить</span>
           </li>
           <li :class="$style.dropdown__item" @click="focusCommentField">
@@ -17,14 +17,16 @@
       </div>
 
       <div :class="$style.timeline_post__userpic">
-        <img :src="author.photo.small" :class="$style.userpic__image">
+        <div :style="{ 'background-image': 'url(' + author.photo + ')' }"
+          :class="$style.userpic__image">
+        </div>
       </div>
 
       <div :class="$style.timeline_post__body">
         <div :class="$style.body__header">
           <div :class="$style.header__meta">
             <router-link :class="$style.meta__author"
-              :to="{ name: 'user', params: { page: author.page } }">{{ author.name }}</router-link>
+              :to="{ name: 'user', params: { page: author.page } }">{{ author.name }} {{ author.surname }}</router-link>
             <span :class="$style.meta__date">{{ post.created | unixToDate }}</span>
           </div>
           <div :class="$style.header__menu" @click="dropdownToggled = !dropdownToggled">
@@ -92,7 +94,7 @@
       padding: 25px;
       right: -10px;
       top: 10px;
-      z-index: 1;
+      z-index: 25;
       transition: visibility .2s ease-in-out, opacity .2s ease-in-out, top .2s ease-in-out;
       &.__hidden { visibility: hidden; opacity: 0; top: 55px; }
     }
@@ -146,10 +148,14 @@
       height: 80px;
 
       .userpic__image {
-        width: 100%;
-        height: 100%;
-        border: 4px solid #f5f6fa;
+        display: inline-block;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
+        border: 4px solid #f5f6fa;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
       }
     }
 
@@ -346,7 +352,7 @@
 
   export default {
     name: 'timeline-post',
-    props: ['post', 'auth'],
+    props: ['post', 'auth', 'user'],
     components: { AppLoader, AppComment, PostImages },
     filters: AppFilters,
     methods: {
@@ -392,6 +398,8 @@
       }
     },
     computed: {
+      isModer() { return this.author.company === this.user.company && this.user.role === 5 },
+      isAdmin() { return this.user.role === 1 },
       isOwner() {
         return this.author.key === this.auth.uid;
       },

@@ -2,12 +2,14 @@
   <transition name="fade">
     <div :class="$style.comment">
       <div :class="$style.comment__userpic">
-        <img :src="comment.author.photo.small" :class="$style.userpic__image">
+        <div :style="{ 'background-image': 'url(' + comment.author.photo + ')' }"
+          :class="$style.userpic__image">
+        </div>
       </div>
       <div :class="$style.comment__body">
         <div :class="$style.body__header">
           <div :class="$style.header__meta">
-            <router-link :to="{ name: 'user', params: { page: comment.author.page } }" :class="$style.meta__author">{{ comment.author.name }}</router-link>
+            <router-link :to="{ name: 'user', params: { page: comment.author.page } }" :class="$style.meta__author">{{ comment.author.name }} {{ comment.author.surname }}</router-link>
             <span :class="$style.meta__date">{{ comment.created | unixToDate }}</span>
           </div>
           <div :class="$style.header__menu" v-show="isOwner" title="Удалить комментарий" @click="removeComment"><span :class="$style.menu__icon"></span></div>
@@ -54,10 +56,14 @@
     }
 
     .userpic__image {
-      width: 100%;
-      height: 100%;
-      border: 4px solid #f5f6fa;
+      display: inline-block;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
+      border: 4px solid #f5f6fa;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
     }
 
     .comment__body {

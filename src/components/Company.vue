@@ -588,7 +588,7 @@
       },
 
       inactives() {
-        return this.users.filter( employee => !employee.active );
+        return this.users.filter( employee => !employee.active && !employee.deleted );
       },
 
       employees() {
@@ -613,7 +613,7 @@
 
       removeUser() {
         this.showRemoveModal = false;
-        usersRef.child(this.markToRemove).remove()
+        usersRef.child(this.markToRemove).update({deleted: true})
           .then( () => {
             console.log("Remove succeeded.")
           })

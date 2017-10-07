@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.polls" v-if="dataReady">
+  <div :class="$style.polls">
     <div :class="$style.polls__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Соц. опросы</li>
@@ -8,9 +8,11 @@
     <div :class="$style.polls__toolbar">
       <h1 :class="$style.toolbar__title">Соц. опросы<span :class="$style._small">нам важно Ваше мнение</span></h1>
       <div :class="$style.toolbar__actions">
-        <div :class="[$style.actions__buttons, filter === 'all' && $style._active]" @click="filter='all'">Все</div>
-        <div :class="$style.actions__buttons">Руководители</div>
-        <div :class="$style.actions__buttons">Моя компания</div>
+        <div :class="[ $style.actions__buttons, filter === 10 && $style._active ]" @click="filter=10">Общие опросы</div>
+        <div :class="[ $style.actions__buttons, filter === 1 && $style._active ]"
+          v-if="user.role <= 5"
+          @click="filter=1">Руководители</div>
+        <div :class="[ $style.actions__buttons, filter === 5 && $style._active ]" @click="filter=5">Моя компания</div>
       </div>
     </div>
     
@@ -18,7 +20,7 @@
       <div :class="$style.main_wrapper">
         <polls-new :auth="auth" :user="user" />
         <div :class="$style.main__timeline" v-if="dataReady">
-          <polls-timeline :poll="poll" :user="user" v-for="poll in pollsyTimestamp" :key="poll.key" />
+          <polls-timeline :poll="poll" :user="user" v-for="poll in pollsByTimestamp" :key="poll.key" />
         </div>
       </div>
       
@@ -305,32 +307,61 @@
     components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, PollsNew, PollsTimeline  },
     data() {
       return {
-        filter: 'all',
-        dataReady: false,
+        filter: 0,
+        dataReady: true,
         local: [],
-        currentRef: null
+        currentRef: ''
+      }
+    },
+    watch: {
+      filter(filter){
+        switch(filter) {
+          case 10: {
+            this.currentRef = pollsRef.orderByChild('access').equalTo(10);
+            this.initRef(); break;
+          };
+          case 1: {
+            this.currentRef = pollsRef.orderByChild('access').equalTo(1);
+            this.initRef(); break;
+          };
+          case 5: {
+            this.currentRef = pollsRef.orderByChild('access').equalTo(5);
+            this.initRef(); break;
+          }
+        }
       }
     },
     methods: {
       initRef() {
-        this.dataReady = false;
-        if ( this.currentRef ) currentRef.off('value', onValue);
-        this.currentRef = pollsRef.on('value', this.onValue);
+        if ( this.currentRef ) this.currentRef.off('value', this.onValue);
+        this.currentRef.on('value', this.onValue);
       },
       onValue(polls) {
+        this.dataReady = false;
         if ( polls.exists() ) {
-          console.log(polls.exists())
           let tmp = polls.val();
-          this.local = Object.keys(tmp).map( key => tmp[key] );
+          this.local = Object.keys(tmp).map( key => {
+
+            if ( tmp[key].access === 1 && this.filter === 1 ) {
+              return  tmp[key];
+            } 
+            else if ( tmp[key].access === 5 && this.filter === 5 && this.user.company.key === tmp[key].company ) {
+              return  tmp[key];
+            }
+            else if ( tmp[key].access === 10 && this.filter === 10 ) {
+              return  tmp[key];
+            }
+          });
+          this.dataReady = true;
         } else this.local = [];
-        this.dataReady = true;
       }
     },
     created() {
-      this.initRef();
+      this.filter = 10;
     },
     computed: {
-      pollsyTimestamp: function() {
+      pollsByTimestamp: function() {
+        if ( !this.local.length ) return [];
         return this.local.sort( (a, b) => b.created - a.created );
       }
     }

@@ -1,8 +1,7 @@
 <template>
   <div :class="$style.new_post">
     <div :class="$style.new_post__userpic">
-      <div :src="user.photo.small" 
-        :style="{ 'background-image': 'url(' + user.photo.small + ')' }"
+      <div :style="{ 'background-image': 'url(' + user.photo + ')' }"
         :class="$style.userpic__image">
       </div>
     </div>
@@ -22,7 +21,6 @@
           </div>
           <div :class="$style.inputs">
             <app-input @keydown.enter.native="addItem" v-model="local.items[index].text"
-              :ref="index + '_input'" 
               :key="index"
               :placeholder="item.text">  
             </app-input>
@@ -240,7 +238,7 @@
 </style>
 
 <script>
-
+/// после сохранения компонент не обновляет информацию об уровне доступа
   import Firebase from 'firebase';
   import firebase from '../../firebase.js';
   import DefaultSelect from '../default-inputs/default-select.vue';
@@ -270,8 +268,7 @@
         notify: false,
         access: [
           { value: 10, name: 'Доступен всем' },
-          { value: 5, name: 'Только для коллег' },
-          { value: 1, name: 'Только модераторам' },
+          { value: 5, name: 'Для моей компании' }
         ],
         local: {}, saving: false
       }
@@ -292,10 +289,15 @@
         return Object.keys(validation).every(function (key) {
           return validation[key]
         })
-      }
+      },
+      isModer() { return this.user.role === 5 },
+      isAdmin() { return this.user.role === 1 },
     },
     created() {
       this.local = init();
+      if ( this.isModer || this.isAdmin ) {
+        this.access.push({ value: 1, name: 'Только модераторам' });
+      }
     },
     methods: {
       fieldAutoResize(event) {

@@ -287,12 +287,11 @@
           })
       },
       setUser(user) {
-        let pht= '/static/default-user.png';
         if ( user ) {
           let prep = {
             about: '',
             active: false,
-            birthday: '', 
+            birthday: 473385600, 
             company: this.company, created: Firebase.database.ServerValue.TIMESTAMP,
             email: this.email,
             key: user.uid,
@@ -300,7 +299,7 @@
             name: this.name,
             role: 10,
             page: user.uid,
-            photo: { small: pht, medium: pht, orig: pht} ,
+            photo: '/static/default-user.png',
             position: '',
             surname: this.surname,
             deleted: false

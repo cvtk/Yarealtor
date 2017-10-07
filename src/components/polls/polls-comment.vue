@@ -2,7 +2,9 @@
   <transition name="fade">
     <div :class="$style.comment">
       <div :class="$style.comment__userpic">
-        <img :src="comment.author.photo.small" :class="$style.userpic__image">
+        <div :style="{ 'background-image': 'url(' + comment.author.photo + ')' }"
+          :class="$style.userpic__image">
+        </div>
       </div>
       <div :class="$style.comment__body">
         <div :class="$style.body__header">
@@ -54,10 +56,14 @@
     }
 
     .userpic__image {
-      width: 100%;
-      height: 100%;
-      border: 4px solid #f5f6fa;
+      display: inline-block;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
+      border: 4px solid #f5f6fa;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
     }
 
     .comment__body {

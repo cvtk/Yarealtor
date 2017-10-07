@@ -48,56 +48,7 @@
                 </div>
               </div>
               <div :class="$style.row">
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'cottage_area_from'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.cottage_area_from.title"
-                    v-model="local.cottage_area_from">
-                  </ui-textbox>
-                </div>
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'cottage_area_to'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.cottage_area_to.title"
-                    v-model="local.cottage_area_to">
-                  </ui-textbox>
-                </div>
-              </div>
-              <div :class="$style.row">
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'floor_from'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.floor_from.title"
-                    v-model="local.floor_from">
-                  </ui-textbox>
-                </div>
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'floor_to'"></span>
-                  <ui-textbox floating-label
-                    type="number"
-                    :min=0
-                    :label="mdl.floor_to.title"
-                    v-model="local.floor_to">
-                  </ui-textbox>
-                </div>
-              </div>
-              <div :class="$style.row">
-                <div :class="$style.col">
-                  <span :class="$style.validation" v-if="currentField === 'rooms'"></span>
-                  <ui-select multiple
-                    floating-label
-                    :label="mdl.rooms.title"
-                    :options="mdl.rooms.options"
-                    v-model="local.rooms">
-                  </ui-select>
-                </div>
-                <div :class="$style.col">
+                <div :class="$style.col_full">
                   <ui-select multiple
                     floating-label
                     :label="mdl.type.title"
@@ -107,40 +58,12 @@
                 </div>
               </div>
               <div :class="$style.row">
-                <div :class="$style.col">
+                <div :class="$style.col_full">
                   <ui-select multiple
                     floating-label
                     :label="mdl.material.title"
                     :options="mdl.material.options"
                     v-model="local.material">  
-                  </ui-select>
-                </div>
-                <div :class="$style.col">
-                  <ui-select multiple
-                    floating-label
-                    :label="mdl.furnish.title"
-                    :options="mdl.furnish.options"
-                    v-model="local.furnish">
-                  </ui-select>
-                </div>
-              </div>
-              <div :class="$style.row">
-                <div :class="$style.col_full">
-                  <ui-select multiple
-                    floating-label
-                    :label="mdl.infra.title"
-                    :options="mdl.infra.options"
-                    v-model="local.infra">  
-                  </ui-select>
-                </div>
-              </div>
-              <div :class="$style.row">
-                <div :class="$style.col_full">
-                  <ui-select multiple
-                    floating-label
-                    :label="mdl.direction.title"
-                    :options="mdl.direction.options"
-                    v-model="local.direction">  
                   </ui-select>
                 </div>
               </div>
@@ -263,12 +186,12 @@
   import geo from '../helpers/geo.js';
 
   export default {
-    name: 'request-cottage',
+    name: 'request-garage',
     props: ['value'],
     components: { },
     data() {
       return {
-        mdl: mdl.model(['cottage']),
+        mdl: mdl.model(['garage']),
         local: this.value,
         results: {}, selected: {}
       }

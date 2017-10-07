@@ -91,6 +91,16 @@
                   v-model="object"
                   v-if="general.object.value === 4"
                 />
+                <request-garage
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 5"
+                />
+                <request-land
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 6"
+                />
               </div>
             </div>
           </transition>  
@@ -279,13 +289,15 @@
   import RequestRoom from './new-request/request-room.vue';
   import RequestCommercial from './new-request/request-commercial.vue';
   import RequestCottage from './new-request/request-cottage.vue';
+  import RequestGarage from './new-request/request-garage.vue';
+  import RequestLand from './new-request/request-land.vue';
 
   const requestsRef = firebase.database().ref('requests');
 
   export default {
     name: 'new-request',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, Breadcrumbs, Toolbar, RequestApartment, RequestRoom, RequestCommercial, RequestCottage },
+    components: { AppLoader, AppAdSidebar, Breadcrumbs, Toolbar, RequestApartment, RequestRoom, RequestCommercial, RequestCottage, RequestGarage, RequestLand },
     data() {
       return {
         dataReady: false,

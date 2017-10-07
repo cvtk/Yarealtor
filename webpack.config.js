@@ -79,7 +79,14 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     new webpack.LoaderOptionsPlugin({
-      minimize: true
+      minimize: true,
+      options: {
+        sassLoader: {
+          data: '@import "src/assets/style.scss";',
+          includePaths: 'src/assets'
+        },
+        context: path.resolve(__dirname)
+      }
     })
   ])
 }

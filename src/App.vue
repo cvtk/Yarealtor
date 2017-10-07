@@ -21,7 +21,7 @@
           <span :class="$style.notification__badge">7</span>
         </div>
         <div :class="$style.menu__user" v-if="dataReady">
-          <img :src="user.photo.small" alt="Фото" :class="$style.user__pic">
+          <img :src="user.photo" alt="Фото" :class="$style.user__pic">
           <span :class="$style.user__name">{{ user.name }} {{ user.surname }}</span>
           <ul :class="$style.user__dropdown">
             <router-link tag="li" :to="{ name: 'user', params: { page: user.page } }" :class="$style.dropdown__item">

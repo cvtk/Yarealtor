@@ -18,9 +18,11 @@
       <div :class="$style.content">
         <div :class="$style.content__sidebar">
           <aside :class="$style.sidebar">
-            <img :class="$style.sidebar__img" :src="profile.photo.small">
+            <div :class="$style.sidebar__img">
+              <div :class="$style.img" :style="{ 'background-image': 'url(' + profile.photo + ')' }"></div>
+            </div>
             <div :class="$style.sidebar__user_title">
-              <div :class="$style.user_title__name">{{ profile.name }} {{ profile.surname }}<app-online-status :online="true"></app-online-status></div>
+              <div :class="$style.user_title__name">{{ profile.name }} {{ profile.surname }}</div>
               <router-link :to="{ name: 'company', params: { page: profile.company.page } }" :class="$style.user_title__company">
                 {{ profile.company.name }}
               </router-link>
@@ -37,7 +39,7 @@
               <profile-overview :profile="local" />
             </div>
             <div :class="$style.main__post" v-if="isUser">
-              <timeline-new-post :auth="auth" />
+              <timeline-new-post :auth="auth" :user="user" />
             </div>
             <div :class="$style.main__timeline">
               <timeline-post v-for="post in postsByTimestamp" 
@@ -129,13 +131,20 @@
     background-color: #fff;
     margin-right: 20px;
     padding: 30px 0 0;
-    > .sidebar__img {
-      display: block;
-      max-width: 100%;
-      margin: 0 auto;
-      width: 50%;
-      height: 50%;
+    .sidebar__img {
+      position: relative;
+      margin: 0 auth;
+      text-align: center;
+    }
+    .img {
+      display: inline-block;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
+      border: 4px solid #f5f6fa;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
     }
     > .sidebar__user_title {
       text-align: center;
