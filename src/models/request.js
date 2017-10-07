@@ -183,6 +183,125 @@ fields.room = {
   },
 }
 
+fields.commercial = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { value: 1, label: 'Дзержинский' },
+      { value: 2, label: 'Заволжский' },
+      { value: 3, label: 'Кировский' },
+      { value: 4, label: 'Красноперекопский' },
+      { value: 5, label: 'Ленинский' },
+      { value: 6, label: 'Ярославский' },
+      { value: 7, label: 'Ярославская область' },
+    ]
+  },
+
+  area_from: { title: 'Площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  type: { title: 'Вид', default: [], 
+    options: [
+      { value: 1, label: 'торговое' },
+      { value: 2, label: 'офисное' },
+      { value: 3, label: 'производственное' },
+      { value: 4, label: 'складское' },
+      { value: 5, label: 'готовый бизнес' },
+      { value: 6, label: 'земельный участок' },
+      { value: 7, label: 'квартиры под перевод' }
+    ]
+  },
+  floor: { title: 'Этаж', default: [], 
+    options: [
+      { value: 1, label: 'первый' },
+      { value: 2, label: 'не первый' },
+      { value: 3, label: 'не последний' },
+      { value: 4, label: 'кроме крайних' }
+    ]
+  }
+}
+
+fields.cottage = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { value: 1, label: 'Дзержинский' },
+      { value: 2, label: 'Заволжский' },
+      { value: 3, label: 'Кировский' },
+      { value: 4, label: 'Красноперекопский' },
+      { value: 5, label: 'Ленинский' },
+      { value: 6, label: 'Ярославский' },
+      { value: 7, label: 'Ярославская область' },
+    ]
+  },
+
+  area_from: { title: 'Общая площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  floor_from: { title: 'Этажность от', default: null, options: [] },
+
+  floor_to: { title: 'до', default: null, options: [] },
+
+  cottage_area_from: { title: 'Площадь участка от', default: null, options: [] },
+
+  cottage_area_to: { title: 'до', default: null, options: [] },
+
+  rooms: { title: 'Комнат в доме', default: [], 
+    options: [
+      { value: 1, label: '1' },
+      { value: 2, label: '2' },
+      { value: 3, label: '3' },
+      { value: 4, label: '4' },
+      { value: 5, label: '5' },
+      { value: 6, label: '6' },
+      { value: 8, label: '>7' },
+    ]
+  },
+  type: { title: 'Тип', default: [], 
+    options: [
+      { value: 1, label: 'дача' },
+      { value: 2, label: 'дом' },
+      { value: 3, label: 'таунхаус' }
+    ]
+  },
+  material: { title: 'Материал дома', default: [], 
+    options: [
+      { value: 1, label: 'блочный' },
+      { value: 2, label: 'деревянный' },
+      { value: 3, label: 'кирпич' },
+      { value: 4, label: 'монолит' },
+      { value: 5, label: 'монолит' },
+    ]
+  },
+  furnish: { title: 'Тип отделки', default: [], 
+    options: [
+      { value: 1, label: 'требует ремонта' },
+      { value: 2, label: 'черновая' },
+      { value: 3, label: 'от застройщика' },
+      { value: 4, label: 'жилое состояние' },
+      { value: 5, label: 'косметика' },
+      { value: 6, label: 'евро' }
+    ]
+  },
+  infra: { title: 'Инфраструктура', default: [], 
+    options: [
+      { value: 1, label: 'газ' },
+      { value: 2, label: 'электричество' },
+      { value: 3, label: 'водоснабжение' },
+      { value: 4, label: 'канализация' },
+      { value: 5, label: 'охрана' },
+      { value: 6, label: 'лес рядом' },
+      { value: 7, label: 'круглогодичный подъезд' },
+      { value: 8, label: 'рядом остановка' },
+    ]
+  }
+}
 
 fields.address = {
   locality: { title: 'Населенный пункт', default: '', options: [] },
