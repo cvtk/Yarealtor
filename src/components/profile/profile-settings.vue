@@ -50,9 +50,11 @@
           <div :class="$style.bio">
             <div :class="$style.bio__item">
               <ui-datepicker floatingLabel
+                @input="onChange"
                 label="Ваш день рождения"
                 v-model="birthday"
-              >День рождения</ui-datepicker>
+                :lang="ruLang"
+                >День рождения</ui-datepicker>
             </div>
             <div :class="$style.bio__item">
               <ui-textbox floating-label
@@ -202,7 +204,7 @@
 
 <script>
   import firebase from '../../firebase.js';
-  // import _h from '../helpers/filters.js';
+  import _h from '../helpers/filters.js';
   import DefaultText from '../default-inputs/default-text.vue';
   import DefaultTextarea from '../default-inputs/default-textarea.vue';
   import DefaultNumber from '../default-inputs/default-number.vue';
@@ -234,17 +236,17 @@
         tab: 1,
         companies: {},
         birthday: '',
-        // ruLang: {
-        //   months: {
-        //     full: _h.moment().months(),
-        //     abbreviated: _h.moment().monthsShort()
-        //   },
-        //   days: {
-        //     full: _h.moment().weekdays(),
-        //     abbreviated: _h.moment().weekdaysShort(),
-        //     initials: _h.moment().weekdaysShort()
-        //   }
-        // }
+        ruLang: {
+          months: {
+            full: _h.moment().months(),
+            abbreviated: _h.moment().monthsShort()
+          },
+          days: {
+            full: _h.moment().weekdays(),
+            abbreviated: _h.moment().weekdaysShort(),
+            initials: _h.moment().weekdaysShort()
+          }
+        }
       }
     },
     watch: {
@@ -259,6 +261,9 @@
     methods: {
       onImageLoad(image) {
         this.local.photo = image.small;
+      },
+      onChange() {
+        this.local.birthday = new Date(this.birthday).getTime() / 1000;
       }
     }
   }

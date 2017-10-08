@@ -14,6 +14,7 @@ import EditOffer from './components/Edit-Offer.vue';
 import Requests from './components/Requests.vue';
 import NewRequest from './components/New-request.vue';
 import Request from './components/Request.vue';
+import EditRequest from './components/Edit-Request.vue';
 import Companies from './components/Companies.vue';
 import Yasr from './components/Yasr.vue';
 import Company from './components/Company.vue';
@@ -33,6 +34,13 @@ Vue.use(VueRouter);
 const router = new VueRouter({
   mode: 'history',
   linkActiveClass: '_active',
+  scrollBehavior: function(to, from, savedPosition) {
+    if (to.hash) {
+        return {selector: to.hash}
+    } else {
+        return { x: 0, y: 0 }
+    }
+  },
   routes: [
     { path: '/', component: Root, name: 'root' },
     { path: '/polls', component: Polls, name: 'polls' },
@@ -45,7 +53,8 @@ const router = new VueRouter({
     { path: '/offers/edit/:id', component: EditOffer, name: 'edit-offer' },
     { path: '/requests', component: Requests, name: 'requests' },
     { path: '/requests/new', component: NewRequest, name: 'new-request' },
-    { path: '/request/:id', component: Request, name: 'request' },
+    { path: '/requests/:id', component: Request, name: 'request' },
+    { path: '/requests/edit/:id', component: EditRequest, name: 'edit-request' },
     { path: '/companies', component: Companies, name: 'companies' },
     { path: '/yasr', component: Yasr, name: 'yasr' },
     { path: '/companies/:page', component: Company, name: 'company' },

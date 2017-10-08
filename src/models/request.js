@@ -436,7 +436,7 @@ export default {
   },
 
   objectTypes() {
-    return ['apartment', 'room', 'commercial', 'cottage', 'garage', 'land'];
+    return ['none', 'apartment', 'room', 'commercial', 'cottage', 'garage', 'land'];
   },
 
   init(group) {

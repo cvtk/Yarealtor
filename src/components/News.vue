@@ -1,9 +1,7 @@
 <template>
   <div :class="$style.news">
     <div :class="$style.news__bar">
-      <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Новости</li>
-      </ul>
+      <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Новости', to: ''} ]"/> 
     </div>
     <div :class="$style.news__toolbar">
       <h1 :class="$style.toolbar__title">Новости<span :class="$style._small">лента событий</span></h1>
@@ -290,7 +288,9 @@
         .main__content { margin-right: 0 }
       }
       @media (max-width: $bp-small) {
+        .main_wrapper { margin-right: 0px;}
         ._small { display: none }
+        .actions__buttons { float: none; display: block; margin: 10px auto; }
         .breadcrumbs__item:first-child { display: none }
       }
     }
@@ -304,13 +304,14 @@
   import AppInput from './modules/inputs.vue';
   import AppUploadImages from './modules/upload-images.vue';
   import firebase from '../firebase.js';
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
 
   const postsRef = firebase.database().ref('posts');
 
   export default {
     name: 'news',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, TimelinePost, TimelineNewPost  },
+    components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, TimelinePost, TimelineNewPost, Breadcrumbs  },
     data() {
       return {
         filter: 'all',
@@ -360,7 +361,7 @@
           });
           this.dataReady = true;
         } else this.local = [];
-      }
+      },
     },
     created() {
       this.filter = 10;

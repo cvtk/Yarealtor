@@ -3,12 +3,62 @@
     <div :class="[$style.row, $style._shadow ]">
     
       <div :class="$style.offer__map">
-        <offer-map :address="[ request.locality, request.district ]"
+        <offer-map :address="[ request.locality ]"
         />
       </div>
       <div :class="$style.offer__details">
         <div :class="$style.details">
-          
+          <div :class="$style.details__author">
+            <div :class="$style.author">
+              <div :class="$style.author__photo">
+                <div :class="$style.photo" :style="{ 'background-image': 'url(' + author.photo + ')' }"></div>
+              </div>
+              <div :class="$style.author__meta">
+                <div :class="$style.meta">
+                  <router-link :class="$style.meta__name" :to="{ name: 'user', params: { page: author.page } }">
+                    {{ author.name }} {{ author.surname }}
+                  </router-link>
+                  <router-link :class="$style.meta__company" :to="{ name: 'company', params: { page: company.page } }">
+                    {{ company.name }}
+                  </router-link>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div :class="$style.details__list">
+            <ul :class="$style.list">
+              <li :class="$style.list__item">
+                <div :class="$style.item">
+                  <span :class="$style.item__title">Заявка:</span>
+                  <span :class="$style.item__value">{{ request.op.label }}, {{ request.object.label }}</span>
+                </div>
+              </li>
+              <li :class="$style.list__item">
+                <div :class="$style.item">
+                  <span :class="$style.item__title">Адрес:</span>
+                  <span :class="$style.item__value">{{ request.localityType }}. {{ request.locality }}, {{ map(request.district) }}</span>
+                </div>
+              </li>
+              <li :class="$style.list__item">
+                <div :class="$style.item">
+                  <span :class="$style.item__title">Комнат:</span>
+                  <span :class="$style.item__value">{{ map(request.rooms) }}</span>
+                </div>
+              </li>
+              <li :class="$style.list__item">
+                <div :class="$style.item">
+                  <span :class="$style.item__title">Площадь:</span>
+                  <span :class="$style.item__value">{{ request.area_from }} - {{ request.area_to }} м²</span>
+                </div>
+              </li>
+              <li :class="$style.list__item">
+                <div :class="$style.item">
+                  <span :class="$style.item__title">Санузел:</span>
+                  <span :class="$style.item__value">{{ request.area_from }} - {{ request.area_to }} м²</span>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -42,6 +92,13 @@
     }
   }
 
+
+  .offer__map {
+    position: relative;
+    height: 80vh;
+    margin-left: 280px;
+  }
+
   .row {
     position: relative;
     margin-bottom: 20px;
@@ -54,45 +111,115 @@
     position: absolute;
     top: 0;
     width: 280px;
-    background-color: #fff;
-  }
-
-  .offer__map, .offer__images {
-    margin-left: 280px;
     height: 80vh;
-  }
-
-  .offer__toggler {
-    position: absolute;
-    top: 20px;
-    left: 300px;
-    height: 54px;
-    cursor: pointer;
-    padding: 12px 15px;
-    text-align: center;
     background-color: #fff;
-    background-color: #364150;
-    opacity: 0.75;
-    transition: opacity, .35s;
-    z-index: 5;
-    &:hover { opacity: .65 }
-    &:after {
-      content: "\e033";
-      font-family: "Icons";
-      font-size: 22px;
-      color: #fff;
-    }
-    &._pic:after { content: "\e032" }
   }
 
-  .images {
+  .details {
+    position: absolute;
+    height: 80vh;
+    width: 100%;
+  }
+
+  .details__author {
     position: relative;
-    padding: 10px;
+    padding: 20px 15px 5px;
+    &:after {
+      @include clearfix;
+      display: block;
+      height: 1px;
+      padding-top: 15px;
+      background: url("./assets/border.png") 0 100% repeat-x;
+    }
   }
 
-  .images__placeholder {
-    max-width: 100%;
-    height: auto;
+  .author {
+    position: relative;
+  }
+
+  .author__photo {
+    float: left;
+  }
+
+  .photo {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  }
+
+  .author__meta {
+    margin-left: 70px;
+    padding: 4px 0;
+  }
+
+  .meta {
+    position: relative;
+  }
+
+  .meta__name {
+    display: block;
+    color: #5a7391;
+    font-size: 20px;
+    font-weight: 300;
+    margin-bottom: 7px;
+    text-decoration: none;
+  }
+
+  .meta__company {
+    display: block;
+    text-transform: uppercase;
+    color: #5b9bd1;
+    font-size: 12px;
+    font-weight: 400;
+    text-decoration: none;
+  }
+
+  .details__list {
+    position: relative;
+  }
+
+  .list {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 7.5px solid #fff;
+  }
+
+  .list__item {
+    position: relative;
+  }
+
+  .item {
+    position: relative;
+    border-bottom: 1px solid #f0f4f7;
+    display: block;
+    padding: 7.5px;
+    cursor: default;
+    transition: background-color .1s ease-in-out;
+    &:hover { background-color: #eef1f5 }
+    &:after { @include clearfix }
+  }
+  
+  .item__title {
+    display: block;
+    width: 50%;
+    float: left;
+    color: #5a7391;
+  }
+
+  .item__value { 
+    display: block;
+    width: 50%;
+    float: left;
+    color: #5a7391;
+    text-align: right;
+    color: #93a3b5;
+    font-style: italic;
   }
 
   .offer__description {
@@ -122,7 +249,7 @@
 
   export default {
     name: 'request',
-    props: ['auth', 'user', 'request'],
+    props: ['auth', 'user', 'request', 'model'],
     components: { AppLoader, OfferMap },
     data() {
       return {
@@ -143,6 +270,11 @@
         this.company = company.val();
         this.dataReady = true;
       });
+    },
+    methods: {
+      map(arr) {
+        return arr.map( e => e.label ).join(', ');
+      }
     }
   }
 </script>

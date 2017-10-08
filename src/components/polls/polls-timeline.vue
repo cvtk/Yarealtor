@@ -1,5 +1,8 @@
 <template>
-  <div :class="$style.timeline_post" v-if="dataReady">
+  <div :class="$style.timeline_post" v-if="dataReady" :id="poll.key">
+    <ui-modal ref="reportModal" title="Жалоба на опрос">
+      <app-report :link="'/polls/#' + poll.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
+    </ui-modal>
     <div :class="$style.timeline_post_wrapper">
 
       <div :class="[$style.dropdown_wrapper, dropdownToggled || $style.__hidden]" @mouseleave="dropdownToggled = false">
@@ -10,7 +13,7 @@
           <li :class="$style.dropdown__item" @click="focusCommentField">
             <span :class="$style.item__title">Комментировать</span>
           </li>
-          <li :class="$style.dropdown__item" v-if="!isOwner">
+          <li :class="$style.dropdown__item" v-if="!isOwner" @click="report">
             <span :class="$style.item__title">Пожаловаться</span>
           </li>
         </ul>
@@ -345,6 +348,11 @@
         &:hover:after { color: #3e4b5c }
       }
     }
+    @media (max-width: $bp-small) {
+      .timeline_post__userpic { display: none }
+      .timeline_post__body, .timeline_post__comments { margin-left: 0}
+      .timeline_post__body:before { display: none }
+    }
   }
 </style>
 
@@ -355,6 +363,7 @@
   import firebase from '../../firebase.js';
   import DefaultRadio from '../default-inputs/default-radio.vue';
   import PollsComment from './polls-comment.vue';
+  import AppReport from '../report/report.vue';
 
   const usersRef = firebase.database().ref('users');
   const commentsRef = firebase.database().ref('comments');
@@ -363,7 +372,7 @@
   export default {
     name: 'polls-timeline',
     props: ['poll', 'user'],
-    components: { AppLoader, DefaultRadio, PollsComment },
+    components: { AppLoader, DefaultRadio, PollsComment, AppReport },
     filters: AppFilters,
     methods: {
       id() {
@@ -428,6 +437,9 @@
         let field = event.target;
         field.style.height = "5px";
         field.style.height = (field.scrollHeight)+"px";
+      },
+      report() {
+        this.$refs.reportModal.open();
       }
     },
     computed: {

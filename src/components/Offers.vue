@@ -304,33 +304,50 @@
   import ApartmentsFilter from './apartments/apartments-filter.vue'
 
   const offersRef = firebase.database().ref('offers');
+  const companiesRef = firebase.database().ref('companies');
 
   export default {
     name: 'offers',
-    props: ['auth'],
+    props: ['auth', 'user'],
     components: { AppLoader, GridLayoutItem, ListLayoutItem, AppInput, AppAdSidebar, ApartmentsFilter },
     data() {
       return {
         dataReady: false,
         currentLayout: true,
         filterToggled: false,
-        authorFilter: 'all',
+        authorFilter: 'my',
         ref: '',
-        offers: {},
+        offers: [],
+        companies: {}
       }
     },
     created() {
       this.ref = offersRef.on('value', this.onOffersValue);
-      this.dataReady = true;
     },
     computed: {
       filteredOffers() {
-        return Object.keys(this.offers).map( e => this.offers[e] ).sort( (a, b) => b.created - a.created );
+        return this.offers.sort( (a, b) => b.created - a.created )
+                .filter( e => this.authorFilterResult(e) )
       }
     },
     methods: {
+      isMy(offer) { return offer.author === this.user.key },
+      isYasr(offer) { return this.companies[offer.company].yasr },
+      authorFilterResult(offer) {
+        return this.authorFilter === 'my' && this.isMy(offer) ||
+          this.authorFilter === 'yasr' && this.isYasr(offer) ||
+          this.authorFilter === 'all'
+      },
       onOffersValue(offers) {
-        this.offers = offers.val();
+        if ( !offers.exists() ) this.offers = [];
+        let tmp = offers.val();
+        this.offers = Object.keys(tmp).map( e => tmp[e] );
+        offers.forEach( offer => {
+          companiesRef.child(offer.val().company).once('value', company => {
+          this.companies[company.key] = company.val();
+          this.dataReady = true;
+        });
+        })
       }
     }
   }

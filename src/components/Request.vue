@@ -1,16 +1,58 @@
 <template>
   <div :class="$style.request" v-if="dataReady">
+    <ui-modal ref="reportModal" title="Жалоба на заявку">
+      <app-report :link="'/requests/' + request.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
+    </ui-modal>
+    <ui-confirm
+      confirm-button-icon="delete"
+      confirm-button-text="Удалить"
+      deny-button-text="Отмена"
+      ref="deleteConfirm"
+      title="Удалить заявку"
+      type="danger"
+
+      @confirm="remove"
+    >Вы уверены, что хотите удалить эту заявку?
+    </ui-confirm>
     <div :class="$style.request__bar">
       <ul :class="$style.bar__breadcrumbs">
         <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
         <router-link tag="li" :to="{ name: 'requests' }" :class="$style.breadcrumbs__item">Спрос</router-link >
         <span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">!!!!</li>
+        <li :class="$style.breadcrumbs__item">{{ title }}</li>
       </ul>
     </div>
     <div :class="$style.request__toolbar">
-      <h1 :class="$style.toolbar__title">!!!!<span :class="$style._small">!!!</span></h1>
-      <div :class="$style.toolbar__actions"></div>
+      <h1 :class="$style.toolbar__title">{{ title }}<span :class="$style._small">добавлено: {{ request.created | unixToDate }}</span></h1>
+      <div :class="$style.toolbar__actions">
+        <div :class="$style.actions">
+          <ui-fab
+            @click="report"
+            icon="gavel"
+            tooltip-position="top center"
+            tooltip="Жалоба"
+            size="small"
+          ></ui-fab>
+          <ui-fab
+            @click="$router.push({ name: 'edit-request', params: { id: request.key } })"
+            icon="edit"
+            tooltip-position="top center"
+            tooltip="Правка"
+            size="small"
+            :class="$style.uifab"
+            v-if="isOwner || isModer || isAdmin"
+          ></ui-fab>
+          <ui-fab
+            @click="showConfirm"
+            icon="delete"
+            tooltip-position="top center"
+            tooltip="Удалить"
+            size="small"
+            :class="$style.uifab"
+            v-if="isOwner || isModer || isAdmin"
+          ></ui-fab>
+        </div>
+      </div>
     </div>
     
     <div :class="$style.request__main">
@@ -59,9 +101,13 @@
     }
 
   /* request__toolbar */
-    .request__toolbar { margin: 25px 0 }
+    .request__toolbar {
+      &:after { @include clearfix }
+      margin: 25px 0 }
 
     .toolbar__title {
+      float: left;
+      width: 50%;
       font-size: 24px;
       color: #666;
       margin: 0;
@@ -354,6 +400,17 @@
       }
     }
 
+    .toolbar__actions {
+      float: right;
+    }
+
+    .actions {
+      align-items: flex-end;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .uifab { margin-left: 10px; }
+
   /* responsive */
     .request {
       @media (max-width: $bp-medium) {
@@ -374,38 +431,40 @@
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppFilters from './helpers/filters.js';
   import requestContent from './request/request-content.vue';
+  import AppReport from './report/report.vue';
 
   const requestsRef = firebase.database().ref('requests');
 
   export default {
     name: 'request',
-    props: ['auth'],
-    components: { AppLoader, AppAdSidebar, requestContent },
+    props: ['auth', 'user'],
+    components: { AppLoader, AppAdSidebar, requestContent, AppReport },
     filters: AppFilters,
     data() {
       return {
         dataReady: false,
-        mdl: mdl.getModel(['meta', 'general', 'request', 'address', 'params']),
+        mdl: {},
         request: {}
       }
     },
     computed: {
+      isOwner() { return this.user.key === this.request.author },
+      isModer() { return this.user.company === this.request.company && this.user.role === 5 },
+      isAdmin() { return this.user.role === 1 },
       title() {
-        switch( this.request.object ) {
-          case 1: return `${this.request.rooms}-к квартира, ${this.request.area_full} м², ${this.request.floor}/${this.request.floors} эт.`;
-          case 2: return `Комната, ${this.request.area_full} м², ${this.request.floor}/${this.request.floors} эт.`;
-          case 3: return `Коммерческая, ${this.commercialType()}, ${this.request.area_full} м²`;
-          case 4: return `${ this.humanize( 'cottage_type', this.request.cottage_type) }, ${this.request.area_full} м², ${this.request.floors} этажа`;
-          case 5: return `Гараж, ${ this.humanize( 'garage_material', this.request.garage_material) }, ${this.request.area_full} м²`;
-          case 6: return `Участок ${ this.humanize( 'land_type', this.request.land_type) }, ${this.request.cottage_area} сот.`;
+        let op = ['Ищу', 'Куплю', 'Сниму'][this.request.op.value],
+            r = this.request;
+        switch( this.request.object.value ) {
+          case 1: return `${op}: ${r.rooms.map( e => e.value ).join(', ')}-к квартиру`;
+          default: return `${op}: ${r.object.label.toLowerCase()}`;
         }
-      }
+      },
     },
     created() {
-      requestsRef.child(this.$route.params.id).once('value', (request) => {
+      requestsRef.child(this.$route.params.id).once('value', request => {
         if ( request.exists() ) {
           this.request = request.val();
-          let objectType = mdl.objectTypes()[request.object.value];
+          let objectType = mdl.objectTypes()[this.request.object.value];
           this.mdl = mdl.model(['meta', 'general', objectType]);
           this.dataReady = true;
         }
@@ -414,6 +473,27 @@
         }
       });
     },
-    methods: {}
+    methods: {
+      remove() {
+        requestsRef.child(this.request.key).remove()
+          .then( () => {
+            this.$parent.$refs.notify.createSnackbar({
+              message: 'Заявка удалена',
+            });
+            this.$router.push({ name: 'requests'});
+          })
+          .catch( error => {
+            this.$parent.$refs.notify.createSnackbar({
+              message: `Ошибка сети: ${error.message}`,
+            });
+          })
+      },
+      report() {
+        this.$refs.reportModal.open();
+      },
+      showConfirm() {
+        this.$refs.deleteConfirm.open();
+      },
+    }
   }
 </script>

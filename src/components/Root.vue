@@ -2,7 +2,7 @@
   <div :class="$style.main">
     <div :class="$style.main__bar">
       <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Новости</li>
+        <li :class="$style.breadcrumbs__item">Главная</li>
       </ul>
     </div>
     <div :class="$style.main__toolbar">
@@ -16,16 +16,20 @@
             <div :class="$style.header_wrapper">
               <div :class="$style.navigation_item__header">
                 <h3 :class="$style.header__title">Соц. опросы</h3>
-                <h4 :class="$style.header__subtitle">Итоги, комментарии, аналитика</h4>
+                <h4 :class="$style.header__subtitle">Итоги, аналитика</h4>
               </div>
               <div :class="$style.navigation_item__icon"></div>
             </div>
             <div :class="$style.navigation_item__delimiter"></div>
             <h5 :class="$style.navigation_item__recent_title">Недавние опросы:</h5>
             <div :class="$style.navigation_item__recent_items">
-              <router-link :to="{ name: 'polls' }" :class="$style.recent_items__article">Сегодня, в 12:35: Как вы считаете, стоит ли это делать?</router-link>
-              <router-link :to="{ name: 'polls' }" :class="$style.recent_items__article">Вчера, в 16:12: Может стоит делать иначе?</router-link>
-              <router-link :to="{ name: 'polls' }" :class="$style.recent_items__article">Вчера, в 11:10: Давайте делать как делали, а?</router-link>
+              <router-link
+                v-for="poll in polls"
+                :key="poll.key"
+                :to="{ name: 'polls' }"
+                :class="$style.recent_items__article"
+                >{{ poll.created | unixToDate }}: {{ poll.question }}
+              </router-link>
             </div>
           </router-link>
         </div>
@@ -41,9 +45,13 @@
             <div :class="$style.navigation_item__delimiter"></div>
             <h5 :class="$style.navigation_item__recent_title">Недавние новости:</h5>
             <div :class="$style.navigation_item__recent_items">
-              <router-link :to="{ name: 'news' }" :class="$style.recent_items__article">Сегодня, в 12:35: Как вы считаете, стоит ли это делать?</router-link>
-              <router-link :to="{ name: 'news' }" :class="$style.recent_items__article">Вчера, в 16:12: Может стоит делать иначе?</router-link>
-              <router-link :to="{ name: 'news' }" :class="$style.recent_items__article">Вчера, в 11:10: Давайте делать как делали, а?</router-link>
+              <router-link
+                v-for="post in posts"
+                :key="post.key"
+                :to="{ name: 'news' }"
+                :class="$style.recent_items__article"
+                >{{ post.created | unixToDate }}: {{ post.message }} {{ typeof post.images !== 'undefined' && 'Картинка' || '' }}
+              </router-link>
             </div>
           </router-link>
         </div>
@@ -59,9 +67,13 @@
             <div :class="$style.navigation_item__delimiter"></div>
             <h5 :class="$style.navigation_item__recent_title">Недавние предложения:</h5>
             <div :class="$style.navigation_item__recent_items">
-              <router-link :to="{ name: 'offers' }" :class="$style.recent_items__article">Сегодня, в 12:35: Как вы считаете, стоит ли это делать?</router-link>
-              <router-link :to="{ name: 'offers' }" :class="$style.recent_items__article">Вчера, в 16:12: Может стоит делать иначе?</router-link>
-              <router-link :to="{ name: 'offers' }" :class="$style.recent_items__article">Вчера, в 11:10: Давайте делать как делали, а?</router-link>
+              <router-link
+                v-for="offer in offers"
+                :key="offer.key"
+                :to="{ name: 'offer', params: { id: offer.key} }"
+                :class="$style.recent_items__article"
+                >{{ offer.created | unixToDate }}: {{ offer.localityType }}. {{ offer.locality }}, {{ title(offer) }}
+              </router-link>
             </div>
           </router-link>
         </div>
@@ -106,6 +118,9 @@
       position: relative;
       height: 100%;
       padding: 20px;
+      @media (max-width: $bp-medium) {
+        
+      }
     }
 
   /* main__main */
@@ -241,6 +256,7 @@
       font-weight: 300;
       text-decoration: none;
       padding: 5px 0;
+      word-wrap: break-word;
       &:hover { text-decoration: underline }
     }
   }
@@ -321,10 +337,13 @@
         .main_wrapper { margin-left: -10px; margin-right: 290px }
       }
       @media (max-width: $bp-medium) {
-        .main__ad { display: none }
+        .navigation_item_wrapper { width: 100%; min-height: 280px; }
         .main__content { margin-right: 0 }
       }
       @media (max-width: $bp-small) {
+        .navigation_item_wrapper { min-height: 360px; }
+        .main_wrapper { margin-left: -10px; margin-right: -10px }
+        .main__ad { display: none }
         ._small { display: none }
         .breadcrumbs__item:first-child { display: none }
       }
@@ -339,30 +358,64 @@
   import AppInput from './modules/inputs.vue';
   import AppUploadImages from './modules/upload-images.vue';
   import firebase from '../firebase.js';
+  import _h from './helpers/filters.js';
 
   const postsRef = firebase.database().ref('posts');
+  const pollsRef = firebase.database().ref('polls');
+  const offersRef = firebase.database().ref('offers');
 
   export default {
     name: 'main',
     props: ['auth'],
     components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, TimelinePost, TimelineNewPost  },
+    filters: _h,
     data() {
       return {
         filter: 'all',
         dataReady: false,
-        posts: {}
+        posts: {}, offers: {}, polls: {}
+      }
+    },
+    methods: {
+      sortByCreated(obj) {
+        return Object.keys(obj).map( e => obj[e] ).sort((x, y) => y.created - x.created);
+      },
+      title(offer) {
+        switch( offer.object ) {
+          case 1: return `${offer.rooms}-к квартира, ${offer.area_full} м², ${offer.floor}/${offer.floors} эт.`;
+          case 2: return `Комната, ${offer.area_full} м², ${offer.floor}/${offer.floors} эт.`;
+          case 3: return `Коммерческая, ${offer.area_full} м²`;
+          case 4: return `Дом или дача, ${offer.area_full} м², ${offer.floors} этажа`;
+          case 5: return `Гараж, ${offer.area_full} м²`;
+          case 6: return `Участок ${offer.cottage_area} сот.`;
+        }
       }
     },
     created() {
-      postsRef.on('value', posts => {
-        posts.forEach(post => {
-          this.$set( this.posts, post.key, post.val() );
-        });
-        this.dataReady = true;
-      });
-      postsRef.on('child_removed', post => {
-        this.$delete(this.posts, post.key);
-      });
+      offersRef.limitToLast(3).on('value', offers => {
+        if ( !offers.exists() ) { this.offers = [] }
+        else {
+          let tmp = offers.val();
+          this.offers = this.sortByCreated(tmp);
+          this.dataReady = true;
+        }
+      })
+      postsRef.orderByChild('access').equalTo(10).limitToLast(3).on('value', posts => {
+        if ( !posts.exists() ) { this.posts = [] }
+        else {
+          let tmp = posts.val();
+          this.posts = this.sortByCreated(tmp);
+          this.dataReady = true;
+        }
+      })
+      pollsRef.orderByChild('access').equalTo(10).limitToLast(3).on('value', polls => {
+        if ( !polls.exists() ) { this.polls = [] }
+        else {
+          let tmp = polls.val();
+          this.polls = this.sortByCreated(tmp);
+          this.dataReady = true;
+        }
+      })
       
     },
     computed: {

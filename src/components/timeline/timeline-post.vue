@@ -1,5 +1,8 @@
 <template>
-  <div :class="$style.timeline_post">
+  <div :class="$style.timeline_post" v-if="dataReady" :id="post.key">
+    <ui-modal ref="reportModal" title="Жалоба на публикацию">
+      <app-report :link="'/posts/#' + post.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
+    </ui-modal>
     <div :class="$style.timeline_post_wrapper">
 
       <div :class="[$style.dropdown_wrapper, dropdownToggled || $style.__hidden]" @mouseleave="dropdownToggled = false">
@@ -10,7 +13,7 @@
           <li :class="$style.dropdown__item" @click="focusCommentField">
             <span :class="$style.item__title">Комментировать</span>
           </li>
-          <li :class="$style.dropdown__item" v-if="!isOwner">
+          <li :class="$style.dropdown__item" v-if="!isOwner" @click="report">
             <span :class="$style.item__title">Пожаловаться</span>
           </li>
         </ul>
@@ -335,6 +338,12 @@
         &:hover:after { color: #3e4b5c }
       }
     }
+    @media (max-width: $bp-small) {
+      .timeline_post__userpic { display: none }
+      .timeline_post__body, .timeline_post__comments { margin-left: 0}
+      .timeline_post__body:before { display: none }
+      .body__images { height: 200px !important}
+    }
   }
 </style>
 
@@ -345,6 +354,7 @@
   import AppFilters from '../helpers/filters.js';
   import Firebase from 'firebase';
   import firebase from '../../firebase.js';
+  import AppReport from '../report/report.vue';
 
   const usersRef = firebase.database().ref('users');
   const commentsRef = firebase.database().ref('comments');
@@ -353,7 +363,7 @@
   export default {
     name: 'timeline-post',
     props: ['post', 'auth', 'user'],
-    components: { AppLoader, AppComment, PostImages },
+    components: { AppLoader, AppComment, PostImages, AppReport },
     filters: AppFilters,
     methods: {
       leaveAnswer(comment) {
@@ -395,6 +405,9 @@
         let field = event.target;
         field.style.height = "5px";
         field.style.height = (field.scrollHeight)+"px";
+      },
+      report() {
+        this.$refs.reportModal.open();
       }
     },
     computed: {
@@ -432,7 +445,7 @@
         author: {},
         commentTo: '',
         newComment: {
-          post: this.post.key,
+          parent: this.post.key,
           author: this.auth.uid
         }
       }
@@ -449,7 +462,7 @@
         }
       });
 
-      commentsRef.orderByChild('post').equalTo(this.post.key).on('value', comments => {
+      commentsRef.orderByChild('parent').equalTo(this.post.key).on('value', comments => {
         let tmpComments = {};
         if ( comments.exists() ) {
           tmpComments = comments.val();
@@ -461,7 +474,7 @@
         this.comments = tmpComments;
         this.commentsReady = true;
       })
-      commentsRef.orderByChild('post').equalTo(this.post.key).on('child_removed', comment => this.$delete(this.comments, comment.key))
+      commentsRef.orderByChild('parent').equalTo(this.post.key).on('child_removed', comment => this.$delete(this.comments, comment.key))
     }
   }
 </script>

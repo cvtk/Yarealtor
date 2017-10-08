@@ -47,7 +47,7 @@
         <input :class="$style.search__input" type="text" placeholder="Поиск...">
         <button :class="$style.search__btn"></button>
       </form>
-      <ul :class="$style.sidebar__menu">
+      <ul :class="$style.sidebar__menu" @click="isToggled = true">
         <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact :title="isToggled && 'Главная'">
           <span :class="[$style.item__icon, $style._main]"></span>
           <span :class="$style.item__title">Главная</span>
@@ -109,7 +109,7 @@
     @import "normalize.css";
     height: 100%;
     &._toggled {
-      .header__logo { padding: 0 12px; width: 45px }
+      .header__logo { padding: 0 12px; width: 45px; }
       .logo__pic { display: none }
       .app__content { margin-left: 45px }
       .app__sidebar { width: 45px }
@@ -160,6 +160,7 @@
       clear: both;
     }
     > .header__logo {
+       position: fixed; z-index: 10; background-color: #2b3643;
       float: left;
       width: 235px;
       line-height: 50px;
@@ -334,7 +335,7 @@
   }
   .app__sidebar {
     position: fixed;
-    z-index: 2;
+    z-index: 10;
     overflow: hidden;
     width: 235px;
     height: 100%;

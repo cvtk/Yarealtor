@@ -1,9 +1,7 @@
 <template>
   <div :class="$style.polls">
     <div :class="$style.polls__bar">
-      <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Соц. опросы</li>
-      </ul>
+      <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Опросы', to: ''} ]"/> 
     </div>
     <div :class="$style.polls__toolbar">
       <h1 :class="$style.toolbar__title">Соц. опросы<span :class="$style._small">нам важно Ваше мнение</span></h1>
@@ -45,6 +43,10 @@
       position: relative;
       height: 100%;
       padding: 20px;
+
+      @media (max-width: $bp-small) {
+        .main__content { margin-right: 0px;}
+      }
     }
 
   /* polls__main */
@@ -282,6 +284,8 @@
         .main__content { margin-right: 0 }
       }
       @media (max-width: $bp-small) {
+        .main_wrapper { margin-right: 0px;}
+        .actions__buttons { float: none; display: block; margin: 10px auto; }
         ._small { display: none }
         .breadcrumbs__item:first-child { display: none }
       }
@@ -298,13 +302,14 @@
   import PollsNew from './polls/polls-new.vue';
   import PollsTimeline from './polls/polls-timeline.vue';
   import firebase from '../firebase.js';
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
 
   const pollsRef = firebase.database().ref('polls');
 
   export default {
     name: 'polls',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, PollsNew, PollsTimeline  },
+    components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, PollsNew, PollsTimeline, Breadcrumbs  },
     data() {
       return {
         filter: 0,

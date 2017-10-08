@@ -46,6 +46,7 @@
                 :key="post.key" 
                 :post="post" 
                 :auth="auth"
+                :user="user"
               />
             </div>
           </div>
@@ -262,7 +263,7 @@
     destroyed() {
       // \\
     },
-    mounted() {
+    created() {
       usersRef.orderByChild('page').equalTo(this.$route.params.page).once('value', (data) => {
         if ( data.exists() ) {
           data.forEach( (profile) => {

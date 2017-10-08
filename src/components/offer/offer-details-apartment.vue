@@ -3,7 +3,7 @@
     <div :class="$style.details__author">
       <div :class="$style.author">
         <div :class="$style.author__photo">
-          <div :class="$style.photo" :style="{ 'background-image': 'url(' + author.photo.small + ')' }"></div>
+          <div :class="$style.photo" :style="{ 'background-image': 'url(' + author.photo + ')' }"></div>
         </div>
         <div :class="$style.author__meta">
           <div :class="$style.meta">

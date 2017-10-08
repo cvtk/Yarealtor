@@ -1,5 +1,8 @@
 <template>
   <div :class="$style.offer" v-if="dataReady">
+    <ui-modal ref="reportModal" title="Жалоба на предложение">
+      <app-report :link="'/offers/' + offer.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
+    </ui-modal>
     <ui-confirm
       confirm-button-icon="delete"
       confirm-button-text="Удалить"
@@ -429,13 +432,14 @@
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppFilters from './helpers/filters.js';
   import OfferContent from './offer/offer.vue';
+  import AppReport from './report/report.vue';
 
   const offersRef = firebase.database().ref('offers');
 
   export default {
     name: 'offer',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, OfferContent },
+    components: { AppLoader, AppAdSidebar, OfferContent, AppReport },
     filters: AppFilters,
     data() {
       return {
@@ -445,7 +449,7 @@
       }
     },
     computed: {
-      isOwner() { return this.user.key === this.offer.key },
+      isOwner() { return this.user.key === this.offer.author },
       isModer() { return this.user.company === this.offer.company && this.user.role === 5 },
       isAdmin() { return this.user.role === 1 },
       title() {
@@ -499,7 +503,7 @@
           })
       },
       report() {
-
+        this.$refs.reportModal.open();
       },
       showConfirm() {
         this.$refs.deleteConfirm.open();

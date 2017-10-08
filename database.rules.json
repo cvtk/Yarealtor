@@ -4,6 +4,18 @@
     ".write": "auth != null",
     "companies": {
       ".read": true
+    },
+    "users": {
+      ".indexOn": ["company", "page"]
+    },
+    "polls": {
+      ".indexOn": ["access"]
+    },
+    "comments": {
+      ".indexOn": ["parent"]
+    },
+    "posts": {
+      ".indexOn": ["access"]
     }
   }
 }

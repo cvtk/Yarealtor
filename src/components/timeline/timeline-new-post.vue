@@ -163,6 +163,10 @@
       padding: 20px 0 0;
       float: right;
     }
+    @media (max-width: $bp-small) {
+      .new_post__actions { margin-left: 0 }
+      .actions__access { margin-right: 0; text-align: right; }
+    }
   }
 </style>
 

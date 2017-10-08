@@ -222,7 +222,7 @@
     computed: {
       validation: function () {
         return {
-          locality: !!this.local.locality && this.local.locality === this.selected.name,
+          locality: !!this.local.locality,
           district: !!this.local.district.length,
           // area_from: this.local.area_from > 0,
           // area_to: this.local.area_to > 0,

@@ -37,7 +37,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules(?!(\/|\\)keen-ui)/
       },
       {
         test: /\.(png|jpg|gif|svg)$/,

@@ -19,7 +19,7 @@
       <li :class="$style.grid__item" v-for="company in yasrCompanies">
         <div :class="$style.item_wrapper">
           <div :class="$style.image_wrapper">
-            <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image + ')' }"></div>
+            <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image.medium + ')' }"></div>
             <div :class="$style.item__links">
               <router-link :to="{ name: 'company', params: { page: company.page } }" :class="$style.links_wrapper">
                 <app-input type="button" :class="$style.links__more">Узнать больше</app-input>
@@ -36,7 +36,7 @@
       <li :class="$style.grid__item" v-for="company in otherCompanies">
         <div :class="$style.item_wrapper">
           <div :class="$style.image_wrapper">
-            <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image + ')' }"></div>
+            <div :class="$style.item__image" :style="{ 'background-image': 'url(' + company.image.medium + ')' }"></div>
             <div :class="$style.item__links">
               <router-link :to="{ name: 'company', params: { page: company.page } }" :class="$style.links_wrapper">
                 <app-input type="button" :class="$style.links__more">Узнать больше</app-input>

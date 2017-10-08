@@ -234,6 +234,9 @@
       font-size: 14px;
       float: right;
     }
+    @media( max-width: $bp-small ) {
+      .controls__access, .controls__submit { width: 115px;}
+    }
   }
 </style>
 

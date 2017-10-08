@@ -248,10 +248,11 @@
     },
     computed: {
       title() {
-        let op = ['', 'Куплю', 'Сниму'][this.request.op.value];
+        let op = ['Ищу', 'Куплю', 'Сниму'][this.request.op.value],
+            r = this.request;
         switch( this.request.object.value ) {
-          case 1: return `${op}: ${this.request.rooms.map( e => e.value ).join(', ')}-к квартиру`;
-          case 2: return `${op}: комнату`;
+          case 1: return `${op}: ${r.rooms.map( e => e.value ).join(', ')}-к квартиру`;
+          default: return `${op}: ${r.object.label.toLowerCase()}`;
         }
       },
       address() {
