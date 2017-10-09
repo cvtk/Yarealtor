@@ -1,15 +1,15 @@
 <template>
   <div :class="$style.offers">
     <div :class="$style.offers__bar">
-      <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">Спрос</li>
-      </ul>
+      <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Спрос', to: ''} ]"/>
 
     </div>
     <div :class="$style.offers__toolbar">
       <h1 :class="$style.toolbar__title">Спрос<span :class="$style._small">актуальные объекты</span></h1>
       <div :class="$style.toolbar__actions">
+        <span :class="[ $style.actions__author_filter, authorFilter === 'my' && $style._active ]" @click="authorFilter = 'my'">Мои</span>
+        <span :class="[ $style.actions__author_filter, authorFilter === 'yasr' && $style._active ]" @click="authorFilter = 'yasr'">Ан ЯСР</span>
+        <span :class="[ $style.actions__author_filter, authorFilter === 'all' && $style._active ]" @click="authorFilter = 'all'">Все</span>
         <div :class="$style.actions__filter">
           <ui-switch v-model="filterToggled">Фильтр</ui-switch>
         </div>
@@ -28,17 +28,23 @@
     <div :class="$style.wrapper">
 
       <div :class="$style.offers__content" v-if="dataReady">
+        <transition name="fade">
+          <div :class="$style.content__filter" v-if="filterToggled">
+            <requests-filter :data="requests" @change="onFiltersChange" />
+          </div>
+        </transition>
         <transition name="toggle-filter">
           <div :class="$style.content__filter" v-if="filterToggled"></div>
         </transition>
-        <transition name="layout-switcher" appear> 
+        <transition name="layout-switcher" appear v-if="!!filteredRequests.length"> 
           <ul :class="$style.content__list">
-            <list-layout-item v-for="request in filteredRequests" :key="request.key" :request="request" />
+            <list-layout-item v-for="request in filteredRequests" :ghostMode="ghostMode" :key="request.key" :request="request" />
           </ul>
         </transition>
+        <span v-else> По Вашему запросу ничего не найдено, попробуйте изменить условия поиска </span>
       </div>
       <app-loader v-else></app-loader>
-      <app-ad-sidebar></app-ad-sidebar>
+      <app-ad-sidebar :class="$style.offers__ad"></app-ad-sidebar>
     </div>
   </div>
 </template>
@@ -238,13 +244,25 @@
     vertical-align: middle;
   }
 
+  .actions__author_filter {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+    color: #32c5d2;
+    &:hover, &._active { text-decoration: underline }
+  }
+
   .offers {
     @media (max-width: $bp-medium) {
+      .actions__author_filter { margin-right: 5px }
+      .actions__filter { margin-right: 10px; }
       .offers__ad { display: none }
       .offers__content { margin-right: 0 }
     }
     @media (max-width: $bp-small) {
+      .toolbar__actions, .toolbar__title { float: none; width: 100% }
       ._small { display: none }
+
     }
     @media (max-width: $bp-extra-small) {
       .new__text { display: none }
@@ -259,13 +277,16 @@
   import ListLayoutItem from './requests/list-layout-item.vue';
   import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
+  import RequestsFilter from './apartments/requests-filter.vue'
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
 
   const requestsRef = firebase.database().ref('requests');
+  const companiesRef = firebase.database().ref('companies');
 
   export default {
-    name: 'offers',
-    props: ['auth'],
-    components: { AppLoader, ListLayoutItem, AppInput, AppAdSidebar },
+    name: 'requests',
+    props: ['auth', 'ghostMode'],
+    components: { AppLoader, ListLayoutItem, AppInput, AppAdSidebar, RequestsFilter, Breadcrumbs },
     data() {
       return {
         dataReady: false,
@@ -274,20 +295,46 @@
         authorFilter: 'all',
         ref: '',
         requests: {},
+        companies: {},
+        data: []
       }
     },
     created() {
       this.ref = requestsRef.on('value', this.onRequestsValue);
-      this.dataReady = true;
     },
     computed: {
       filteredRequests() {
-        return Object.keys(this.requests).map( e => this.requests[e] ).sort( (a, b) => b.created - a.created );
+        if ( this.filterToggled ) {
+          if ( !this.data.length ) return []
+          return this.data.sort( (a, b) => b.created - a.created )
+                .filter( e => this.authorFilterResult(e) )
+        } else {
+          return this.requests.sort( (a, b) => b.created - a.created )
+                .filter( e => this.authorFilterResult(e) )
+        }
       }
     },
     methods: {
+      isMy(request) { return request.author === this.user.key },
+      isYasr(request) { return this.companies[request.company].yasr },
+      authorFilterResult(request) {
+        return this.authorFilter === 'my' && this.isMy(request) ||
+          this.authorFilter === 'yasr' && this.isYasr(request) ||
+          this.authorFilter === 'all'
+      },
       onRequestsValue(requests) {
-        this.requests = requests.val();
+        if ( !requests.exists() ) { this.requests = []; this.dataReady = true; return;  }
+        let tmp = requests.val();
+        this.requests = Object.keys(tmp).map( e => tmp[e] );
+        requests.forEach( request => {
+          companiesRef.child(request.val().company).once('value', company => {
+          this.companies[company.key] = company.val();
+          this.dataReady = true;
+        });
+        })
+      },
+      onFiltersChange(value) {
+        this.data = value;
       }
     }
   }

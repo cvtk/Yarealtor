@@ -58,7 +58,7 @@
     
     <div :class="$style.offer__main">
       <div :class="$style.main__content">
-        <offer-content :offer="offer" />
+        <offer-content :offer="offer" :ghostMode="ghostMode" />
       </div>
     <div :class="$style.main__h_ad"><img src="/static/ad_2.gif" alt="" ></div>
     <app-ad-sidebar :class="$style.main__ad"></app-ad-sidebar>
@@ -438,7 +438,7 @@
 
   export default {
     name: 'offer',
-    props: ['auth', 'user'],
+    props: ['auth', 'user', 'ghostMode'],
     components: { AppLoader, AppAdSidebar, OfferContent, AppReport },
     filters: AppFilters,
     data() {

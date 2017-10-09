@@ -10,7 +10,7 @@
             <router-link :class="$style.meta__name" :to="{ name: 'user', params: { page: author.page } }">
               {{ author.name }} {{ author.surname }}
             </router-link>
-            <router-link :class="$style.meta__company" :to="{ name: 'company', params: { page: company.page } }">
+            <router-link v-if="!ghostMode" :class="$style.meta__company" :to="{ name: 'company', params: { page: company.page } }">
               {{ company.name }}
             </router-link>
           </div>
@@ -220,7 +220,7 @@
 
   export default {
     name: 'offer-details-apartments',
-    props: ['offer', 'company', 'author'],
+    props: ['offer', 'company', 'author', 'ghostMode'],
     filters: AppFilters,
     computed: {
       offerType() {

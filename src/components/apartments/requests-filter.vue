@@ -5,7 +5,7 @@
         <ui-select
           @input="filterByGeneralFields"
           placeholder="Предложение"
-          :options="[ { value: 1, label: 'Продажа' }, { value: 2, label: 'Аренда' },]"
+          :options="[ { value: 1, label: 'Покупка' }, { value: 2, label: 'Аренда' },]"
           v-model="general.op">
         </ui-select>
       </div>
@@ -261,10 +261,10 @@
       },
       filterByGeneralFields() {
         this.local = this.data.filter( e => {
-          return ( e.type === this.general.op.value || typeof this.general.op.value === 'undefined') &&
-            ( this.general.object.value === e.object || typeof this.general.object.value === 'undefined') &&
-              ( e.price >= parseInt(this.general.price_from) || !this.general.price_from ) && 
-                ( e.price <= parseInt(this.general.price_to) || !this.general.price_to )
+          return ( e.op.value === this.general.op.value || typeof this.general.op.value === 'undefined') &&
+            ( this.general.object.value === e.object.value || typeof this.general.object.value === 'undefined') &&
+              ( e.price_from >= parseInt(this.general.price_from) || !this.general.price_from ) && 
+                ( e.price_to <= parseInt(this.general.price_to) || !this.general.price_to )
         })
         this.$emit('change', this.local)
       },

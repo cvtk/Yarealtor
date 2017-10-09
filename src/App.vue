@@ -13,12 +13,12 @@
     <header :class="$style.app__header">
       <div :class="$style.header__logo">
         <img src="/static/logo.png" alt="Логотип" :class="$style.logo__pic">
-        <button :class="$style.menu__toggler" @click.prevent="isToggled = !isToggled"></button>
+        <button :class="$style.menu__toggler" @click.prevent="isToggled = !isToggled" v-if="user.active"></button>
       </div>
       <div :class="$style.header__menu">
-        <div :class="[ $style.menu__ghost_mode, !ghostMode || $style._active ]" @click="ghostMode=!ghostMode" title="Специальный режим"></div>
-        <div :class="$style.menu__notification">
-          <span :class="$style.notification__badge">7</span>
+        <div :class="[ $style.menu__ghost_mode, !ghostMode || $style._active ]" @click="ghostMode=!ghostMode" title="Специальный режим" v-if="user.active"></div>
+        <div :class="$style.menu__notification" v-if="user.active">
+          <span :class="$style.notification__badge">0</span>
         </div>
         <div :class="$style.menu__user" v-if="dataReady">
           <img :src="user.photo" alt="Фото" :class="$style.user__pic">
@@ -28,7 +28,7 @@
               <span :class="[$style.item__icon, $style._profile]"></span>
               <span :class="$style.item__title">Профиль</span>
             </router-link>
-            <router-link tag="li" :to="{ name: 'company', params: { page: user.company.page } }" :class="$style.dropdown__item">
+            <router-link tag="li" :to="{ name: 'company', params: { page: user.company.page } }" :class="$style.dropdown__item" v-if="user.active">
               <span :class="[$style.item__icon, $style._my_company]"></span>
               <span :class="$style.item__title">Моя компания</span>
             </router-link>
@@ -42,7 +42,7 @@
       </div>
     </header>
     
-    <aside :class="[$style.app__sidebar]">
+    <aside :class="[$style.app__sidebar]" v-if="user.active">
       <form :class="$style.sidebar__search">
         <input :class="$style.search__input" type="text" placeholder="Поиск...">
         <button :class="$style.search__btn"></button>
@@ -83,8 +83,8 @@
         <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></router-link>
       </ul>
     </aside>
-    <main :class="$style.app__content">
-      <router-view :auth="auth" :user="user" v-if="dataReady" :key="$route.fullPath"></router-view>
+    <main :class="[ $style.app__content, !user.active && $style._notActive ]">
+      <router-view :auth="auth" :user="user" v-if="dataReady" :ghostMode="ghostMode" :key="$route.fullPath"></router-view>
       <app-loader v-else></app-loader>
     </main>
   </div>
@@ -111,7 +111,7 @@
     &._toggled {
       .header__logo { padding: 0 12px; width: 45px; }
       .logo__pic { display: none }
-      .app__content { margin-left: 45px }
+      .app__content { margin-left: 45px; &._notActive { margin-left: 0 }}
       .app__sidebar { width: 45px }
       .sidebar__search { border: none; margin: 20px 14.5px; }
       .search__input { display: none }

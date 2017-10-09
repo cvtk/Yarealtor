@@ -12,7 +12,7 @@
     <div :class="$style.item__meta">
       <h3 :class="$style.meta__title">{{ title }}</h3>
       <span :class="$style.meta__address">{{ address }}</span>
-      <span :class="$style.meta__contacts">{{ company.name }}, {{ author.mobile }}</span>
+      <span :class="$style.meta__contacts"><span v-if="!ghostMode">{{ company.name }}, </span>{{ author.mobile }}</span>
       <!-- <span :class="$style.item__favorites">12</span> -->
       <span :class="$style.item__price">{{ offer.price | price }} руб.</span>
     </div>
@@ -38,6 +38,18 @@
       .meta__contacts:after { background-image: url(/static/bg-border-dotted-horizontal--hover.png) }
       .item__price { color: #f9e491 }
       .item__favorites { color: #f9e491 }
+    }
+    @media (max-width: $bp-large) {
+      width: 50%;
+    }
+    @media (max-width: $bp-medium) {
+    }
+    @media (max-width: $bp-small) {
+      width: 100%;
+
+    }
+    @media (max-width: $bp-extra-small) {
+      
     }
   }
 
@@ -180,7 +192,7 @@
 
   export default {
     name: 'grid-layout-item',
-    props: ['offer'],
+    props: ['offer', 'ghostMode'],
     filters: AppFilters,
     data() {
       return {

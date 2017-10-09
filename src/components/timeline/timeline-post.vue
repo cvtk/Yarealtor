@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.timeline_post" v-if="dataReady" :id="post.key">
+  <div :class="$style.timeline_post" v-if="dataReady && user.active" :id="post.key">
     <ui-modal ref="reportModal" title="Жалоба на публикацию">
       <app-report :link="'/posts/#' + post.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
     </ui-modal>

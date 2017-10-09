@@ -16,12 +16,12 @@
       </div>
       <div :class="$style.offer__details">
         <div :class="$style.details">
-          <offer-details-apartment :offer="offer" :company="company" :author="author" v-if="offer.object === 1" />
-          <offer-details-room :offer="offer" :company="company" :author="author" v-if="offer.object === 2" />
-          <offer-details-commercial :offer="offer" :company="company" :author="author" v-if="offer.object === 3" />
-          <offer-details-cottage :offer="offer" :company="company" :author="author" v-if="offer.object === 4" />
-          <offer-details-garage :offer="offer" :company="company" :author="author" v-if="offer.object === 5" />
-          <offer-details-land :offer="offer" :company="company" :author="author" v-if="offer.object === 6" />
+          <offer-details-apartment :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 1" />
+          <offer-details-room :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 2" />
+          <offer-details-commercial :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 3" />
+          <offer-details-cottage :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 4" />
+          <offer-details-garage :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 5" />
+          <offer-details-land :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 6" />
         </div>
       </div>
     </div>
@@ -150,7 +150,7 @@
 
   export default {
     name: 'offer',
-    props: ['auth', 'user', 'offer'],
+    props: ['auth', 'user', 'offer', 'ghostMode'],
     components: { AppLoader, OfferDetailsApartment, OfferDetailsRoom, 
       OfferDetailsCommercial, OfferDetailsCottage, OfferDetailsGarage, OfferDetailsLand, Icon, OfferImages, OfferMap
     },

@@ -9,13 +9,13 @@ fields.meta = {
 }
 
 fields.general = {
-  op: { title: 'Тип заявки', default: [],
+  op: { title: 'Тип заявки', default: {},
     options: [
       { value: 1, label: 'Покупка' },
       { value: 2, label: 'Аренда' },
     ]
   },
-  object: { title: 'Тип объекта', default: { value: 1, label: 'Квартира' },
+  object: { title: 'Тип объекта', default: {},
     options: [
       { value: 1, label: 'Квартира' },
       { value: 2, label: 'Комната' },
@@ -422,12 +422,22 @@ fields.land = {
 export default {
 
   model(modelsSet) {
-    return modelsSet.reduce( (result, field) => {
-      if ( typeof fields[field] !== 'undefined' ) {
-        Object.assign(result, fields[field]);
-        return result
+    if ( typeof modelsSet === 'undefined' ) {
+      let r = {};
+      for ( let field in fields ) {
+        if ( typeof fields[field] !== 'undefined' ) {
+          Object.assign(r, fields[field]);
+        }
       }
+      return r;
+    } else {
+      return modelsSet.reduce( (result, field) => {
+        if ( typeof fields[field] !== 'undefined' ) {
+          Object.assign(result, fields[field]);
+          return result
+        }
     }, {})
+    }
   },
 
   getFields(obj) {

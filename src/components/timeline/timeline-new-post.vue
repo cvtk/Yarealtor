@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.new_post">
+  <div :class="$style.new_post" v-if="user.active">
     <div :class="$style.new_post__userpic">
       <div :style="{ 'background-image': 'url(' + user.photo + ')' }"
         :class="$style.userpic__image">
@@ -27,8 +27,10 @@
       <div :class="$style.actions__add_images">
         <upload-images type="hidden" :class="$style.add_images" @input="onImageLoad" title="Добавить фотографии" :multiple="true"></upload-images>
       </div>
-      
     </div>
+  </div>
+  <div :class="$style.new_post" v-else>
+    В данный момент Ваша учетная запись не активирована модератором компании. Пока ваша заявка находится на рассмотрении Вы имеете доступ только к личному профилю.
   </div>
 </template>
 

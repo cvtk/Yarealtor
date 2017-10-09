@@ -99,6 +99,12 @@
 
   .settings {
     position: relative;
+
+    @media( max-width: $bp-small ) {
+      .tabs__item { display: block }
+      .content__avatar { float: none }
+      .content__bio { margin-left: 0 }
+    }
   }
 
   .settings__bar {

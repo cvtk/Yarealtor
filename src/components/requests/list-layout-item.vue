@@ -17,7 +17,7 @@
        <div :class="$style.content__description">{{ request.description }}</div>
        <div :class="$style.content__foot">
          <router-link :to="{ name: 'user', params: { page: author.page } }"  :class="[$style.foot__item, $style._author]">{{ author.name }} {{ author.surname }}</router-link>
-         <router-link :to="{ name: 'company', params: { page: company.page } }"  :class="[$style.foot__item, $style._company]">{{ company.name }}</router-link>
+         <router-link v-if="!ghostMode" :to="{ name: 'company', params: { page: company.page } }"  :class="[$style.foot__item, $style._company]">{{ company.name }}</router-link>
          <span :class="[$style.foot__item, $style._phone]">{{ author.mobile }}</span>
        </div>
     </div>
@@ -33,6 +33,22 @@
     padding: 15px;
     margin-bottom: 20px;
     &:after { @include clearfix }
+    @media (max-width: $bp-medium) {
+      
+    }
+    @media (max-width: $bp-small) {
+      .wrapper_image { display: none }
+      .item__type { display: none }
+      .item__content { width: 100% }
+      .content__title { float: none; width: 100% }
+      .content__price { float: none; text-align: left; width: 100% }
+      .content__meta { float: none; width: 100% }
+      .content__date { float: none; width: 100% }
+      .content__foot { text-align: left }
+    }
+    @media (max-width: $bp-extra-small) {
+      
+    }
   }
 
   .row {
@@ -102,7 +118,7 @@
   .meta__address {
     display: inline-block;
     color: #5b9bd1;
-    white-space: pre;
+    //white-space: pre;
     margin-right: 10px;
     &:before {
       content: "\e096";
@@ -222,7 +238,7 @@
 
   export default {
     name: 'grid-layout-item',
-    props: ['request'],
+    props: ['request', 'ghostMode'],
     filters: AppFilters,
     data() {
       return {

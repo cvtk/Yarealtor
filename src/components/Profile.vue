@@ -4,7 +4,6 @@
     <div :class="$style.profile__bar">
       <breadcrumbs :items="[
         { text: 'Главная', to: 'root'},
-        { text: 'Компании', to: 'companies'},
         { text: profile.company.name, to: 'company', params: { page: profile.company.page } },
         { text: [profile.name, profile.surname].join(' '), to: ''}
       ]"/> 
@@ -59,7 +58,7 @@
             </div>
           </div>
         </div>
-        <app-ad-sidebar></app-ad-sidebar>
+        <app-ad-sidebar :class="$style.offers__ad"></app-ad-sidebar>
       </div>
     </div>
   </div>
@@ -226,6 +225,24 @@
     position: relative;
     padding-top: 10px;
     text-align: right;
+  }
+  
+  .profile {
+    @media (max-width: $bp-medium) {
+      .offers__ad { display: none }
+      .content__main { margin-right: 0 }
+    }
+    @media (max-width: $bp-small) {
+      .content__main { margin-left: 0 }
+      .sidebar { position: relative; width: 100%}
+      .toolbar__actions, .toolbar__title { float: none; width: 100% }
+      ._small { display: none }
+
+    }
+    @media (max-width: $bp-extra-small) {
+      .new__text { display: none }
+      .new__icon:before { margin-right:0 }
+    }
   }
     
 </style>

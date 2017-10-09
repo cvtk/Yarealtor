@@ -1,10 +1,7 @@
 <template>
   <div :class="$style.offers">
     <div :class="$style.offers__bar">
-      <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
-        <li :class="$style.breadcrumbs__item">Предложения</li>
-      </ul>
+      <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Предложения', to: ''} ]"/>
       <div :class="$style.bar__layout_switcher">
         
         <app-input type="button" @click.native="currentLayout = false"
@@ -47,20 +44,21 @@
       <div :class="$style.offers__content" v-if="dataReady">
         <transition name="fade">
           <div :class="$style.content__filter" v-if="filterToggled">
-            <apartments-filter />
+            <apartments-filter :data="offers" @change="onFiltersChange" />
           </div>
         </transition>
-        <transition name="layout-switcher" appear>
+        <transition name="layout-switcher" appear v-if="!!filteredOffers.length">
           <ul :class="$style.content__list" v-if="currentLayout">
-            <list-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" />
+            <list-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" :ghostMode="ghostMode" />
           </ul>
           <ul :class="$style.content__grid" v-else>
-            <grid-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" />
+            <grid-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" :ghostMode="ghostMode" />
           </ul>
         </transition>
+        <span v-else> По Вашему запросу ничего не найдено, попробуйте изменить условия поиска </span>
       </div>
       <app-loader v-else></app-loader>
-      <app-ad-sidebar></app-ad-sidebar>
+      <app-ad-sidebar :class="$style.offers__ad"></app-ad-sidebar>
     </div>
   </div>
 </template>
@@ -281,11 +279,15 @@
 
   .offers {
     @media (max-width: $bp-medium) {
+      .actions__author_filter { margin-right: 5px }
+      .actions__filter { margin-right: 10px; }
       .offers__ad { display: none }
       .offers__content { margin-right: 0 }
     }
     @media (max-width: $bp-small) {
+      .toolbar__actions, .toolbar__title { float: none; width: 100% }
       ._small { display: none }
+
     }
     @media (max-width: $bp-extra-small) {
       .new__text { display: none }
@@ -302,14 +304,15 @@
   import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
   import ApartmentsFilter from './apartments/apartments-filter.vue'
+  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
 
   const offersRef = firebase.database().ref('offers');
   const companiesRef = firebase.database().ref('companies');
 
   export default {
     name: 'offers',
-    props: ['auth', 'user'],
-    components: { AppLoader, GridLayoutItem, ListLayoutItem, AppInput, AppAdSidebar, ApartmentsFilter },
+    props: ['auth', 'user', 'ghostMode'],
+    components: { AppLoader, GridLayoutItem, ListLayoutItem, AppInput, AppAdSidebar, ApartmentsFilter, Breadcrumbs },
     data() {
       return {
         dataReady: false,
@@ -318,7 +321,8 @@
         authorFilter: 'my',
         ref: '',
         offers: [],
-        companies: {}
+        companies: {},
+        data: {}
       }
     },
     created() {
@@ -326,8 +330,14 @@
     },
     computed: {
       filteredOffers() {
-        return this.offers.sort( (a, b) => b.created - a.created )
+        if ( this.filterToggled ) {
+          if ( !this.data.length ) return []
+          return this.data.sort( (a, b) => b.created - a.created )
                 .filter( e => this.authorFilterResult(e) )
+        } else {
+          return this.offers.sort( (a, b) => b.created - a.created )
+                .filter( e => this.authorFilterResult(e) )
+        }
       }
     },
     methods: {
@@ -339,7 +349,7 @@
           this.authorFilter === 'all'
       },
       onOffersValue(offers) {
-        if ( !offers.exists() ) this.offers = [];
+        if ( !offers.exists() ) { this.offers = []; this.dataReady = true; return;  }
         let tmp = offers.val();
         this.offers = Object.keys(tmp).map( e => tmp[e] );
         offers.forEach( offer => {
@@ -348,6 +358,9 @@
           this.dataReady = true;
         });
         })
+      },
+      onFiltersChange(value) {
+        this.data = value;
       }
     }
   }

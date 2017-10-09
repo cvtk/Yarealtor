@@ -10,7 +10,7 @@
             <router-link :class="$style.meta__name" :to="{ name: 'user', params: { page: author.page } }">
               {{ author.name }} {{ author.surname }}
             </router-link>
-            <router-link :class="$style.meta__company" :to="{ name: 'company', params: { page: company.page } }">
+            <router-link v-if="!ghostMode" :class="$style.meta__company" :to="{ name: 'company', params: { page: company.page } }">
               {{ company.name }}
             </router-link>
           </div>
@@ -34,7 +34,7 @@
         <li :class="$style.list__item">
           <div :class="$style.item">
             <span :class="$style.item__title">Город:</span>
-            <span :class="$style.item__value">{{ request.localityType }}. {{ request.locality }}, {{ offer.streetType }}</span>
+            <span :class="$style.item__value">{{ request.localityType }}. {{ request.locality }}, {{ request.streetType }}</span>
           </div>
         </li>
         <li :class="$style.list__item">
@@ -49,70 +49,16 @@
             <span :class="$style.item__value">{{ request.area_from }} − {{ request.area_to }} м²</span>
           </div>
         </li>
-        <li :class="$style.list__item">
+        <li :class="$style.list__item" v-if="!!request.rooms.length">
           <div :class="$style.item">
-            <span :class="$style.item__title">Район:</span>
-            <span :class="$style.item__value">{{ humanize('district', offer.district) }}</span>
+            <span :class="$style.item__title">Комнат:</span>
+            <span :class="$style.item__value">{{ map(request.rooms) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item">
+        <li :class="$style.list__item" v-if="!!request.type.length">
           <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.building_type.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('building_type', offer.building_type) }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.material.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('material', offer.material) }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.rooms.title }}:</span>
-            <span :class="$style.item__value">{{ offer.rooms }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.floor.title }}:</span>
-            <span :class="$style.item__value">{{ offer.floor }}/{{ offer.floors }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.area_full.title }}:</span>
-            <span :class="$style.item__value">{{ offer.area_full }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.area_living.title }}:</span>
-            <span :class="$style.item__value">{{ offer.area_living }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.area_kitchen.title }}:</span>
-            <span :class="$style.item__value">{{ offer.area_kitchen }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item" v-if="!!offer.furnish">
-            <span :class="$style.item__title">{{ mdl.furnish.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('furnish', offer.furnish) }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item" v-if="!!offer.bath">
-            <span :class="$style.item__title">{{ mdl.bath.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('bath', offer.bath) }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.balcony.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('balcony', offer.balcony) }}</span>
+            <span :class="$style.item__title">Тип:</span>
+            <span :class="$style.item__value">{{ map(request.type) }}</span>
           </div>
         </li>
       </ul>
@@ -237,8 +183,8 @@
   import mdl from '../../models/offer.js';
 
   export default {
-    name: 'offer-details-apartments',
-    props: ['offer', 'company', 'author'],
+    name: 'request-details-apartment',
+    props: ['request', 'company', 'author', 'ghostMode'],
     filters: AppFilters,
     computed: {
       offerType() {
@@ -255,7 +201,6 @@
     },
     data() {
       return {
-        mdl: mdl.getModel(['meta', 'general', 'offer', 'address', 'params'])
       }
     },
     methods: {
