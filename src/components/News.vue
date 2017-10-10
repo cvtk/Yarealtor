@@ -314,62 +314,40 @@
     components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, TimelinePost, TimelineNewPost, Breadcrumbs  },
     data() {
       return {
-        filter: 'all',
+        filter: 10,
         dataReady: false,
         local: {},
         currentRef: ''
       }
     },
-    watch: {
-      filter(filter){
-        switch(filter) {
-          case 10: {
-            this.currentRef = postsRef.orderByChild('access').equalTo(10);
-            this.initRef(); break;
-          };
-          case 1: {
-            this.currentRef = postsRef.orderByChild('access').equalTo(1);
-            this.initRef(); break;
-          };
-          case 5: {
-            this.currentRef = postsRef.orderByChild('access').equalTo(5);
-            this.initRef(); break;
-          }
-        }
-      }
-    },
     methods: {
-      initRef() {
-        if ( this.currentRef ) this.currentRef.off('value', this.onValue);
-        this.currentRef.on('value', this.onValue);
-      },
       onValue(posts) {
         this.dataReady = false;
         if ( posts.exists() ) {
           let tmp = posts.val();
-          this.local = Object.keys(tmp).map( key => {
-
-            if ( tmp[key].access === 1 && this.filter === 1 ) {
-              return  tmp[key];
-            } 
-            else if ( tmp[key].access === 5 && this.filter === 5 && this.user.company.key === tmp[key].company ) {
-              return  tmp[key];
-            }
-            else if ( tmp[key].access === 10 && this.filter === 10 ) {
-              return  tmp[key];
-            }
-          });
+          this.local = Object.keys(tmp).map( key => tmp[key] )
           this.dataReady = true;
         } else this.local = [];
       },
     },
     created() {
-      this.filter = 10;
+      postsRef.on('value', this.onValue);
     },
     computed: {
       postsByTimestamp: function() {
         if ( !this.local.length ) return [];
-        return this.local.sort( (a, b) => b.created - a.created );
+        return this.local.sort( (a, b) => b.created - a.created )
+          .filter( item => {
+            if ( item.access === 1 && this.filter === 1 ) {
+              return  true;
+            } 
+            else if ( item.access === 5 && this.filter === 5 && this.user.company.key === item.company ) {
+              return  true
+            }
+            else if ( item.access === 10 && this.filter === 10 ) {
+              return  true;
+            }
+          });
       }
     }
   }

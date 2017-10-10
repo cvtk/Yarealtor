@@ -9,20 +9,20 @@ fields.meta = {
 }
 
 fields.general = {
-  op: { title: 'Тип заявки', default: {},
+  op: { title: 'Тип заявки', default: '',
     options: [
-      { value: 1, label: 'Покупка' },
-      { value: 2, label: 'Аренда' },
+      { label: 'Покупка', value: 1 },
+      { label: 'Аренда', value: 2 },
     ]
   },
-  object: { title: 'Тип объекта', default: {},
+  object: { title: 'Тип объекта', default: '',
     options: [
-      { value: 1, label: 'Квартира' },
-      { value: 2, label: 'Комната' },
-      { value: 3, label: 'Коммерческая недвижимость' },
-      { value: 4, label: 'Дом или дача' },
-      { value: 5, label: 'Гараж или хозблок' },
-      { value: 6, label: 'Земельный участок' },
+      { label: 'Квартира', value: 1 },
+      { label: 'Комната', value: 2 },
+      { label: 'Коммерческая недвижимость', value: 3 },
+      { label: 'Дом или дача', value: 4 },
+      { label: 'Гараж или хозблок', value: 5 },
+      { label: 'Земельный участок', value: 6 },
     ]
   },
   price_from: { title: 'Цена от', default: null, options: [] },
@@ -35,26 +35,26 @@ fields.apartment = {
   locality: { title: 'Населенный пункт', default: '', options: [] },
   localityType: { title: 'Тип населенного пункта', default: '', options: [] },
   localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
-  district: { title: 'Район', default: [], 
+  district: { title: 'Район', default: '', 
     options: [
-      { value: 1, label: 'Дзержинский' },
-      { value: 2, label: 'Заволжский' },
-      { value: 3, label: 'Кировский' },
-      { value: 4, label: 'Красноперекопский' },
-      { value: 5, label: 'Ленинский' },
-      { value: 6, label: 'Ярославский' },
-      { value: 7, label: 'Ярославская область' },
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
     ]
   },
-  rooms: { title: 'Комнат', default: [], 
+  rooms: { title: 'Комнат', default: '', 
     options: [
-      { value: 1, label: '1' },
-      { value: 2, label: '2' },
-      { value: 3, label: '3' },
-      { value: 4, label: '4' },
-      { value: 5, label: '5' },
-      { value: 6, label: '6' },
-      { value: 8, label: '>7' },
+      { label: '1', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 },
+      { label: '>7', value: 7 },
     ]
   },
 
@@ -62,45 +62,44 @@ fields.apartment = {
 
   area_to: { title: 'до', default: null, options: [] },
 
-  type: { title: 'Тип дома', default: [], 
+  type: { title: 'Тип дома', default: '', 
     options: [
-      { value: 1, label: 'вторичное' },
-      { value: 2, label: 'новостройка' }
+      { label: 'вторичное', value: 1 },
+      { label: 'новостройка', value: 2 }
     ]
   },
-  material: { title: 'Материал дома', default: [], 
+  material: { title: 'Материал дома', default: '', 
     options: [
-      { value: 1, label: 'блочный' },
-      { value: 2, label: 'деревянный' },
-      { value: 3, label: 'кирпич' },
-      { value: 4, label: 'монолит' },
-      { value: 5, label: 'монолит' },
+      { label: 'блочный', value: 1 },
+      { label: 'деревянный', value: 2 },
+      { label: 'кирпич', value: 3 },
+      { label: 'монолит', value: 4 },
     ]
   },
-  furnish: { title: 'Тип отделки', default: [], 
+  furnish: { title: 'Тип отделки', default: '', 
     options: [
-      { value: 1, label: 'требует ремонта' },
-      { value: 2, label: 'черновая' },
-      { value: 3, label: 'от застройщика' },
-      { value: 4, label: 'жилое состояние' },
-      { value: 5, label: 'косметика' },
-      { value: 6, label: 'евро' }
+      { label: 'требует ремонта', value: 1 },
+      { label: 'черновая', value: 2 },
+      { label: 'от застройщика', value: 3 },
+      { label: 'жилое состояние', value: 4 },
+      { label: 'косметика', value: 5 },
+      { label: 'евро', value: 6 }
     ]
   },
-  bath: { title: 'Санузел', default: [], 
+  bath: { title: 'Санузел', default: '', 
     options: [
-      { value: 1, label: 'без удобств' },
-      { value: 2, label: 'раздельный' },
-      { value: 3, label: 'совмещенный' },
-      { value: 4, label: 'только душ / ванна' }
+      { label: 'без удобств', value: 1 },
+      { label: 'раздельный', value: 2 },
+      { label: 'совмещенный', value: 3 },
+      { label: 'только душ / ванна', value: 4 }
     ]
   },
-  floor: { title: 'Этаж', default: [], 
+  floor: { title: 'Этаж', default: '', 
     options: [
-      { value: 1, label: 'первый' },
-      { value: 2, label: 'не первый' },
-      { value: 3, label: 'не последний' },
-      { value: 4, label: 'кроме крайних' }
+      { label: 'первый', value: 1 },
+      { label: 'не первый', value: 2 },
+      { label: 'не последний', value: 3 },
+      { label: 'кроме крайних', value: 4 }
     ]
   },
 }
@@ -111,25 +110,24 @@ fields.room = {
   localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
   district: { title: 'Район', default: [], 
     options: [
-      { value: 1, label: 'Дзержинский' },
-      { value: 2, label: 'Заволжский' },
-      { value: 3, label: 'Кировский' },
-      { value: 4, label: 'Красноперекопский' },
-      { value: 5, label: 'Ленинский' },
-      { value: 6, label: 'Ярославский' },
-      { value: 7, label: 'Ярославская область' },
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
     ]
   },
   rooms: { title: 'Всего комнат', default: [], 
     options: [
-      { value: 1, label: '1' },
-      { value: 2, label: '2' },
-      { value: 3, label: '3' },
-      { value: 4, label: '4' },
-      { value: 5, label: '5' },
-      { value: 6, label: '6' },
-      { value: 7, label: '7' },
-      { value: 8, label: '>7' },
+      { label: '1', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 },
+      { label: '>7', value: 7 },
     ]
   },
 
@@ -139,46 +137,45 @@ fields.room = {
 
   type: { title: 'Тип помещения', default: [], 
     options: [
-      { value: 1, label: 'в доме' },
-      { value: 2, label: 'в квартире' },
-      { value: 3, label: 'в коммуналке' },
-      { value: 4, label: 'в общежитии' },
-      { value: 5, label: 'коридорного типа' }
+      { label: 'в доме', value: 1 },
+      { label: 'в квартире', value: 2 },
+      { label: 'в коммуналке', value: 3 },
+      { label: 'в общежитии', value: 4 },
+      { label: 'коридорного типа', value: 5 }
     ]
   },
   material: { title: 'Материал дома', default: [], 
     options: [
-      { value: 1, label: 'блочный' },
-      { value: 2, label: 'деревянный' },
-      { value: 3, label: 'кирпич' },
-      { value: 4, label: 'монолит' },
-      { value: 5, label: 'монолит' },
+      { label: 'блочный', value: 1 },
+      { label: 'деревянный', value: 2 },
+      { label: 'кирпич', value: 3 },
+      { label: 'монолит', value: 4 },
     ]
   },
   furnish: { title: 'Тип отделки', default: [], 
     options: [
-      { value: 1, label: 'требует ремонта' },
-      { value: 2, label: 'черновая' },
-      { value: 3, label: 'от застройщика' },
-      { value: 4, label: 'жилое состояние' },
-      { value: 5, label: 'косметика' },
-      { value: 6, label: 'евро' }
+      { label: 'требует ремонта', value: 1 },
+      { label: 'черновая', value: 2 },
+      { label: 'от застройщика', value: 3 },
+      { label: 'жилое состояние', value: 4 },
+      { label: 'косметика', value: 5 },
+      { label: 'евро', value: 6 }
     ]
   },
   bath: { title: 'Санузел', default: [], 
     options: [
-      { value: 1, label: 'без удобств' },
-      { value: 2, label: 'раздельный' },
-      { value: 3, label: 'совмещенный' },
-      { value: 4, label: 'только душ / ванна' }
+      { label: 'без удобств', value: 1 },
+      { label: 'раздельный', value: 2 },
+      { label: 'совмещенный', value: 3 },
+      { label: 'только душ / ванна', value: 4 }
     ]
   },
   floor: { title: 'Этаж', default: [], 
     options: [
-      { value: 1, label: 'первый' },
-      { value: 2, label: 'не первый' },
-      { value: 3, label: 'не последний' },
-      { value: 4, label: 'кроме крайних' }
+      { label: 'первый', value: 1 },
+      { label: 'не первый', value: 2 },
+      { label: 'не последний', value: 3 },
+      { label: 'кроме крайних', value: 4 }
     ]
   },
 }
@@ -189,13 +186,13 @@ fields.commercial = {
   localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
   district: { title: 'Район', default: [], 
     options: [
-      { value: 1, label: 'Дзержинский' },
-      { value: 2, label: 'Заволжский' },
-      { value: 3, label: 'Кировский' },
-      { value: 4, label: 'Красноперекопский' },
-      { value: 5, label: 'Ленинский' },
-      { value: 6, label: 'Ярославский' },
-      { value: 7, label: 'Ярославская область' },
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
     ]
   },
 
@@ -203,23 +200,23 @@ fields.commercial = {
 
   area_to: { title: 'до', default: null, options: [] },
 
-  type: { title: 'Вид', default: [], 
+  type: { title: 'Вид', default: '', 
     options: [
-      { value: 1, label: 'торговое' },
-      { value: 2, label: 'офисное' },
-      { value: 3, label: 'производственное' },
-      { value: 4, label: 'складское' },
-      { value: 5, label: 'готовый бизнес' },
-      { value: 6, label: 'земельный участок' },
-      { value: 7, label: 'квартиры под перевод' }
+      { label: 'торговое', value: 1 },
+      { label: 'офисное', value: 2 },
+      { label: 'производственное', value: 3 },
+      { label: 'складское', value: 4 },
+      { label: 'готовый бизнес', value: 5 },
+      { label: 'земельный участок', value: 6 },
+      { label: 'квартиры под перевод', value: 7 }
     ]
   },
-  floor: { title: 'Этаж', default: [], 
+  floor: { title: 'Этаж', default: '', 
     options: [
-      { value: 1, label: 'первый' },
-      { value: 2, label: 'не первый' },
-      { value: 3, label: 'не последний' },
-      { value: 4, label: 'кроме крайних' }
+      { label: 'первый', value: 1 },
+      { label: 'не первый', value: 2 },
+      { label: 'не последний', value: 3 },
+      { label: 'кроме крайних', value: 4 }
     ]
   }
 }
@@ -230,13 +227,13 @@ fields.cottage = {
   localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
   district: { title: 'Район', default: [], 
     options: [
-      { value: 1, label: 'Дзержинский' },
-      { value: 2, label: 'Заволжский' },
-      { value: 3, label: 'Кировский' },
-      { value: 4, label: 'Красноперекопский' },
-      { value: 5, label: 'Ленинский' },
-      { value: 6, label: 'Ярославский' },
-      { value: 7, label: 'Ярославская область' },
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
     ]
   },
 
@@ -254,69 +251,68 @@ fields.cottage = {
 
   rooms: { title: 'Комнат в доме', default: [], 
     options: [
-      { value: 1, label: '1' },
-      { value: 2, label: '2' },
-      { value: 3, label: '3' },
-      { value: 4, label: '4' },
-      { value: 5, label: '5' },
-      { value: 6, label: '6' },
-      { value: 8, label: '>7' },
+      { label: '1', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 },
+      { label: '>7', value: 7 },
     ]
   },
   type: { title: 'Тип', default: [], 
     options: [
-      { value: 1, label: 'дача' },
-      { value: 2, label: 'дом' },
-      { value: 3, label: 'таунхаус' }
+      { label: 'дача', value: 1 },
+      { label: 'дом', value: 2 },
+      { label: 'таунхаус', value: 3 }
     ]
   },
   material: { title: 'Материал дома', default: [], 
     options: [
-      { value: 1, label: 'блочный' },
-      { value: 2, label: 'деревянный' },
-      { value: 3, label: 'кирпич' },
-      { value: 4, label: 'монолит' },
-      { value: 5, label: 'монолит' },
+      { label: 'блочный', value: 1 },
+      { label: 'деревянный', value: 2 },
+      { label: 'кирпич', value: 3 },
+      { label: 'монолит', value: 4 },
     ]
   },
   furnish: { title: 'Тип отделки', default: [], 
     options: [
-      { value: 1, label: 'требует ремонта' },
-      { value: 2, label: 'черновая' },
-      { value: 3, label: 'от застройщика' },
-      { value: 4, label: 'жилое состояние' },
-      { value: 5, label: 'косметика' },
-      { value: 6, label: 'евро' }
+      { label: 'требует ремонта', value: 1 },
+      { label: 'черновая', value: 2 },
+      { label: 'от застройщика', value: 3 },
+      { label: 'жилое состояние', value: 4 },
+      { label: 'косметика', value: 5 },
+      { label: 'евро', value: 6 }
     ]
   },
   infra: { title: 'Инфраструктура', default: [], 
     options: [
-      { value: 1, label: 'газ' },
-      { value: 2, label: 'электричество' },
-      { value: 3, label: 'водоснабжение' },
-      { value: 4, label: 'канализация' },
-      { value: 5, label: 'охрана' },
-      { value: 6, label: 'лес рядом' },
-      { value: 7, label: 'круглогодичный подъезд' },
-      { value: 8, label: 'рядом остановка' },
+      { label: 'газ', value: 1 },
+      { label: 'электричество', value: 2 },
+      { label: 'водоснабжение', value: 3 },
+      { label: 'канализация', value: 4 },
+      { label: 'охрана', value: 5 },
+      { label: 'лес рядом', value: 6 },
+      { label: 'круглогодичный подъезд', value: 7 },
+      { label: 'рядом остановка', value: 8 },
     ]
   },
   direction: { title: 'Направление', default: [], 
     options: [
-      { value: 1, label: 'Ярославль' },
-      { value: 2, label: 'Костромское' },
-      { value: 3, label: 'Бурмакинское' },
-      { value: 4, label: 'Ивановское' },
-      { value: 5, label: 'Московское' },
-      { value: 6, label: 'Курбское' },
-      { value: 7, label: 'Угличское' },
-      { value: 8, label: 'Рыбинское' },
-      { value: 9, label: 'Тутаевское' },
-      { value: 10, label: 'Даниловское' },
-      { value: 11, label: 'Любимское' },
-      { value: 12, label: 'Красный Профинтерн' },
-      { value: 13, label: 'Диево-городище' },
-      { value: 14, label: 'Прусовское' },
+      { label: 'Ярославль', value: 1 },
+      { label: 'Костромское', value: 2 },
+      { label: 'Бурмакинское', value: 3 },
+      { label: 'Ивановское', value: 4 },
+      { label: 'Московское', value: 5 },
+      { label: 'Курбское', value: 6 },
+      { label: 'Угличское', value: 7 },
+      { label: 'Рыбинское', value: 8 },
+      { label: 'Тутаевское', value: 9 },
+      { label: 'Даниловское', value: 10 },
+      { label: 'Любимское', value: 11 },
+      { label: 'Красный Профинтерн', value: 12 },
+      { label: 'Диево-городище', value: 13 },
+      { label: 'Прусовское', value: 14 },
     ]
   }
 }
@@ -327,13 +323,13 @@ fields.garage = {
   localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
   district: { title: 'Район', default: [], 
     options: [
-      { value: 1, label: 'Дзержинский' },
-      { value: 2, label: 'Заволжский' },
-      { value: 3, label: 'Кировский' },
-      { value: 4, label: 'Красноперекопский' },
-      { value: 5, label: 'Ленинский' },
-      { value: 6, label: 'Ярославский' },
-      { value: 7, label: 'Ярославская область' },
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
     ]
   },
 
@@ -343,18 +339,18 @@ fields.garage = {
 
   type: { title: 'Тип', default: [], 
     options: [
-      { value: 1, label: 'в ГСК' },
-      { value: 2, label: 'в жилом доме' },
-      { value: 3, label: 'отдельно стоящее' },
-      { value: 4, label: 'парковочное место' }
+      { label: 'в ГСК', value: 1 },
+      { label: 'в жилом доме', value: 2 },
+      { label: 'отдельно стоящее', value: 3 },
+      { label: 'парковочное место', value: 4 }
     ]
   },
 
   material: { title: 'Материал', default: [], 
     options: [
-      { value: 1, label: 'блоки' },
-      { value: 2, label: 'кирпич' },
-      { value: 3, label: 'металл' }
+      { label: 'блоки', value: 1 },
+      { label: 'кирпич', value: 2 },
+      { label: 'металл', value: 3 }
     ]
   }
 }
@@ -365,20 +361,20 @@ fields.land = {
   localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
   district: { title: 'Район', default: [], 
     options: [
-      { value: 1, label: 'Дзержинский' },
-      { value: 2, label: 'Заволжский' },
-      { value: 3, label: 'Кировский' },
-      { value: 4, label: 'Красноперекопский' },
-      { value: 5, label: 'Ленинский' },
-      { value: 6, label: 'Ярославский' },
-      { value: 7, label: 'Ярославская область' },
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
     ]
   },
   type: { title: 'Тип', default: [], 
     options: [
-      { value: 1, label: 'под ИЖС' },
-      { value: 2, label: 'под ком. объекты' },
-      { value: 3, label: 'сельхозназначения' }
+      { label: 'под ИЖС', value: 1 },
+      { label: 'под ком. объекты', value: 2 },
+      { label: 'сельхозназначения', value: 3 }
     ]
   },
 
@@ -388,32 +384,32 @@ fields.land = {
 
   infra: { title: 'Инфраструктура', default: [], 
     options: [
-      { value: 1, label: 'газ' },
-      { value: 2, label: 'электричество' },
-      { value: 3, label: 'водоснабжение' },
-      { value: 4, label: 'канализация' },
-      { value: 5, label: 'охрана' },
-      { value: 6, label: 'лес рядом' },
-      { value: 7, label: 'круглогодичный подъезд' },
-      { value: 8, label: 'рядом остановка' },
+      { label: 'газ', value: 1 },
+      { label: 'электричество', value: 2 },
+      { label: 'водоснабжение', value: 3 },
+      { label: 'канализация', value: 4 },
+      { label: 'охрана', value: 5 },
+      { label: 'лес рядом', value: 6 },
+      { label: 'круглогодичный подъезд', value: 7 },
+      { label: 'рядом остановка', value: 8 },
     ]
   },
   direction: { title: 'Направление', default: [], 
     options: [
-      { value: 1, label: 'Ярославль' },
-      { value: 2, label: 'Костромское' },
-      { value: 3, label: 'Бурмакинское' },
-      { value: 4, label: 'Ивановское' },
-      { value: 5, label: 'Московское' },
-      { value: 6, label: 'Курбское' },
-      { value: 7, label: 'Угличское' },
-      { value: 8, label: 'Рыбинское' },
-      { value: 9, label: 'Тутаевское' },
-      { value: 10, label: 'Даниловское' },
-      { value: 11, label: 'Любимское' },
-      { value: 12, label: 'Красный Профинтерн' },
-      { value: 13, label: 'Диево-городище' },
-      { value: 14, label: 'Прусовское' },
+      { label: 'Ярославль', value: 1 },
+      { label: 'Костромское', value: 2 },
+      { label: 'Бурмакинское', value: 3 },
+      { label: 'Ивановское', value: 4 },
+      { label: 'Московское', value: 5 },
+      { label: 'Курбское', value: 6 },
+      { label: 'Угличское', value: 7 },
+      { label: 'Рыбинское', value: 8 },
+      { label: 'Тутаевское', value: 9 },
+      { label: 'Даниловское', value: 10 },
+      { label: 'Любимское', value: 11 },
+      { label: 'Красный Профинтерн', value: 12 },
+      { label: 'Диево-городище', value: 13 },
+      { label: 'Прусовское', value: 14 },
     ]
   },
 }

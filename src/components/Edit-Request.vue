@@ -358,7 +358,15 @@
         let unix = Firebase.database.ServerValue.TIMESTAMP;
         this.request.modified = unix;
 
-        requestsRef.child(this.request.key).update(this.request)
+        let prep = Object.assign({}, this.request);
+
+        for ( let field in prep ) {
+          if ( typeof prep[field] !== 'undefined' && typeof prep[field] === 'object' ) {
+            if ( prep[field].length === 0 ) { prep[field] = '' }
+          }
+        }
+
+        requestsRef.child(this.request.key).update(prep)
           .then( () => {
             this.$parent.$refs.notify.createSnackbar({
               message: 'Заявка изменена',

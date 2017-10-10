@@ -383,15 +383,14 @@
           if ( typeof answer.voters !== 'undefined' ) {
             for ( let vote in answer.voters ) {
               if (answer.voters.hasOwnProperty(vote)) {
-                console.log(answer.voters[vote], '===', this.user.key)
-                return answer.voters[vote] === this.user.key;
+                if ( answer.voters[vote] === this.user.key ) return true;
               }
             }
           }
+          return false;
         })
       },
       vote(answer) {
-        console.log('click!')
         pollsRef.child(this.poll.key).child('items').child(answer).child('voters').push(this.user.key)
           .then( () => this.voted = true)
           .catch( error => console.log('vote error: ', error));

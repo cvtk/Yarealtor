@@ -26,7 +26,7 @@
               <router-link
                 v-for="poll in polls"
                 :key="poll.key"
-                :to="{ name: 'polls' }"
+                :to="'/polls/#' + poll.key"
                 :class="$style.recent_items__article"
                 >{{ poll.created | unixToDate }}: {{ poll.question }}
               </router-link>
@@ -48,7 +48,7 @@
               <router-link
                 v-for="post in posts"
                 :key="post.key"
-                :to="{ name: 'news' }"
+                :to="'/news/#' + post.key"
                 :class="$style.recent_items__article"
                 >{{ post.created | unixToDate }}: {{ post.message }} {{ typeof post.images !== 'undefined' && 'Картинка' || '' }}
               </router-link>

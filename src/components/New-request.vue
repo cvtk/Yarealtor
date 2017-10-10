@@ -323,9 +323,9 @@
       validation: function () {
         return {
           op: !!this.general.op.value,
+          object: !!this.general.object.value,
           price_from: parseInt(this.general.price_from) > 1000,
-          price_to: parseInt(this.general.price_to) > parseInt(this.general.price_from),
-          object: !!this.general.object.value
+          price_to: parseInt(this.general.price_to) > parseInt(this.general.price_from)
         }
       },
       isValid: function () {
@@ -376,6 +376,12 @@
 
         let prep = {};
         Object.assign(prep, this.meta, this.general, this.object);
+
+        for ( let field in prep ) {
+          if ( typeof prep[field] !== 'undefined' && typeof prep[field] === 'object' ) {
+            if ( prep[field].length === 0 ) { prep[field] = '' }
+          }
+        }
 
         requestsRef.child(this.meta.key).update(prep)
           .then( () => {

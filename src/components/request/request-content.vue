@@ -6,12 +6,17 @@
         <offer-map :address="[ request.locality ]" />
       </div>
       <div :class="$style.offer__details">
-        <request-details-apartment :author="author" :request="request" :company="company" :ghostMode="ghostMode" />
+        <request-details-apartment :author="author" :request="request" :company="company" :ghostMode="ghostMode" v-if="request.object.value === 1" />
+        <request-details-room :author="author" :request="request" :company="company" :ghostMode="ghostMode" v-if="request.object.value === 2" />
+        <request-details-commercial :author="author" :request="request" :company="company" :ghostMode="ghostMode" v-if="request.object.value === 3" />
+        <request-details-cottage :author="author" :request="request" :company="company" :ghostMode="ghostMode" v-if="request.object.value === 4" />
+        <request-details-garage :author="author" :request="request" :company="company" :ghostMode="ghostMode" v-if="request.object.value === 5" />
+        <request-details-land :author="author" :request="request" :company="company" :ghostMode="ghostMode" v-if="request.object.value === 6" />
       </div>
     </div>
     <div :class="$style.offer__description">
       <div :class="$style.description">
-        <div :class="$style.description__text" v-if="!!request.description">Дополнительная информация: {{ reauest.description }}</div>
+        <div :class="$style.description__text" v-if="!!request.description">Дополнительная информация: {{ request.description }}</div>
       </div>
     </div>
   </div>
@@ -33,7 +38,7 @@
       .offer__details {
         position: relative;
         width: 100%;
-        min-height: 60vh;
+        min-height: 70vh;
         background-color: #fff;
       }
     }
@@ -42,7 +47,7 @@
 
   .offer__map {
     position: relative;
-    height: 80vh;
+    height: 90vh;
     margin-left: 280px;
   }
 
@@ -84,6 +89,11 @@
   import OfferMap from '../offer/offer-map.vue';
   import firebase from '../../firebase.js';
   import RequestDetailsApartment from './request-details-apartment.vue';
+  import RequestDetailsRoom from './request-details-room.vue';
+  import RequestDetailsCommercial from './request-details-commercial.vue';
+  import RequestDetailsCottage from './request-details-cottage.vue';
+  import RequestDetailsGarage from './request-details-garage.vue';
+  import RequestDetailsLand from './request-details-land.vue';
 
   const usersRef = firebase.database().ref('users');
   const companiesRef = firebase.database().ref('companies');
@@ -91,7 +101,7 @@
   export default {
     name: 'request',
     props: ['auth', 'user', 'request', 'model', 'ghostMode'],
-    components: { AppLoader, OfferMap, RequestDetailsApartment },
+    components: { AppLoader, OfferMap, RequestDetailsApartment, RequestDetailsRoom, RequestDetailsCommercial, RequestDetailsCottage, RequestDetailsGarage, RequestDetailsLand },
     data() {
       return {
         dataReady: false,

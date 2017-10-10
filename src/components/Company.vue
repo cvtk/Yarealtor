@@ -59,7 +59,7 @@
                 <transition name="fade" appear>
                   <div :class="$style.employe__wrapper">
                     <div :class="$style.photo_wrapper">
-                      <img :class="$style.item__photo" :src="employee.photo">
+                      <div :class="$style.item__photo" :style="{ 'background-image': 'url(' + employee.photo + ')' }"></div>
                     </div>
                     
                     <router-link :to="{ name: 'user', params: { page: employee.page } }"
@@ -79,7 +79,7 @@
             <h4 :class="$style.employees__header"><span :class="$style.header__icon"></span> Сотрудники</h4>
             <div :class="$style.employees_wrapper">
               <div :class="$style.employees__principal" v-if="!!moderators.length" v-for="employee in moderators">
-                <img :class="$style.principal__photo" :src="employee.photo">
+                <div :class="$style.principal__photo" :style="{ 'background-image': 'url(' + employee.photo + ')' }"></div>
                 <div :class="$style.principal__meta">
                   <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.meta__name">
                     {{ [ employee.name, employee.surname ].join(' ') }}</router-link> <span :class="$style.meta__is_admin" title="Модератор компании"></span>
@@ -99,7 +99,7 @@
                 <transition name="fade" appear>
                   <div :class="$style.employe__wrapper">
                     <div :class="$style.photo_wrapper">
-                      <img :class="$style.item__photo" :src="employee.photo">
+                      <div :class="$style.item__photo" :style="{ 'background-image': 'url(' + employee.photo + ')' }"></div>
                     </div>
                     <router-link :to="{ name: 'user', params: { page: employee.page } }" :class="$style.item__name">{{ [ employee.name, employee.surname ].join(' ') }}</router-link>
                     <span :class="$style.item__position">{{ employee.position }}</span>
@@ -348,7 +348,11 @@
     .principal__photo {
       display: block;
       width: 65px;
+      height: 65px;
       float: left;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
     }
 
     .principal__meta { margin-left: 80px }
@@ -431,6 +435,7 @@
       padding: 0 10px;
       width: 25%;
       margin-bottom: 15px;
+      min-height: 160px;
     }
 
     .item__actions {
@@ -474,11 +479,14 @@
 
     .item__photo {
       display: block;
-      max-width: 100px;
-      max-height: 100px;
+      width: 100px;
+      height: 100px;
       border: 4px solid #f5f6fa;
       border-radius: 50%;
       margin: 0 auto;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
     }
 
     .photo_wrapper {

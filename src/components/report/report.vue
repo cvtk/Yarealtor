@@ -70,7 +70,7 @@
         ticketsRef.push(prep)
           .then( () => {
             this.$root.$children[0].$refs.notify.createSnackbar({
-              message: 'Жалоба отправлена администратору',
+              message: 'Сообщение отправлено администратору',
             });
             this.localBody = '';
             this.$emit('close');

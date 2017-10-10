@@ -21,7 +21,8 @@
           <span :class="$style.notification__badge">0</span>
         </div>
         <div :class="$style.menu__user" v-if="dataReady">
-          <img :src="user.photo" alt="Фото" :class="$style.user__pic">
+
+          <div :style="{ 'background-image': 'url(' + user.photo + ')' }" :class="$style.user__pic"></div>
           <span :class="$style.user__name">{{ user.name }} {{ user.surname }}</span>
           <ul :class="$style.user__dropdown">
             <router-link tag="li" :to="{ name: 'user', params: { page: user.page } }" :class="$style.dropdown__item">
@@ -43,10 +44,10 @@
     </header>
     
     <aside :class="[$style.app__sidebar]" v-if="user.active">
-      <form :class="$style.sidebar__search">
+<!--       <form :class="$style.sidebar__search">
         <input :class="$style.search__input" type="text" placeholder="Поиск...">
         <button :class="$style.search__btn"></button>
-      </form>
+      </form> -->
       <ul :class="$style.sidebar__menu" @click="isToggled = true">
         <router-link tag="li" :to="{ name: 'root'}" :class="$style.menu__item" :active-class="$style._active" exact :title="isToggled && 'Главная'">
           <span :class="[$style.item__icon, $style._main]"></span>
@@ -80,9 +81,12 @@
       <ul :class="$style.sidebar__panel">
         <router-link tag="li" :to="{ name: 'codex' }" :class="[$style.panel__item, $style._rules]" title="Кодекс риэлтора"></router-link>
         <router-link tag="li" :to="{ name: 'rules'}" :class="[$style.panel__item, $style._help]" title="Правила пользования порталом"></router-link>
-        <router-link tag="li" :to="{ name: 'root'}" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></router-link>
+        <li @click="$refs.reportModal.open()" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></li>
       </ul>
     </aside>
+    <ui-modal ref="reportModal" title="Сообщение администратору">
+      <app-report :author="user.key" @close="$refs.reportModal.close()"></app-report>
+    </ui-modal>
     <main :class="[ $style.app__content, !user.active && $style._notActive ]">
       <router-view :auth="auth" :user="user" v-if="dataReady" :ghostMode="ghostMode" :key="$route.fullPath"></router-view>
       <app-loader v-else></app-loader>
@@ -206,11 +210,15 @@
           }
         }
         > .user__pic {
+          display: inline-block;
           height: 30px;
           width: 30px;
           border-radius: 50%;
           margin-right: 5px;
           vertical-align: middle;
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-size: cover;
         }
         > .user__name {}
         > .user__dropdown {
@@ -487,13 +495,14 @@
   
   import firebase from './firebase.js';
   import AppLoader from './components/app-loader.vue';
+  import AppReport from './components/report/report.vue';
 
 const usersRef = firebase.database().ref('users');
 const companiesRef = firebase.database().ref('companies');
 
 export default {
   name: 'app',
-  components: { AppLoader },
+  components: { AppLoader, AppReport },
   data() {
     return { isToggled: true, auth: false, user: false, dataReady: false, ghostMode: false }
   },

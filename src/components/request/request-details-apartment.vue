@@ -28,13 +28,13 @@
         <li :class="$style.list__item">
           <div :class="$style.item">
             <span :class="$style.item__title">Цена:</span>
-            <span :class="$style.item__value">{{ request.price_from | price }} − {{ request.price_to | price }}</span>
+            <span :class="$style.item__value">{{ request.price_from | price }} − {{ request.price_to | price }} руб. </span>
           </div>
         </li>
         <li :class="$style.list__item">
           <div :class="$style.item">
             <span :class="$style.item__title">Город:</span>
-            <span :class="$style.item__value">{{ request.localityType }}. {{ request.locality }}, {{ request.streetType }}</span>
+            <span :class="$style.item__value">{{ request.localityType }}. {{ request.locality }}</span>
           </div>
         </li>
         <li :class="$style.list__item">
@@ -59,6 +59,30 @@
           <div :class="$style.item">
             <span :class="$style.item__title">Тип:</span>
             <span :class="$style.item__value">{{ map(request.type) }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item" v-if="!!request.material.length">
+          <div :class="$style.item">
+            <span :class="$style.item__title">Материал дома:</span>
+            <span :class="$style.item__value">{{ map(request.material) }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item" v-if="!!request.furnish.length">
+          <div :class="$style.item">
+            <span :class="$style.item__title">Отделка:</span>
+            <span :class="$style.item__value">{{ map(request.furnish) }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item" v-if="!!request.bath.length">
+          <div :class="$style.item">
+            <span :class="$style.item__title">Санузел:</span>
+            <span :class="$style.item__value">{{ map(request.bath) }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item" v-if="!!request.floor.value">
+          <div :class="$style.item">
+            <span :class="$style.item__title">Этаж:</span>
+            <span :class="$style.item__value">{{ request.floor.label }}</span>
           </div>
         </li>
       </ul>

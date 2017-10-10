@@ -285,14 +285,14 @@
 
   export default {
     name: 'requests',
-    props: ['auth', 'ghostMode'],
+    props: ['auth', 'ghostMode', 'user'],
     components: { AppLoader, ListLayoutItem, AppInput, AppAdSidebar, RequestsFilter, Breadcrumbs },
     data() {
       return {
         dataReady: false,
         currentLayout: true,
         filterToggled: false,
-        authorFilter: 'all',
+        authorFilter: 'my',
         ref: '',
         requests: {},
         companies: {},

@@ -3,13 +3,13 @@
     <div :class="[$style.row, $style._shadow ]">
     
       <div :class="[ $style.offer__toggler, showMap && $style._pic ]" @click="showMap = !showMap"></div>
-      <div :class="$style.offer__images" v-show="!showMap">
+      <div :class="$style.offer__images" v-if="!showMap">
         <offer-images :images="offer.images" v-if="imagesAvailable" />
         <div :class="$style.images" v-else>
           <img :class="$style.images__placeholder" src="/static/image-not-found.png" alt="Изображение не добавлено">
         </div>
       </div>
-      <div :class="$style.offer__map" v-show="showMap">
+      <div :class="$style.offer__map" v-else="showMap">
         <offer-map :description="offer.waymark"
           :address="[ offer.locality, offer.street, offer.building ]"
         />
@@ -76,6 +76,21 @@
     height: 80vh;
   }
 
+  .images {
+    position: relative;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .images__placeholder {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: 100%;
+  }
+
   .offer__toggler {
     position: absolute;
     top: 20px;
@@ -97,16 +112,6 @@
       color: #fff;
     }
     &._pic:after { content: "\e032" }
-  }
-
-  .images {
-    position: relative;
-    padding: 10px;
-  }
-
-  .images__placeholder {
-    max-width: 100%;
-    height: auto;
   }
 
   .offer__description {
