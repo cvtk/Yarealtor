@@ -109,7 +109,7 @@
       }
     },
     methods: {
-      onChange() {
+      onChange(event) {
         let value = ( this.isInt(event.target.value) ) ? parseInt(event.target.value) : event.target.value;
         this.$emit('input', value );
         this.$emit('change', value )
