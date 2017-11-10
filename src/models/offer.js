@@ -30,6 +30,7 @@ let defs = {
       { value: 5, title: 'Ленинский район' },
       { value: 6, title: 'Ярославский район' },
       { value: 7, title: 'Ярославская область' },
+      { value: 8, title: 'Фрунзенский район' }
     ]
   },
   houseType : {
@@ -49,7 +50,8 @@ let defs = {
       { value: 2, title: 'деревянный' },
       { value: 3, title: 'кирпич' },
       { value: 4, title: 'монолит' },
-      { value: 5, title: 'панель' }
+      { value: 5, title: 'панель' },
+      { value: 6, title: 'монолитно-кирпичный' }
     ]
   },
   furnishType : {
@@ -174,6 +176,7 @@ fields.address = {
       { value: 5, title: 'Ленинский' },
       { value: 6, title: 'Ярославский' },
       { value: 7, title: 'Ярославская область' },
+      { value: 8, title: 'Фрунзенский' }
     ]
   },
   waymark: { title: 'Ориентир', default: '', options: [] },
@@ -221,7 +224,8 @@ fields.params = {
       { value: 2, title: 'деревянный' },
       { value: 3, title: 'кирпич' },
       { value: 4, title: 'монолит' },
-      { value: 5, title: 'монолит' },
+      { value: 5, title: 'панель' },
+      { value: 6, title: 'монолитно-кирпичный' }
     ]
   },
   rooms: { title: 'Комнат', default: null, options: [] },

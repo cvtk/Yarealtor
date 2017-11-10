@@ -28,6 +28,8 @@ import Registration from './components/user-auth/auth-registration.vue';
 import Login from './components/user-auth/auth-login.vue';
 import Recovery from './components/user-auth/auth-recovery.vue';
 
+require('./components.js');
+
 
 Vue.use(VueRouter);
 

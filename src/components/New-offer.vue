@@ -187,6 +187,9 @@
     watch: {
       'offer.object': function(value) {
         Object.assign(this.offer, mdl.init('params'), mdl.init('address'));
+        this.offer.locality = 'Ярославль';
+        this.offer.localityId = '7600000100000';
+        this.offer.localityType = 'г';
         this.stepsGroup.address = false;
         this.stepsGroup.parameters = false;
       }

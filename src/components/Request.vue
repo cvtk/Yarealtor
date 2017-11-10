@@ -16,9 +16,8 @@
     </ui-confirm>
     <div :class="$style.request__bar">
       <ul :class="$style.bar__breadcrumbs">
-        <li :class="$style.breadcrumbs__item">Главная</li><span :class="$style.breadcrumbs__icon"></span>
-        <router-link tag="li" :to="{ name: 'requests' }" :class="$style.breadcrumbs__item">Спрос</router-link >
-        <span :class="$style.breadcrumbs__icon"></span>
+        <router-link tag="li" :to="{ name: 'root' }" :class="$style.breadcrumbs__item">Главная</router-link ><span :class="$style.breadcrumbs__icon"></span>
+        <router-link tag="li" :to="{ name: 'requests' }" :class="$style.breadcrumbs__item">Спрос</router-link ><span :class="$style.breadcrumbs__icon"></span>
         <li :class="$style.breadcrumbs__item">{{ title }}</li>
       </ul>
     </div>
@@ -28,7 +27,7 @@
         <div :class="$style.actions">
           <ui-fab
             @click="report"
-            icon="gavel"
+            icon="flash_on"
             tooltip-position="top center"
             tooltip="Жалоба"
             size="small"

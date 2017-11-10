@@ -25,9 +25,10 @@
     display: block;
     position: relative;
     width: 33.333333%;
-    padding: 0 10px 20px;
+    padding: 0 10px;
     float: left;
     overflow: hidden;
+    margin-bottom: 10px;
     &:hover {
       .item__image { transform:scale(1.1) }
       .item__details { top: 0 }
@@ -35,9 +36,8 @@
       .meta__title { color: #f1f1f1 }
       .meta__address { color: #f1f1f1 }
       .meta__contacts { color: #f1f1f1 }
-      .meta__contacts:after { background-image: url(/static/bg-border-dotted-horizontal--hover.png) }
       .item__price { color: #f9e491 }
-      .item__favorites { color: #f9e491 }
+      .item__price:before { background-image: url(/static/bg-border-dotted-horizontal--hover.png) }
     }
     @media (max-width: $bp-large) {
       width: 50%;
@@ -107,11 +107,13 @@
   }
 
   .item__meta {
+    position: relative;
     background-color: #fff;
     padding: 15px 20px;
     transition: background-color .2s ease-in-out;
     margin-bottom: 10px;
     overflow: hidden;
+    min-height: 184px;
     &:after { @include clearfix }
   }
   .meta__title {
@@ -147,38 +149,28 @@
       font-size: 14px;
       padding-right: 3px;
     }
-    &:after {
-      content: "";
-      display: block;
-      margin: 10px 0;
-      height: 1px;
-      background: url(/static/bg-border-dotted-horizontal.png) 0 100% repeat-x;
-    }
-  }
-  .item__favorites {
-    display: block;
-    float: left;
-    width: 25%;
-    cursor: pointer;
-    color: #5b9bd1;
-    line-height: 28px;
-    transition: color .2s ease-in-out;
-    &:before {
-      content: "\e09b";
-      font-family: "Icons";
-      font-size: 14px;
-      padding-right: 3px;
-    }
   }
   .item__price {
     display: block;
-    float: right;
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 15px;
     text-align: right;
-    width: 75%;
     color: #32c5d2;
     font-size: 20px;
     font-weight: 300;
     transition: color .2s ease-in-out;
+    &:before {
+      display: block;
+      position: absolute;
+      content: "";
+      top: -15px;
+      left: -20px;
+      right: -20px;
+      height: 1px;
+      background: url(/static/bg-border-dotted-horizontal.png) 0 100% repeat-x;
+    }
   }
 </style>
 

@@ -478,6 +478,8 @@
     height: 100%;
     padding-top: 50px;
     margin-left: 235px;
+    overflow-x: hidden;
+    overflow-y: auto;
     transition: margin-left .2s ease-in-out;
     @media (max-width: $bp-small) {
       margin-left: 0;

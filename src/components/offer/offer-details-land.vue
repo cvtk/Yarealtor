@@ -13,6 +13,7 @@
             <router-link v-if="!ghostMode" :class="$style.meta__company" :to="{ name: 'company', params: { page: company.page } }">
               {{ company.name }}
             </router-link>
+            <span :class="$style.meta__phone" @click="showPhone = !showPhone">Телефон: {{ showPhone ? author.mobile: 'скрыт' }}</span>
           </div>
         </div>
       </div>
@@ -90,117 +91,6 @@
   </div>
 </template>
 
-<style lang="scss" module>
-
-  @import "../../assets/style.scss";
-
-  .details {
-    position: relative;
-  }
-
-  .details__author {
-    position: relative;
-    padding: 20px 15px 5px;
-    &:after {
-      @include clearfix;
-      display: block;
-      height: 1px;
-      padding-top: 15px;
-      background: url("./assets/border.png") 0 100% repeat-x;
-    }
-  }
-
-  .author {
-    position: relative;
-  }
-
-  .author__photo {
-    float: left;
-  }
-
-  .photo {
-    display: inline-block;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-  }
-
-  .author__meta {
-    margin-left: 70px;
-    padding: 4px 0;
-  }
-
-  .meta {
-    position: relative;
-  }
-
-  .meta__name {
-    display: block;
-    color: #5a7391;
-    font-size: 20px;
-    font-weight: 300;
-    margin-bottom: 7px;
-    text-decoration: none;
-  }
-
-  .meta__company {
-    display: block;
-    text-transform: uppercase;
-    color: #5b9bd1;
-    font-size: 12px;
-    font-weight: 400;
-    text-decoration: none;
-  }
-
-  .details__list {
-    position: relative;
-  }
-
-  .list {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border: 7.5px solid #fff;
-  }
-
-  .list__item {
-    position: relative;
-  }
-
-  .item {
-    position: relative;
-    border-bottom: 1px solid #f0f4f7;
-    display: block;
-    padding: 7.5px;
-    cursor: default;
-    transition: background-color .1s ease-in-out;
-    &:hover { background-color: #eef1f5 }
-    &:after { @include clearfix }
-  }
-  
-  .item__title {
-    display: block;
-    width: 50%;
-    float: left;
-    color: #5a7391;
-  }
-
-  .item__value { 
-    display: block;
-    width: 50%;
-    float: left;
-    color: #5a7391;
-    text-align: right;
-    color: #93a3b5;
-    font-style: italic;
-  }
-
-</style>
-
 <script>
   
   import AppFilters from '../helpers/filters.js';
@@ -232,7 +122,8 @@
     },
     data() {
       return {
-        mdl: mdl.getModel(['meta', 'general', 'offer', 'address', 'params'])
+        mdl: mdl.getModel(['meta', 'general', 'offer', 'address', 'params']),
+        showPhone: false
       }
     },
     methods: {
@@ -251,3 +142,7 @@
     }
   }
 </script>
+
+<style lang="sass" module>
+  @import "./assets/offer-details.sass";
+</style>

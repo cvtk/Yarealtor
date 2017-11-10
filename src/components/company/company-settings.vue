@@ -60,7 +60,8 @@
     position: relative;
     background-color: #fff;
     padding: 30px;
-    width: 700px;
+    width: 100%;
+    margin: 0 auto;
     @media (max-width: $bp-small) {
       width: 320px;
       padding: 15px;

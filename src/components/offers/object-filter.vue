@@ -40,6 +40,7 @@
         <ui-autocomplete
           @input="onInput"
           @select="onSelect"
+          @change="filterByObjectFields"
           :filter="filter"
           :suggestions="suggestions"
           :placeholder="obj.locality.title"
@@ -176,33 +177,6 @@
   </div>
 </template>
 
-<style lang="scss" module>
-  @import "../../assets/style.scss";
-  .apartments_filter {
-    position: relative;
-    background-color: #fff;
-    white-space: nowrap;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    font-size: 0;
-    min-width: 280px;
-    padding: 10px 15px 0;
-  }
-  .filter {
-    position: relative;
-    margin: 0 -15px;
-    &:after { @include clearfix }
-  }
-
-  .filter__option {
-    position: relative;
-    display: block;
-    min-height: 48px;
-    float: left;
-    padding: 0 15px;
-  }
-
-</style>
-
 <script>
   import AppInput from '../modules/inputs.vue';
   import DropdownMenu from '../modules/dropdown-menu.vue';
@@ -210,7 +184,7 @@
   import geo from '../helpers/geo.js';
 
   export default {
-    name: 'apartments-filter',
+    name: 'object-filter',
     props: ['auth', 'data'],
     components: { AppInput, DropdownMenu },
     data() {
@@ -258,6 +232,7 @@
       onSelect(item) {
         let value = item.value;
         this.object.locality = this.results[value].name;
+        this.filterByObjectFields()
       },
       filterByGeneralFields() {
         this.local = this.data.filter( e => {
@@ -265,11 +240,41 @@
             ( this.general.object.value === e.object || typeof this.general.object.value === 'undefined') &&
               ( e.price >= parseInt(this.general.price_from) || !this.general.price_from ) && 
                 ( e.price <= parseInt(this.general.price_to) || !this.general.price_to )
-        })
+        });
         this.$emit('change', this.local)
       },
       filterByObjectFields() {
+        this.local = this.data.filter( e => {
+          return ( e.locality === this.object.locality || !this.object.locality );
+        });
+        this.$emit('change', this.local)
       }
     }
   }
 </script>
+
+<style lang="sass" module>
+  @import "../../assets/style.scss";
+  .apartments_filter
+    position: relative
+    background-color: #fff
+    white-space: nowrap
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12)
+    font-size: 0
+    min-width: 280px
+    padding: 10px 15px 0
+
+  .filter
+    position: relative
+    margin: 0 -15px
+    &:after
+      @include clearfix
+
+  .filter__option
+    position: relative
+    display: block
+    min-height: 50px
+    float: left
+    padding: 0 15px
+
+</style>

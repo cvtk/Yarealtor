@@ -2,17 +2,11 @@
   <div :class="$style.offer" v-if="dataReady">
     <div :class="[$style.row, $style._shadow ]">
     
-      <div :class="[ $style.offer__toggler, showMap && $style._pic ]" @click="showMap = !showMap"></div>
-      <div :class="$style.offer__images" v-if="!showMap">
+      <div :class="$style.offer__images">
         <offer-images :images="offer.images" v-if="imagesAvailable" />
         <div :class="$style.images" v-else>
           <img :class="$style.images__placeholder" src="/static/image-not-found.png" alt="Изображение не добавлено">
         </div>
-      </div>
-      <div :class="$style.offer__map" v-else="showMap">
-        <offer-map :description="offer.waymark"
-          :address="[ offer.locality, offer.street, offer.building ]"
-        />
       </div>
       <div :class="$style.offer__details">
         <div :class="$style.details">
@@ -30,6 +24,9 @@
         <div :class="$style.description__waymark" v-if="!!offer.waymark">Ориентир: {{ offer.waymark }}</div>
         <div :class="$style.description__text" v-if="!!offer.description">Дополнительная информация: {{ offer.description }}</div>
       </div>
+    </div>
+    <div :class="$style.offer__map">
+      <offer-map :description="offer.waymark" :address="[ offer.locality, offer.street, offer.building ]" />
     </div>
   </div>
 </template>
@@ -71,11 +68,19 @@
     background-color: #fff;
   }
 
-  .offer__map, .offer__images {
+  .offer__images {
     margin-left: 280px;
     height: 80vh;
   }
 
+  .offer__map {
+    height: 40vh;
+    position: relative;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  }
   .images {
     position: relative;
     padding: 10px;
@@ -116,7 +121,7 @@
 
   .offer__description {
     position: relative;
-    margin: 10px 0;
+    margin-bottom: 20px;
     overflow: hidden;
     background-color: #fff;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);

@@ -1,6 +1,7 @@
 <template>
   <div :class="$style.map" v-if="dataReady">
-    <yandex-map 
+    <app-loader v-if="!mapReady" />
+    <yandex-map
       :coords="pos"
       zoom="16"
       style="width: 100%; height: 100%;"
@@ -46,7 +47,13 @@
     data() {
       return {
         dataReady: false,
+        mapReady: false,
         pos: '', name: ''
+      }
+    },
+    methods: {
+      showMap() {
+        this.mapReady = true;
       }
     },
     created() {
@@ -61,6 +68,7 @@
           this.pos = results.GeoObject.Point.pos.split(' ').reverse();
           this.name = results.GeoObject.name;
           this.dataReady = true;
+          setTimeout( this.showMap, 2500 );
         }
       })
     }

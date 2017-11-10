@@ -44,6 +44,7 @@ fields.apartment = {
       { label: 'Ленинский', value: 5 },
       { label: 'Ярославский', value: 6 },
       { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
     ]
   },
   rooms: { title: 'Комнат', default: '', 
@@ -117,6 +118,7 @@ fields.room = {
       { label: 'Ленинский', value: 5 },
       { label: 'Ярославский', value: 6 },
       { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
     ]
   },
   rooms: { title: 'Всего комнат', default: [], 
@@ -193,6 +195,7 @@ fields.commercial = {
       { label: 'Ленинский', value: 5 },
       { label: 'Ярославский', value: 6 },
       { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
     ]
   },
 
@@ -234,6 +237,7 @@ fields.cottage = {
       { label: 'Ленинский', value: 5 },
       { label: 'Ярославский', value: 6 },
       { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
     ]
   },
 
@@ -330,6 +334,7 @@ fields.garage = {
       { label: 'Ленинский', value: 5 },
       { label: 'Ярославский', value: 6 },
       { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
     ]
   },
 
@@ -368,6 +373,7 @@ fields.land = {
       { label: 'Ленинский', value: 5 },
       { label: 'Ярославский', value: 6 },
       { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
     ]
   },
   type: { title: 'Тип', default: [], 

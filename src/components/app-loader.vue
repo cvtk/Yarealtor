@@ -21,7 +21,7 @@
 
   .loader__spinner {
     display: block;
-    width: 15%;
+    width: 12.5%;
     height: auto;
     position: absolute;
     top: 50%;

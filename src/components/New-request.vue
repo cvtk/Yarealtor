@@ -356,6 +356,9 @@
       initModel(object) {
         let type = [ '', 'apartment', 'room', 'commercial', 'cottage', 'garage', 'land' ][object.value];
         this.object = mdl.init(type);
+        this.object.locality = 'Ярославль';
+        this.object.localityId = '7600000100000';
+        this.object.localityType = 'г';
       },
       onSave() {
         if ( !this.isValid ) {

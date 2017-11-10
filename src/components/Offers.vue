@@ -4,15 +4,15 @@
       <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Предложения', to: ''} ]"/>
       <div :class="$style.bar__layout_switcher">
         
-        <app-input type="button" @click.native="currentLayout = false"
+        <span @click="currentLayout = false"
           :class="[$style.layout_switcher__grid, currentLayout || $style.__active]">
           <span :class="$style.grid__icon"></span>
-        </app-input>
+        </span>
 
-        <app-input type="button" @click.native="currentLayout = true"
+        <span @click="currentLayout = true"
           :class="[$style.layout_switcher__list, !currentLayout || $style.__active]">
           <span :class="$style.list__icon"></span>
-        </app-input>
+        </span>
 
       </div>
 
@@ -44,7 +44,7 @@
       <div :class="$style.offers__content" v-if="dataReady">
         <transition name="fade">
           <div :class="$style.content__filter" v-if="filterToggled">
-            <apartments-filter :data="offers" @change="onFiltersChange" />
+            <offers-filter :data="offers" @change="onFiltersChange" />
           </div>
         </transition>
         <transition name="layout-switcher" appear v-if="!!filteredOffers.length">
@@ -201,10 +201,17 @@
       text-align: right;
       padding: 5px 0;
       > .layout_switcher__list, .layout_switcher__grid {
+        display: inline-block;
+        padding: 5px 10px;
         background-color: transparent;
         color: #93a3b5;
-        border-color: #93a3b5;
+        border: 1px solid #93a3b5;
         transition: all .2s ease-in-out;
+        cursor: pointer;
+        user-select: none;
+        touch-action: manipulation;
+        line-height: 1.5;
+        font-size: 13px;
         &:hover {
           background-color: #93a3b5;
           color: #f1f1f1;
@@ -297,14 +304,10 @@
 </style>
 
 <script>
-  import AppLoader from './app-loader.vue';
   import firebase from '../firebase.js';
   import ListLayoutItem from './offers/list-layout-item.vue';
   import GridLayoutItem from './offers/grid-layout-item.vue';
-  import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
-  import ApartmentsFilter from './apartments/apartments-filter.vue'
-  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
 
   const offersRef = firebase.database().ref('offers');
   const companiesRef = firebase.database().ref('companies');
@@ -312,7 +315,7 @@
   export default {
     name: 'offers',
     props: ['auth', 'user', 'ghostMode'],
-    components: { AppLoader, GridLayoutItem, ListLayoutItem, AppInput, AppAdSidebar, ApartmentsFilter, Breadcrumbs },
+    components: { GridLayoutItem, ListLayoutItem, AppAdSidebar },
     data() {
       return {
         dataReady: false,
@@ -322,7 +325,8 @@
         ref: '',
         offers: [],
         companies: {},
-        data: {}
+        data: {},
+        offerLimit: 15
       }
     },
     created() {
@@ -334,9 +338,11 @@
           if ( !this.data.length ) return []
           return this.data.sort( (a, b) => b.created - a.created )
                 .filter( e => this.authorFilterResult(e) )
+                .slice( 0, this.offerLimit )
         } else {
           return this.offers.sort( (a, b) => b.created - a.created )
                 .filter( e => this.authorFilterResult(e) )
+                .slice( 0, this.offerLimit )
         }
       }
     },

@@ -3,11 +3,29 @@
     <ui-modal ref="reportModal" title="Жалоба на опрос">
       <app-report :link="'/polls/#' + poll.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
     </ui-modal>
+    <ui-confirm
+      ref="voteConfirm"
+      title="Голосование"
+      confirmButtonText="Проголосовать"
+      denyButtonText="Отмена"
+      @confirm="vote"
+      >
+      Вы уверены, что хотите проголосовать за "{{ poll.items[selectedAnswer].text }}"?
+    </ui-confirm>
+    <ui-confirm
+      ref="removeConfirm"
+      title="Удалить опрос"
+      confirmButtonText="Удалить"
+      denyButtonText="Отмена"
+      @confirm="removePoll"
+      >
+      Вы уверены, что хотите удалить опрос "{{ poll.question }}"?
+    </ui-confirm>
     <div :class="$style.timeline_post_wrapper">
 
       <div :class="[$style.dropdown_wrapper, dropdownToggled || $style.__hidden]" @mouseleave="dropdownToggled = false">
         <ul :class="$style.timeline_post__dropdown">
-          <li :class="$style.dropdown__item" v-if="isOwner || isModer || isAdmin" @click="removePoll">
+          <li :class="$style.dropdown__item" v-if="isOwner || isModer || isAdmin" @click="showRemoveConfirm">
             <span :class="$style.item__title">Удалить</span>
           </li>
           <li :class="$style.dropdown__item" @click="focusCommentField">
@@ -47,7 +65,7 @@
             </div>
           </div>
           <div :class="$style.content__answers" v-else>
-            <div :class="$style.answer" v-for="(item, index) in poll.items" :key="id()" @click.once="vote(index)">
+            <div :class="$style.answer" v-for="(item, index) in poll.items" :key="id()" @click.once="showVoteConfirm(index)">
               <default-radio :label="item.text" name="answers" :option="index" />
             </div>
           </div>
@@ -390,8 +408,15 @@
           return false;
         })
       },
-      vote(answer) {
-        pollsRef.child(this.poll.key).child('items').child(answer).child('voters').push(this.user.key)
+      showRemoveConfirm() {
+        this.$refs.removeConfirm.open();
+      },
+      showVoteConfirm(answer) {
+        this.selectedAnswer = answer;
+        this.$refs.voteConfirm.open();
+      },
+      vote() {
+        pollsRef.child(this.poll.key).child('items').child(this.selectedAnswer).child('voters').push(this.user.key)
           .then( () => this.voted = true)
           .catch( error => console.log('vote error: ', error));
       },
@@ -478,6 +503,7 @@
     },
     data() {
       return {
+        selectedAnswer: 0,
         currentRef: null,
         voted: false,
         rollDown: false,

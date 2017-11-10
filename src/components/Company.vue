@@ -1,21 +1,28 @@
 <template>
   <div :class="$style.company" v-if="dataReady">
-    <modal-overlay :show="showRemoveModal" @close="showRemoveModal = false">
-      <div :class="$style.remove_modal">
-        <div :class="$style.message">Сотрудник будет удален. Восстановить эту запись будет невозможно. Вы уверены?</div>
-        <div :class="$style.actions">
-          <div :class="$style.actions__remove">
-            <default-button red label="Удалить" @click="removeUser(markToRemove)" />
-          </div>
-          <div :class="$style.actions__cancel">
-            <default-button label="Отмена" @click="showRemoveModal = false" />
-          </div>
-        </div>
-      </div>
-    </modal-overlay>
-    <modal-overlay :show="showSettingsModal" @close="showSettingsModal = false">
-      <company-settings :company="local" @cancel="showSettingsModal = false" />
-    </modal-overlay>
+    <ui-modal
+      ref="profileModal"
+      size="large"
+      title="Редактировать пользователя">
+<!--       <profile-settings :profile="markedUser" :user="user" @cancel="$refs.profileModal.close()" /> -->
+    </ui-modal>
+    
+    <ui-confirm
+      confirm-button-icon="delete"
+      confirm-button-text="Удалить"
+      deny-button-text="Отмена"
+      ref="removeConfirm"
+      title="Удалить сотрудника"
+      type="danger"
+      @confirm="removeUser"
+    >Сотрудник "{{ [ markedUser.name, markedUser.surname ].join(' ') }}" будет удален. Восстановить запись сотрудника невозможно. Вы уверены?
+    </ui-confirm>
+    <ui-modal
+      ref="settingsModal"
+      size="large"
+      title="Настройки компании">
+      <company-settings :company="local" @cancel="$refs.settingsModal.close()" />
+    </ui-modal>
     <div :class="$style.company__bar">
       <breadcrumbs :items="[ { text: 'Главная', to: 'root'}, { text: 'Компании', to: 'companies'}, { text: company.name, to: '' } ]"/> 
     </div>
@@ -23,8 +30,16 @@
       <div :class="$style.toolbar__header">
         <toolbar :title="company.name" :sub="company.slogan"></toolbar>
       </div>
-      <div :class="$style.toolbar__settings" v-if="isModer">
-        <default-button label="Настройки" icon="settings" @click="showSettingsModal = true"/>
+      <div :class="$style.toolbar__settings">
+        <ui-fab
+          @click="$refs.settingsModal.open()"
+          icon="settings"
+          tooltip-position="top center"
+          tooltip="Настройки"
+          size="small"
+          :class="$style.uifab"
+          v-if="isModer"
+        ></ui-fab>
       </div>
     </div>
     <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image.orig + ')' }">
@@ -66,7 +81,7 @@
                       :class="$style.item__name">{{ [ employee.name, employee.surname ].join(' ') }}</router-link>
                     <div :class="$style.item__actions" v-if="isModer">
                       <span :class="$style.item__activate" @click="activateUser(employee.key)">добавить</span>
-                      <span :class="$style.item__remove" @click="markToRemove = employee.key; showRemoveModal = true;">удалить</span>
+                      <span :class="$style.item__remove" @click="showRemoveConfirm(employee)">удалить</span>
                     </div>
                   </div>
                 </transition>
@@ -98,6 +113,23 @@
               <div :class="$style.employees__item" v-else v-for="employee in employees">
                 <transition name="fade" appear>
                   <div :class="$style.employe__wrapper">
+                    <div :class="$style.item__dropdown" v-if="isModer">
+                      <ui-icon-button has-dropdown 
+                        :ref="employee.key"
+                        icon="arrow_drop_down"
+                        size="small"
+                        color="default"
+                        dropdownPosition="bottom right">
+                        <ui-menu
+                          contain-focus
+                          has-icons
+                          slot="dropdown"
+                          :options="userMenuOptions"
+                          @select="(opt) => { onUserMenuSelect(opt, employee) }"
+                          @close="onUserMenuClose(employee)"
+                        ></ui-menu>
+                      </ui-icon-button>
+                    </div>
                     <div :class="$style.photo_wrapper">
                       <div :class="$style.item__photo" :style="{ 'background-image': 'url(' + employee.photo + ')' }"></div>
                     </div>
@@ -477,6 +509,11 @@
       &:hover { color: #d9534f; text-decoration: underline; }
     }
 
+    .item__dropdown {
+      position: absolute;
+      right: 10px;
+    }
+  
     .item__photo {
       display: block;
       width: 100px;
@@ -534,19 +571,6 @@
     margin: -20px -20px 0;
     &:after { @include clearfix }
   }
-
-  .remove_modal {
-    background-color: #fff;
-    padding: 25px 20px;
-  }
-  .message { margin-bottom: 30px }
-  .actions {
-    margin: 0 auto;
-    max-width: 360px;
-    &:after { @include clearfix }
-  }
-  .actions__remove { float: left; text-align: left; }
-  .actions__cancel { float: right; text-align: right; }
     
   /* responsive */
     .company {
@@ -573,11 +597,8 @@
   import AppLoader from './app-loader.vue';
   import AppInput from './modules/inputs.vue';
   import firebase from '../firebase.js';
-  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
-  import Toolbar from './page-blocks/toolbar.vue';
-  import ModalOverlay from './modal-overlay/modal-overlay.vue';
-  import DefaultButton from './default-inputs/default-button.vue';
   import CompanySettings from './company/company-settings.vue';
+  import ProfileSettings from './profile/profile-settings.vue';
 
   const companiesRef = firebase.database().ref('companies');
   const usersRef = firebase.database().ref('users');
@@ -585,7 +606,7 @@
   export default {
     name: 'company',
     props: ['auth', 'user'],
-    components: { AppLoader, AppInput, Breadcrumbs, Toolbar, ModalOverlay, DefaultButton, CompanySettings },
+    components: { AppLoader, AppInput, CompanySettings, ProfileSettings },
     computed: {
       isModer() {
         return this.user.role === 1 || ( this.user.role <= 5 && this.user.company.key === this.company.key );
@@ -609,6 +630,42 @@
       }
     },
     methods: {
+      onUserMenuClose(employee) {
+        this.$refs[employee.key][0].closeDropdown();
+      },
+      onUserMenuSelect(opt, employee) {
+        this.markedUser = employee; 
+        
+        switch(opt.id) {
+          case 'edit': {
+            this.$refs.profileModal.open();
+            break;
+          }
+          case 'deactivate': {
+            this.deactivateUser(employee.key);
+            break;
+          }
+          case 'remove': {
+            this.$refs.removeConfirm.open();
+            break;
+          }
+        }
+      },
+      showRemoveConfirm(employee) {
+        this.markedUser = employee;
+        this.$refs.removeConfirm.open();
+      },
+
+      deactivateUser(key) {
+        usersRef.child(key).update({ active: false })
+          .then( () => {
+            console.log("deactivete succeeded.")
+          })
+          .catch( error => {
+            console.log("Deactivete failed: " + error.message)
+          });
+      },
+
       activateUser(key) {
         usersRef.child(key).update({ active: true })
           .then( () => {
@@ -620,8 +677,7 @@
       },
 
       removeUser() {
-        this.showRemoveModal = false;
-        usersRef.child(this.markToRemove).update({deleted: true})
+        usersRef.child(this.markedUser.key).update({deleted: true})
           .then( () => {
             console.log("Remove succeeded.")
           })
@@ -638,13 +694,30 @@
     data() {
       return {
         dataReady: false,
-        showRemoveModal: false,
-        showSettingsModal: false,
-        markToRemove: '',
+        markedUser: {},
         search: '',
-        company: {},
-        users: [],
-        local: {}
+        company: {}, users: [],
+        local: {},
+        userMenuOptions: [
+          {
+            id: 'edit',
+            label: 'Редактировать',
+            icon: 'edit'
+          },
+          {
+            id: 'deactivate',
+            label: 'Деактивировать',
+            icon: 'content_copy'
+          },
+          {
+            type: 'divider'
+          },
+          {
+            id: 'remove',
+            label: 'Удалить',
+            icon: 'delete'
+          }
+        ]
       }
     },
     created() {
@@ -655,7 +728,10 @@
           usersRef.orderByChild('company').equalTo(this.company.key).on('value', employees => {
             if ( employees.exists() ) {
               let e = employees.val();
-              this.users = Object.keys(e).map( employee => e[employee] ).sort( (a, b) => a.surname > b.surname );
+              this.users = Object.keys(e)
+                .map( employee => e[employee] )
+                .filter( (e) => !e.deleted )
+                .sort( (a, b) => a.surname > b.surname );
             }
           })
         })}
