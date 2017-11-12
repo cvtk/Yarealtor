@@ -250,10 +250,8 @@
 <script>
   import firebase from '../firebase.js';
   import Firebase from 'firebase';
-  import AppLoader from './app-loader.vue';
   import AppInput from './modules/inputs.vue';
   import AppAdSidebar from './modules/ad-sidebar.vue';
-  import AppOnlineStatus from './modules/online-status.vue';
   import AppUploadImage from './modules/upload-images.vue';
   import TimelinePost from './timeline/timeline-post.vue';
   import TimelineNewPost from './timeline/timeline-new-post.vue';
@@ -262,8 +260,6 @@
   import DefaultButton from './default-inputs/default-button.vue';
   import ProfileSettings from './profile/profile-settings.vue';
   import ProfileOverview from './profile/profile-overview.vue';
-  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
-  import Toolbar from './page-blocks/toolbar.vue';
 
   const usersRef = firebase.database().ref('users');
   const companiesRef = firebase.database().ref('companies');
@@ -273,7 +269,7 @@
   export default {
     name: 'profile',
     props: ['auth', 'user'],
-    components: { AppLoader, AppOnlineStatus, AppAdSidebar, AppUploadImage, TimelinePost, TimelineNewPost, DefaultText, DefaultNumber, DefaultButton, ProfileSettings, ProfileOverview, Breadcrumbs, Toolbar },
+    components: { AppAdSidebar, AppUploadImage, TimelinePost, TimelineNewPost, DefaultText, DefaultNumber, DefaultButton, ProfileSettings, ProfileOverview },
     data() {
       return { dataReady: false, currentTab: 'profile', profile: {}, local: {}, posts: {} }
     },

@@ -5,13 +5,16 @@
         <div :class="$style.images">
           <div v-if="local.images.length === 0"
             :class="$style.images__item" 
-            :style="{ 'background-image': 'url(/static/image-placeholder.png)' }">
+            :style="{ 'background-image': 'url(/static/image-placeholder.png)', 'cursor': 'default' }">
           </div>
           <div v-for="(image, index) in local.images" v-else
-              :class="$style.images__item"
-              @click="moveToFrontImage(index)"
-              :style="{ 'background-image': 'url(' + image.orig + ')' }">
-            <div :class="$style.images__remove" @click.stop="removeImage(index)" title="Удалить изображение"></div>
+            :key="index"
+            draggable="true"
+            :class="$style.images__item"
+            @mousedown="onDragImage(index, $event)"
+            @mouseover="onMouseOver(index, $event)"
+            :style="{ 'background-image': 'url(' + image.orig + ')' }">
+            <div :class="$style.images__remove" @mousedown.stop="removeImage(index)" title="Удалить изображение"></div>
           </div>
         </div>
         <app-upload-images @input="imagesLoaded" :class="$style.images__upload" :multiple="true">Добавить изображение</app-upload-images>
@@ -125,6 +128,7 @@
     width: 50%;
     min-height: 120px;
     float: left;
+    cursor: move;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -133,7 +137,6 @@
     margin-bottom: 5px; 
     filter: grayscale(1);
     opacity: .75;
-    cursor: pointer;
     transition: filter .35s, opacity .35s;
     &:hover { filter: grayscale(0); opacity: 1; }
 
@@ -156,6 +159,7 @@
     opacity: .75;
     transition: opacity .35s;
     text-align: center;
+    cursor: pointer;
     &:hover { opacity: 1 }
     &:after {
       content: "\e082";
@@ -306,7 +310,8 @@
     data() {
       return {
         mdl: {},
-        local: this.value
+        local: this.value,
+        draggedImage: null
       }
     },
     watch: {
@@ -350,12 +355,25 @@
       onChange(value) {
         this.$emit('objectChanged', value);
       },
-      moveToFrontImage(index) {
-        if (!!index) {
-          let first = this.local.images[0];
-          this.$set(this.local.images, 0, this.local.images[index]);
-          this.$set(this.local.images, index, first);
-        }
+      // moveToFrontImage(index) {
+      //   if (!!index) {
+      //     let first = this.local.images[0];
+      //     this.$set(this.local.images, 0, this.local.images[index]);
+      //     this.$set(this.local.images, index, first);
+      //   }
+      // },
+
+      onDragImage(index, event) {
+        if ( typeof index === 'undefined' ) return;
+        this.draggedImage = index;
+      },
+
+      onMouseOver(index, event) {
+        if ( typeof index === 'undefined' || this.draggedImage === null ) return;
+        let tmp = this.local.images[index];
+        this.$set(this.local.images, index, this.local.images[this.draggedImage]);
+        this.$set(this.local.images, this.draggedImage, tmp);
+        this.draggedImage = null;
       },
 
       removeImage(index) {

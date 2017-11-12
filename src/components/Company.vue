@@ -1,12 +1,5 @@
 <template>
   <div :class="$style.company" v-if="dataReady">
-    <ui-modal
-      ref="profileModal"
-      size="large"
-      title="Редактировать пользователя">
-<!--       <profile-settings :profile="markedUser" :user="user" @cancel="$refs.profileModal.close()" /> -->
-    </ui-modal>
-    
     <ui-confirm
       confirm-button-icon="delete"
       confirm-button-text="Удалить"
@@ -114,11 +107,12 @@
                 <transition name="fade" appear>
                   <div :class="$style.employe__wrapper">
                     <div :class="$style.item__dropdown" v-if="isModer">
-                      <ui-icon-button has-dropdown 
+                      <ui-icon-button has-dropdown
+                        :class="$style.dropdown_button"
                         :ref="employee.key"
                         icon="arrow_drop_down"
                         size="small"
-                        color="default"
+                        color="primary"
                         dropdownPosition="bottom right">
                         <ui-menu
                           contain-focus
@@ -514,6 +508,11 @@
       right: 10px;
     }
   
+    .dropdown_button {
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+
     .item__photo {
       display: block;
       width: 100px;
@@ -637,10 +636,6 @@
         this.markedUser = employee; 
         
         switch(opt.id) {
-          case 'edit': {
-            this.$refs.profileModal.open();
-            break;
-          }
           case 'deactivate': {
             this.deactivateUser(employee.key);
             break;
@@ -699,11 +694,6 @@
         company: {}, users: [],
         local: {},
         userMenuOptions: [
-          {
-            id: 'edit',
-            label: 'Редактировать',
-            icon: 'edit'
-          },
           {
             id: 'deactivate',
             label: 'Деактивировать',

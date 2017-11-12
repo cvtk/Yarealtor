@@ -166,6 +166,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      min-height: 17px;
     }
 
   /* companies__bar */
