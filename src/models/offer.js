@@ -353,7 +353,7 @@ fields.params = {
   },
   // floors +
   // area_full +
-  minimal_area: { title: 'Минимальная площадь продажи/аренды', default: null, options: [] },
+  minimal_area: { title: 'Мин. площадь продажи/аренды', default: null, options: [] },
 
   line: { title: 'Линия', default: null, 
     options: [
@@ -385,7 +385,7 @@ fields.params = {
       { value: false, title: 'Нет' },
     ]
   },
-  fire_alarm: { title: 'Пожарная охранная', default: false, 
+  fire_alarm: { title: 'Сигнализация пожарная', default: false, 
     options: [
       { value: true, title: 'Да' },
       { value: false, title: 'Нет' },
@@ -501,6 +501,113 @@ fields.params = {
     ]
   },
   //cottage_area
+
+  //АРЕНДА НАЧАЛО
+
+  //В квартире есть (YML)
+  roomFurniture: { title: 'Наличие мебели', default: null, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  kitchenFurniture: { title: 'Мебель на кухне', default: null, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  television: { title: 'Телевизор', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  washingMachine: { title: 'Стиральная машина', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  refrigerator: { title: 'Холодильник', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  //Условия аренды
+  nationality: { title: 'Для жильцов', default: null, 
+    options: [
+      { value: 1, title: 'только для славян' },
+      { value: 2, title: 'любой национальности' }
+    ]
+  },
+  kids: { title: 'С детьми', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  animals: { title: 'С животными', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  businessTrip: { title: 'Для командировки', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  couchettes: { title: 'Количество спальных мест', default: null, options: [] },
+  leaseType: { title: 'Тип аренды', default: null, 
+    options: [
+      { value: 1, title: 'долгосрочная' },
+      { value: 2, title: 'краткосрочная' },
+      { value: 3, title: 'на сутки' }
+    ]
+  },
+  leaseAddPayments: { title: 'Доп. платежи', default: null, 
+    options: [
+      { value: 1, title: '+ ком. услуги' },
+      { value: 2, title: '+ свет' },
+      { value: 3, title: '+ счетчики' },
+      { value: 4, title: 'все включено' },
+    ]
+  },
+  accommodation: { title: 'Проживание', default: null, 
+    options: [
+      { value: 1, title: 'с соседями' },
+      { value: 2, title: 'с хозяевами' }
+    ]
+  },
+  leaseAllBuilding: { title: 'Все здание целиком', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  phone: { title: 'Телефон', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  accessSystem: { title: 'Пропускная система', default: false, 
+    options: [
+      { value: true, title: 'да' },
+      { value: false, title: 'нет' }
+    ]
+  },
+  parking: { title: 'Парковка', default: null, 
+    options: [
+      { value: 1, title: 'стихийная' },
+      { value: 2, title: 'выделенная' }
+    ]
+  },
+  communalPaymentsSummer: { title: 'Коммунальные платежи зимой', default: null, options: [] },
+  communalPaymentsWinter: { title: 'Коммунальные платежи летом', default: null, options: [] },
 }
 
 function is(type, value) {

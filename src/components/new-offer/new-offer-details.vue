@@ -9,7 +9,7 @@
           </div>
         </div>
         <div :class="$style.row__col">
-          <div :class="$style.col">
+          <div :class="$style.col" v-if="local.type === 1">
             <h2 :class="$style.header">Параметры</h2>
             <details-apartment v-model="local" @stateChange="onStateChange" v-if="local.object === 1" />
             <details-room v-model="local" @stateChange="onStateChange" v-if="local.object === 2" />
@@ -17,6 +17,14 @@
             <details-cottage v-model="local" @stateChange="onStateChange" v-if="local.object === 4" />
             <details-garage v-model="local" @stateChange="onStateChange" v-if="local.object === 5" />
             <details-land v-model="local" @stateChange="onStateChange" v-if="local.object === 6" />
+          </div>
+          <div :class="$style.col" v-else-if="local.type === 2">
+            <h2 :class="$style.header">Параметры</h2>
+            <lease-apartment v-model="local" @stateChange="onStateChange" v-if="local.object === 1" />
+            <lease-room v-model="local" @stateChange="onStateChange" v-if="local.object === 2" />
+            <lease-commercial v-model="local" @stateChange="onStateChange" v-if="local.object === 3" />
+            <lease-cottage v-model="local" @stateChange="onStateChange" v-if="local.object === 4" />
+            <lease-garage v-model="local" @stateChange="onStateChange" v-if="local.object === 5" />
           </div>
         </div>
       </div>
@@ -75,10 +83,16 @@
   import DetailsGarage from './details-garage.vue';
   import DetailsLand from './details-land.vue';
 
+  import LeaseApartment from './offer-parameters/lease-apartment.vue';
+  import LeaseRoom from './offer-parameters/lease-room.vue';
+  import LeaseCommercial from './offer-parameters/lease-commercial.vue';
+  import LeaseCottage from './offer-parameters/lease-cottage.vue';
+  import LeaseGarage from './offer-parameters/lease-garage.vue';
+
   export default {
     name: 'new-offer-details',
     props: ['value'],
-    components: { DetailsAddress, DetailsApartment, DetailsRoom, DetailsCommercial, DetailsCottage, DetailsGarage, DetailsLand },
+    components: { DetailsAddress, DetailsApartment, DetailsRoom, DetailsCommercial, DetailsCottage, DetailsGarage, DetailsLand, LeaseApartment, LeaseRoom, LeaseCommercial, LeaseCottage, LeaseGarage },
     data() {
       return {
         local: this.value

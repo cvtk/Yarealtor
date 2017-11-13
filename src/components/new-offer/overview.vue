@@ -45,7 +45,7 @@
                 msg="Обязательное поле (минимум тысяча рублей)"
               />
             </div>
-            <div :class="$style.group__row">
+            <div :class="$style.group__row" v-if="local.type === 1">
               <default-number v-model="local.agent_pay" 
                   :label="mdl.agent_pay.title" 
                 />
@@ -54,7 +54,7 @@
               <span :class="$style.validation" v-if="currentField === 'object'"></span>
               <default-select nameField="title" v-model="local.object" 
                 :label="mdl.object.title"
-                :options="mdl.object.options"
+                :options="objectOptions"
                 :validate="validation.object"
                 @change="onChange"
                 msg="Обязательное поле"
@@ -323,6 +323,10 @@
       }
     },
     computed: {
+      objectOptions: function() {
+        if ( this.local.type === 2 ) return this.mdl.object.options.slice(0, 5);
+        return this.mdl.object.options;
+      },
       validation: function () {
         return {
           type: !!this.local.type,
