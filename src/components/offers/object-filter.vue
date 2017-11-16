@@ -3,7 +3,7 @@
     <div :class="$style.filter">
       <div :class="$style.filter__option">
         <ui-select
-          @input="filterByGeneralFields"
+          @input="filterBy"
           placeholder="Предложение"
           :options="[ { value: 1, label: 'Продажа' }, { value: 2, label: 'Аренда' },]"
           v-model="general.op">
@@ -11,7 +11,7 @@
       </div>
       <div :class="$style.filter__option">
         <ui-select
-          @input="filterByGeneralFields"
+          @input="filterBy"
           :placeholder="mdl.object.title"
           :options="mdl.object.options"
           v-model="general.object">  
@@ -19,7 +19,7 @@
       </div>
       <div :class="$style.filter__option">
         <ui-textbox
-          @input="filterByGeneralFields"
+          @input="filterBy"
           type="number"
           :min=1000
           :placeholder="mdl.price_from.title"
@@ -28,7 +28,7 @@
       </div>
       <div :class="$style.filter__option">
         <ui-textbox
-          @input="filterByGeneralFields"
+          @input="filterBy"
           type="number"
           :min=0
           :placeholder="mdl.price_to.title"
@@ -40,7 +40,7 @@
         <ui-autocomplete
           @input="onInput"
           @select="onSelect"
-          @change="filterByObjectFields"
+          @change="filterBy"
           :filter="filter"
           :suggestions="suggestions"
           :placeholder="obj.locality.title"
@@ -49,7 +49,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value <= 6">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.district.title"
           :options="obj.district.options"
           v-model="object.district">  
@@ -57,7 +57,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value < 6">
         <ui-textbox
-          @input="filterByObjectFields"
+          @input="filterBy"
           type="number"
           :min=0
           :placeholder="obj.area_from.title"
@@ -66,7 +66,7 @@
       </div>
       <div :class="$style.filter__option"  v-if="general.object.value < 6">
         <ui-textbox
-          @input="filterByObjectFields"
+          @input="filterBy"
           type="number"
           :min=0
           :placeholder="obj.area_to.title"
@@ -75,7 +75,7 @@
       </div>
       <div :class="$style.filter__option"  v-if="general.object.value === 4 || general.object.value === 6">
         <ui-textbox
-          @input="filterByObjectFields"
+          @input="filterBy"
           type="number"
           :min=0
           :placeholder="obj.cottage_area_from.title"
@@ -84,7 +84,7 @@
       </div>
       <div :class="$style.filter__option"  v-if="general.object.value === 4 || general.object.value === 6">
         <ui-textbox
-          @input="filterByObjectFields"
+          @input="filterBy"
           type="number"
           :min=0
           :placeholder="obj.cottage_area_to.title"
@@ -93,7 +93,7 @@
       </div>
       <div :class="$style.filter__option"  v-if="general.object.value === 4">
         <ui-textbox
-          @input="filterByObjectFields"
+          @input="filterBy"
           type="number"
           :min=0
           :placeholder="obj.floor_from.title"
@@ -102,7 +102,7 @@
       </div>
       <div :class="$style.filter__option"  v-if="general.object.value === 4">
         <ui-textbox
-          @input="filterByObjectFields"
+          @input="filterBy"
           type="number"
           :min=0
           :placeholder="obj.floor_to.title"
@@ -111,7 +111,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value < 3 || general.object.value === 4">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.rooms.title"
           :options="obj.rooms.options"
           v-model="object.rooms">
@@ -119,7 +119,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value <= 6">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.type.title"
           :options="obj.type.options"
           v-model="object.type">
@@ -127,7 +127,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value < 3 || general.object.value === 4 || general.object.value === 5">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.material.title"
           :options="obj.material.options"
           v-model="object.material">  
@@ -135,7 +135,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value < 3">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.furnish.title"
           :options="obj.furnish.options"
           v-model="object.furnish">
@@ -143,7 +143,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value === 4 || general.object.value === 6">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.infra.title"
           :options="obj.infra.options"
           v-model="object.infra">  
@@ -151,7 +151,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value === 4 || general.object.value === 6">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.direction.title"
           :options="obj.direction.options"
           v-model="object.direction">
@@ -159,7 +159,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value < 3">
         <ui-select multiple
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.bath.title"
           :options="obj.bath.options"
           v-model="object.bath">  
@@ -167,7 +167,7 @@
       </div>
       <div :class="$style.filter__option" v-if="general.object.value < 4">
         <ui-select
-          @input="filterByObjectFields"
+          @input="filterBy"
           :placeholder="obj.floor.title"
           :options="obj.floor.options"
           v-model="object.floor">
@@ -193,7 +193,12 @@
         obj: {},
         object: {}, general: {},
         results: {},
-        local: this.data
+        local: this.data,
+        mappingVars: {
+          type: 'general.op.value',
+          object: 'general.object.value',
+          price: { from: 'general.price_from', to: 'general.price_to' }
+        }
       }
     },
     created() {
@@ -232,23 +237,47 @@
       onSelect(item) {
         let value = item.value;
         this.object.locality = this.results[value].name;
-        this.filterByObjectFields()
       },
-      filterByGeneralFields() {
-        this.local = this.data.filter( e => {
-          return ( e.type === this.general.op.value || typeof this.general.op.value === 'undefined') &&
-            ( this.general.object.value === e.object || typeof this.general.object.value === 'undefined') &&
-              ( e.price >= parseInt(this.general.price_from) || !this.general.price_from ) && 
-                ( e.price <= parseInt(this.general.price_to) || !this.general.price_to )
-        });
+
+      isEmpty(v) {
+        return ( typeof v === 'undefined' || !v );
+      },
+
+      isEqual(a, b) {
+        if ( this.isEmpty(b) || this.isEmpty(a) ) return true;
+        return a === b;
+      },
+
+      inRange(a, from, to) {
+        return ( a >= from || this.isEmpty(from) ) && ( a <= to || this.isEmpty(to) );
+      },
+      inList(array, value) {
+        if ( !array.length ) return true;
+        return array.some( e => e.value === value );
+      },
+      iterateFields(obj) {
+        return this.isEqual( obj.type, this.general.op.value ) &&
+                this.isEqual( obj.object, this.general.object.value ) &&
+                this.inRange( obj.price, parseInt(this.general.price_from), parseInt(this.general.price_to) ) &&
+                this.isEqual( obj.locality, this.object.locality ) &&
+                this.inList( this.object.district, obj.district ) &&
+                this.inRange( obj.area_full, parseInt(this.object.area_from), parseInt(this.object.area_to) ) &&
+                this.inList( this.object.rooms, obj.rooms ) || ( this.inList( this.object.rooms, 7 ) && obj.rooms >= 7 ) &&
+                this.inList( this.object.type, obj.building_type )
+
+      },
+
+      filterBy() {
+        this.local = this.data.filter( e => this.iterateFields(e) );
+
+        // {
+        //   return ( e.type === this.general.op.value || typeof this.general.op.value === 'undefined') &&
+        //     ( this.general.object.value === e.object || typeof this.general.object.value === 'undefined') &&
+        //       ( e.price >= parseInt(this.general.price_from) || !this.general.price_from ) && 
+        //         ( e.price <= parseInt(this.general.price_to) || !this.general.price_to )
+        // });
         this.$emit('change', this.local)
       },
-      filterByObjectFields() {
-        this.local = this.data.filter( e => {
-          return ( e.locality === this.object.locality || !this.object.locality );
-        });
-        this.$emit('change', this.local)
-      }
     }
   }
 </script>
