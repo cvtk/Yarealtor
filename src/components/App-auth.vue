@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.app__auth">
     <div :class="$style.auth__logo">
-      <img src="/static/logo.png" alt="Логотип" :class="$style.logo__pic">
+      <img src="/static/logo_big.png" alt="Логотип" :class="$style.logo__pic">
     </div>
     <div :class="$style.auth__form">
       <h3 :class="$style.form__title">Войти</h3>

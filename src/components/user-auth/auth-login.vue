@@ -3,7 +3,7 @@
     <div :class="$style.login__content">
       <div :class="$style.content">
         <div :class="$style.content__logo">
-          <img :class="$style.logo" src="/static/logo.png" alt="Логотип">
+          <img :class="$style.logo" src="/static/logo_big.png" alt="Логотип">
         </div>
         <div :class="$style.content__form">
           <div :class="$style.form" @keydown.enter="loginUser">

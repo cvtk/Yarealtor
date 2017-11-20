@@ -171,10 +171,7 @@
       padding-left: 20px;
       padding-right: 20px;
       transition: width .2s ease-in-out;
-      > .logo__pic {
-        vertical-align: middle;
-        cursor: pointer;
-      }
+      > .logo__pic { vertical-align: middle }
     }
     > .header__menu {
       float: right;
