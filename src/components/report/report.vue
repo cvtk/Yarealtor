@@ -66,7 +66,7 @@
     methods: {
       send() {
         if ( !this.isDone ) return;
-        let prep = { link: this.localLink, message: this.localBody, author: this.author }
+        let prep = { link: this.localLink, message: this.localBody, author: this.author, status: 1 }
         ticketsRef.push(prep)
           .then( () => {
             this.$root.$children[0].$refs.notify.createSnackbar({

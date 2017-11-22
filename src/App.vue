@@ -18,7 +18,18 @@
       <div :class="$style.header__menu">
         <div :class="[ $style.menu__ghost_mode, !ghostMode || $style._active ]" @click="ghostMode=!ghostMode" title="Специальный режим" v-if="user.active"></div>
         <div :class="$style.menu__notification" v-if="user.active">
-          <span :class="$style.notification__badge">0</span>
+          <span :class="$style.notification__badge" v-if="!!notifications.length">{{ notifications.length }}</span>
+          <ul :class="$style.user__dropdown">
+            <router-link tag="li"
+              v-for="( notify, index ) in notifications"
+              :key="index"
+              :to="notify.link"
+              :class="$style.dropdown__item"
+            >
+              <span :class="[$style.item__icon, $style._birthday]"></span>
+              <span :class="$style.item__title">{{ notify.message }}</span>
+            </router-link>
+          </ul>
         </div>
         <div :class="$style.menu__user" v-if="dataReady">
 
@@ -261,6 +272,7 @@
               font-family: "Icons";
             }
             > ._profile:before { content: "\e005" }
+            > ._birthday:before { content: "\e044" }
             > ._my_company:before { content: "\e001" }
             > ._sign_out:before { content: "\e065" }
           }
@@ -272,6 +284,7 @@
         }
       }
       > .menu__notification {
+        white-space: normal;
         &:hover:after { color: #c6cfda }
         &:after {
           position: relative;
@@ -282,6 +295,7 @@
           color: #79869a;
           transition: color .2s ease-in-out;
         }
+        > .user__dropdown { width: 280px }
         > .notification__badge {
           display: inline-block;
           position: absolute;
@@ -496,6 +510,7 @@
   import AppLoader from './components/app-loader.vue';
   import AppReport from './components/report/report.vue';
 
+const moment = require('moment');
 const usersRef = firebase.database().ref('users');
 const companiesRef = firebase.database().ref('companies');
 
@@ -503,7 +518,7 @@ export default {
   name: 'app',
   components: { AppLoader, AppReport },
   data() {
-    return { isToggled: true, auth: false, user: false, dataReady: false, ghostMode: false }
+    return { isToggled: true, auth: false, user: false, dataReady: false, ghostMode: false, notifications: [] }
   },
   beforeCreate() {
     firebase.auth().onAuthStateChanged((auth)=> {
@@ -514,7 +529,9 @@ export default {
       else if (auth) {
         usersRef.child(auth.uid).on('value', user => {
           this.user = user.val();
-          companiesRef.child(this.user.company).on('value', company => {
+          let userCompany = this.user.company;
+          usersRef.orderByChild('company').equalTo(userCompany).on('value', this.checkBirthday);
+          companiesRef.child(userCompany).on('value', company => {
             this.$set(this.user, 'company', company.val());
             this.dataReady = true;
           })
@@ -523,6 +540,34 @@ export default {
     });
   },
   methods: {
+    checkBirthday(snapshot) {
+
+      const todayIsBitrhday = function(user) {
+        let currentDay = moment().date(),
+            birthDay = moment(user.birthday * 1000).date(),
+            currentMonth = moment().month(),
+            birthMonth = moment(user.birthday * 1000).month();
+        //console.log('Day', currentDay, '===', birthDay, ', ', 'Month', currentMonth, '===', birthMonth);
+        return currentDay === birthDay && currentMonth === birthMonth;
+      };
+
+      const getNotification = function(user) {
+        let userName = [user.name, user.surname].join(' '),
+            message =  userName + ' сегодня празднует свой День Рождения',
+            link = { name: 'user', params: { page: user.page } },
+            type = 'birthday';
+        return { message, link, type };
+      };
+
+      this.notifications = [];
+
+      let object = snapshot.val(),
+          users = Object.keys(object).map( key => object[key] );
+
+      users
+        .filter( user => todayIsBitrhday(user) )
+        .forEach( birthdayBoy => this.notifications.push(getNotification(birthdayBoy)) );
+    },
     signOut() {
       firebase.auth().signOut();
     }

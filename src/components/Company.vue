@@ -37,7 +37,7 @@
     </div>
     <div :class="$style.company__banner" :style="{ 'background-image': 'url(' + company.image.orig + ')' }">
       <div :class="$style.title_wrapper">
-        <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge" v-if="company.yasr">Участник ЯСР</span></h2>
+        <h2 :class="$style.banner__name">{{ company.name }} <span :class="$style.name__badge" v-if="company.yasr">Участник ЯСР</span><span :class="[$style.name__badge, $style._punish]" v-if="!!company.punish">Жалоб: {{ company.punish }}</span></h2>
         <h3 :class="$style.banner__slogan">{{ company.slogan }}</h3>
       </div>
     </div>
@@ -211,6 +211,7 @@
         border-bottom: 17px solid transparent; 
         border-right: 17px solid #9A12B3; 
       }
+      &._punish { background-color: #d9534f; &:before { border-right: 17px solid #d9534f } }
     }
 
     .banner__slogan {

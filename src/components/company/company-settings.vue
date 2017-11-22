@@ -27,6 +27,7 @@
             <default-text label="Адрес" :validate="validation.address" msg="Не более 255 символов" v-model="local.address" />
           </div>
         </div>
+        <default-text label="Ссылка на YML" v-model="local.yml" />
         <default-textarea label="Реквизиты" :validate="validation.requisites" msg="Не более 2048 символов" v-model="local.requisites" />
         <default-textarea label="Общая информация" :validate="validation.overview" msg="Не более 2048 символов" v-model="local.overview" />
         <div :class="[ $style.inputs__row, $style._full ]">
@@ -52,66 +53,69 @@
   </div>
 </template>
 
-<style lang="scss" module>
+<style lang="sass" module>
   
   @import "../../assets/style.scss";
 
-  .settings {
-    position: relative;
-    background-color: #fff;
-    padding: 30px;
-    width: 100%;
-    margin: 0 auto;
-    @media (max-width: $bp-small) {
-      width: 320px;
-      padding: 15px;
-      max-height: 100vh;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-  }
-  .settings__header {
-    margin: 0;
-    margin-bottom: 30px;
-    color: #32c5d2;
-    text-align: center;
-    font-weight: 300;
-    font-size: 28px;
-  }
-  .settings__inputs { margin-bottom: 30px }
-  .settings__actions:after { @include clearfix }
+  .settings
+    position: relative
+    background-color: #fff
+    padding: 30px
+    width: 100%
+    margin: 0 auto
+    @media (max-width: $bp-small)
+      width: 320px
+      padding: 15px
+      max-height: 100vh
+      overflow-x: hidden
+      overflow-y: auto
 
-  .inputs { position: relative }
+  .settings__header
+    margin: 0
+    margin-bottom: 30px
+    color: #32c5d2
+    text-align: center
+    font-weight: 300
+    font-size: 28px
 
-  .inputs__row {
-    &:after { @include clearfix }
-    position: relative;
-    margin: 0 -10px;
-  }
+  .settings__inputs
+    margin-bottom: 30px
 
-  .row__item {
-    float: left;
-    width: 50%;
-    padding: 0 10px;
-  }
-  ._full { padding: 15px 0 }
-  .actions {
-    position: relative;
-    width: 210px;
-    float: right;
-    text-align: right;
-  }
+  .settings__actions:after
+    @include clearfix
 
-  .actions__save {
-    display: inline-block;
-    text-align: left;
-    margin-right: 20px;
-  }
+  .inputs
+    position: relative
 
-  .actions__cancel {
-    display: inline-block;
-    text-align: right;
-  }
+  .inputs__row
+    &:after
+      @include clearfix
+    position: relative
+    margin: 0 -10px
+
+  .row__item
+    float: left
+    width: 50%
+    padding: 0 10px
+
+  ._full
+    padding: 15px 0
+
+  .actions
+    position: relative
+    width: 210px
+    float: right
+    text-align: right
+
+  .actions__save
+    display: inline-block
+    text-align: left
+    margin-right: 20px
+
+  .actions__cancel
+    display: inline-block
+    text-align: right
+    
 </style>
 
 <script>

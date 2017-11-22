@@ -427,7 +427,6 @@
   import firebase from '../firebase.js';
   import mdl from '../models/request.js';
   import AppLoader from './app-loader.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppFilters from './helpers/filters.js';
   import requestContent from './request/request-content.vue';
   import AppReport from './report/report.vue';
@@ -437,7 +436,7 @@
   export default {
     name: 'request',
     props: ['auth', 'user', 'ghostMode'],
-    components: { AppLoader, AppAdSidebar, requestContent, AppReport },
+    components: { AppLoader, requestContent, AppReport },
     filters: AppFilters,
     data() {
       return {

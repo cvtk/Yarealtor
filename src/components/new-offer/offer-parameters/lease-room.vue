@@ -48,13 +48,6 @@
         </div>
       </div>
       <div :class="$style.row">
-        <div :class="$style.row__100">
-          <div :class="$style.wrapper">
-            <default-checkbox v-model="local.balcony" :label="mdl.balcony.title" />
-          </div>
-        </div>
-      </div>
-      <div :class="$style.row">
         <div :class="$style.group">
           <h3 :class="$style.group__title">Дополнительно</h3>
             <div :class="$style.row__50">

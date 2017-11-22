@@ -276,7 +276,6 @@
   import firebase from '../firebase.js';
   import ListLayoutItem from './requests/list-layout-item.vue';
   import AppInput from './modules/inputs.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
   import RequestsFilter from './apartments/requests-filter.vue'
   import Breadcrumbs from './page-blocks/breadcrumbs.vue';
 
@@ -286,7 +285,7 @@
   export default {
     name: 'requests',
     props: ['auth', 'ghostMode', 'user'],
-    components: { AppLoader, ListLayoutItem, AppInput, AppAdSidebar, RequestsFilter, Breadcrumbs },
+    components: { AppLoader, ListLayoutItem, AppInput, RequestsFilter, Breadcrumbs },
     data() {
       return {
         dataReady: false,

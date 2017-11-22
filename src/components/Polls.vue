@@ -294,7 +294,6 @@
 
 <script>
   import AppLoader from './app-loader.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
   import TimelinePost from './timeline/timeline-post.vue';
   import TimelineNewPost from './timeline/timeline-new-post.vue';
   import AppInput from './modules/inputs.vue';
@@ -309,7 +308,7 @@
   export default {
     name: 'polls',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, AppInput, AppUploadImages, PollsNew, PollsTimeline, Breadcrumbs  },
+    components: { AppLoader, AppInput, AppUploadImages, PollsNew, PollsTimeline, Breadcrumbs  },
     data() {
       return {
         filter: 10,

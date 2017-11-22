@@ -282,7 +282,6 @@
   import Firebase from 'firebase';
   import firebase from '../firebase.js';
   import AppLoader from './app-loader.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
   import Breadcrumbs from './page-blocks/breadcrumbs.vue'
   import Toolbar from './page-blocks/toolbar.vue'
   import RequestApartment from './new-request/request-apartment.vue';
@@ -297,7 +296,7 @@
   export default {
     name: 'new-request',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, Breadcrumbs, Toolbar, RequestApartment, RequestRoom, RequestCommercial, RequestCottage, RequestGarage, RequestLand },
+    components: { AppLoader, Breadcrumbs, Toolbar, RequestApartment, RequestRoom, RequestCommercial, RequestCottage, RequestGarage, RequestLand },
     data() {
       return {
         dataReady: false,

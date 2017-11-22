@@ -147,7 +147,6 @@
   import Firebase from 'firebase';
   import firebase from '../firebase.js';
   import AppLoader from './app-loader.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppInput from './modules/inputs.vue';
   import AppFilters from './helpers/filters.js';
   import Breadcrumbs from './page-blocks/breadcrumbs.vue'
@@ -162,7 +161,7 @@
   export default {
     name: 'edit-offer',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, AppInput, OverviewStep, 
+    components: { AppLoader, AppInput, OverviewStep, 
       DetailsStep, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
     filters: AppFilters,
     data() {

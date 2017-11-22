@@ -251,7 +251,6 @@
   import firebase from '../firebase.js';
   import Firebase from 'firebase';
   import AppInput from './modules/inputs.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppUploadImage from './modules/upload-images.vue';
   import TimelinePost from './timeline/timeline-post.vue';
   import TimelineNewPost from './timeline/timeline-new-post.vue';
@@ -269,7 +268,7 @@
   export default {
     name: 'profile',
     props: ['auth', 'user'],
-    components: { AppAdSidebar, AppUploadImage, TimelinePost, TimelineNewPost, DefaultText, DefaultNumber, DefaultButton, ProfileSettings, ProfileOverview },
+    components: { AppUploadImage, TimelinePost, TimelineNewPost, DefaultText, DefaultNumber, DefaultButton, ProfileSettings, ProfileOverview },
     data() {
       return { dataReady: false, currentTab: 'profile', profile: {}, local: {}, posts: {} }
     },

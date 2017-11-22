@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 module.exports = {
   entry: './src/main.js',
@@ -14,6 +15,7 @@ module.exports = {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
+          extractCSS: true,
           cssModules: {
             localIdentName: '[hash:base64:7]'
           },
@@ -37,8 +39,8 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        // exclude: /node_modules(?!(\/|\\)keen-ui)/
-        exclude: /node_modules/
+        exclude: /node_modules(?!(\/|\\)keen-ui)/
+        //exclude: /node_modules/
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -49,6 +51,9 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new ExtractTextPlugin("style.css")
+  ],
   resolve: {
     alias: {
       'vue$': 'vue/dist/vue.esm.js'

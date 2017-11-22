@@ -1,5 +1,5 @@
 <template>
-  <li :class="$style.item" v-if="dataReady">
+  <div :class="$style.item" v-if="dataReady">
     <span :class="$style.item__type">{{ humanize( 'type', offer.type) }}</span>
     <router-link :to="{ name: 'offer', params: { id: offer.key } }" :class="$style.wrapper_image">
       <nav :class="$style.item__thumbnails_navigation">
@@ -31,7 +31,7 @@
          <span :class="[$style.foot__item, $style._phone]">{{ author.mobile }}</span>
        </div>
     </div>
-  </li>
+  </div>
 </template>
 <style lang="scss" module>
   @import "../../assets/style.scss";

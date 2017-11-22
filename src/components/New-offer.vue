@@ -145,7 +145,6 @@
   import Firebase from 'firebase';
   import firebase from '../firebase.js';
   import AppLoader from './app-loader.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
   import AppInput from './modules/inputs.vue';
   import AppFilters from './helpers/filters.js';
   import Breadcrumbs from './page-blocks/breadcrumbs.vue'
@@ -154,14 +153,14 @@
   import OverviewStep from './new-offer/overview.vue';
   import DetailsStep from './new-offer/new-offer-details.vue';
   import DefaultButton from './default-inputs/default-button.vue';
-  import OfferPreview from './offer/offer.vue';
+  import OfferPreview from './offer/offer-content.vue';
 
   const offersRef = firebase.database().ref('offers');
 
   export default {
     name: 'new_offer',
     props: ['auth', 'user'],
-    components: { AppLoader, AppAdSidebar, AppInput, OverviewStep, 
+    components: { AppLoader, AppInput, OverviewStep, 
       DetailsStep, OfferPreview, Breadcrumbs, Toolbar, StepsControls, DefaultButton },
     filters: AppFilters,
     data() {

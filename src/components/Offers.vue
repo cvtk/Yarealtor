@@ -49,16 +49,23 @@
         </transition>
         <transition name="layout-switcher" appear v-if="!!filteredOffers.length">
           <ul :class="$style.content__list" v-if="currentLayout">
-            <list-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" :ghostMode="ghostMode" />
+            <li :class="$style.list__item" v-for="( offer, index ) in filteredOffers" :key="offer.key">
+              <list-layout-item :offer="offer" :ghostMode="ghostMode" />
+              <app-ad-banner v-if="(index + 1) % 10 === 0"></app-ad-banner>
+            </li>
           </ul>
           <ul :class="$style.content__grid" v-else>
-            <grid-layout-item v-for="offer in filteredOffers" :key="offer.key" :offer="offer" :ghostMode="ghostMode" />
+            <grid-layout-item  :offer="offer" :ghostMode="ghostMode" v-for="( offer, index ) in filteredOffers" :key="offer.key" />
+            <!-- <app-ad-banner v-if="(index + 1) % 9 === 0" :class="$style.ad__banner"></app-ad-banner> -->
+            <div :class="$style.list__loadmore">
+              <ui-button size="small" v-if="isDataFulfilled" @click="loadMore">Загрузить еще</ui-button>
+            </div>
           </ul>
         </transition>
         <span v-else> По Вашему запросу ничего не найдено, попробуйте изменить условия поиска </span>
       </div>
       <app-loader v-else></app-loader>
-      <app-ad-sidebar :class="$style.offers__ad"></app-ad-sidebar>
+      <app-ad-sidebar></app-ad-sidebar>
     </div>
   </div>
 </template>
@@ -121,6 +128,14 @@
     &:after { @include clearfix }
   }
 
+  .list__item {
+    position: relative;
+  }
+
+  .list__loadmore {
+    text-align: center;
+  }
+
   .content__grid {
     position: relative;
     list-style: none;
@@ -128,38 +143,18 @@
     padding: 0;
     cursor: pointer;
     &:after { @include clearfix }
-    @media (min-width: $bp-extra-large) {
-      .grid__item { width: 25% }
-    }
-    @media (max-width: $bp-large) {
-      .grid__item { width: 50% }
-    }
-    @media (max-width: $bp-extra-small) {
-      .grid__item { width: 100% }
-    }
   }
 
-  .offers__ad {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 280px;
-    height: 100%;
-    background-color: #fff;
-    padding: 15px 20px;
-    > .ad__title {
-      width: 100%;
-      color: #578ebe;
-      padding: 12px 0;
-      display: inline-block;
-      font-size: 15px;
-      line-height: 18px;
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: .25px;
-    }
-    > .ad__content {}
+  .grid__item {
+    position: relative;
   }
+
+  .ad__banner {
+    position: relative;
+    clear: both;
+    padding: 0;
+  }
+
   .offers__bar {
     border-bottom: 1px solid #e7ecf1;
     background-color: #fff;
@@ -307,7 +302,6 @@
   import firebase from '../firebase.js';
   import ListLayoutItem from './offers/list-layout-item.vue';
   import GridLayoutItem from './offers/grid-layout-item.vue';
-  import AppAdSidebar from './modules/ad-sidebar.vue';
 
   const offersRef = firebase.database().ref('offers');
   const companiesRef = firebase.database().ref('companies');
@@ -315,7 +309,7 @@
   export default {
     name: 'offers',
     props: ['auth', 'user', 'ghostMode'],
-    components: { GridLayoutItem, ListLayoutItem, AppAdSidebar },
+    components: { GridLayoutItem, ListLayoutItem },
     data() {
       return {
         dataReady: false,
@@ -333,6 +327,7 @@
       this.ref = offersRef.on('value', this.onOffersValue);
     },
     computed: {
+      isDataFulfilled() { return ( this.filteredOffers.length === this.offerLimit && this.offers.length > this.offerLimit ) },
       filteredOffers() {
         if ( this.filterToggled ) {
           if ( !this.data.length ) return []
@@ -347,6 +342,7 @@
       }
     },
     methods: {
+      loadMore() { this.offerLimit += 15 },
       isMy(offer) { return offer.author === this.user.key },
       isYasr(offer) { return this.companies[offer.company].yasr },
       authorFilterResult(offer) {

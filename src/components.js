@@ -1,5 +1,11 @@
 import Vue from 'vue';
 
+import AppAdSidebar from './components/ads/ad-sidebar.vue';
+Vue.component('app-ad-sidebar', AppAdSidebar);
+
+import AppAdBanner from './components/ads/ad-banner.vue';
+Vue.component('app-ad-banner', AppAdBanner);
+
 import AppLoader from './components/app-loader.vue';
 Vue.component('app-loader', AppLoader);
 
