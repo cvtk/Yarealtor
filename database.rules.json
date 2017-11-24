@@ -16,6 +16,9 @@
     },
     "posts": {
       ".indexOn": ["access"]
+    },
+    "tickets": {
+      ".indexOn": ["status"]
     }
   }
 }

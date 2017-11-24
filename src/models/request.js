@@ -35,7 +35,7 @@ fields.apartment = {
   locality: { title: 'Населенный пункт', default: '', options: [] },
   localityType: { title: 'Тип населенного пункта', default: '', options: [] },
   localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
-  district: { title: 'Район', default: '', 
+  district: { title: 'Район', default: [], 
     options: [
       { label: 'Дзержинский', value: 1 },
       { label: 'Заволжский', value: 2 },
@@ -47,7 +47,7 @@ fields.apartment = {
       { label: 'Фрунзенский', value: 8 }
     ]
   },
-  rooms: { title: 'Комнат', default: '', 
+  rooms: { title: 'Комнат', default: [], 
     options: [
       { label: '1', value: 1 },
       { label: '2', value: 2 },
@@ -63,13 +63,13 @@ fields.apartment = {
 
   area_to: { title: 'до', default: null, options: [] },
 
-  type: { title: 'Тип дома', default: '', 
+  type: { title: 'Тип дома', default: [], 
     options: [
       { label: 'вторичное', value: 1 },
       { label: 'новостройка', value: 2 }
     ]
   },
-  material: { title: 'Материал дома', default: '', 
+  material: { title: 'Материал дома', default: [], 
     options: [
       { label: 'блочный', value: 1 },
       { label: 'деревянный', value: 2 },
@@ -77,7 +77,7 @@ fields.apartment = {
       { label: 'монолит', value: 4 },
     ]
   },
-  furnish: { title: 'Тип отделки', default: '', 
+  furnish: { title: 'Тип отделки', default: [], 
     options: [
       { label: 'требует ремонта', value: 1 },
       { label: 'черновая', value: 2 },
@@ -87,7 +87,7 @@ fields.apartment = {
       { label: 'евро', value: 6 }
     ]
   },
-  bath: { title: 'Санузел', default: '', 
+  bath: { title: 'Санузел', default: [], 
     options: [
       { label: 'без удобств', value: 1 },
       { label: 'раздельный', value: 2 },
@@ -95,7 +95,7 @@ fields.apartment = {
       { label: 'только душ / ванна', value: 4 }
     ]
   },
-  floor: { title: 'Этаж', default: '', 
+  floor: { title: 'Этаж', default: [], 
     options: [
       { label: 'первый', value: 1 },
       { label: 'не первый', value: 2 },
@@ -203,7 +203,7 @@ fields.commercial = {
 
   area_to: { title: 'до', default: null, options: [] },
 
-  type: { title: 'Вид', default: '', 
+  type: { title: 'Вид', default: [], 
     options: [
       { label: 'торговое', value: 1 },
       { label: 'офисное', value: 2 },
@@ -214,7 +214,7 @@ fields.commercial = {
       { label: 'квартиры под перевод', value: 7 }
     ]
   },
-  floor: { title: 'Этаж', default: '', 
+  floor: { title: 'Этаж', default: [], 
     options: [
       { label: 'первый', value: 1 },
       { label: 'не первый', value: 2 },

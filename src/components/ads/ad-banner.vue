@@ -12,12 +12,13 @@
     width: 100%
     height: auto
     background-color: #fff
-    margin: 15px 0;
+    margin: 20px 0;
 
   .banner__content
     text-align: center;
 
   .image
+    display: block
     max-width: 100%
 </style>
   

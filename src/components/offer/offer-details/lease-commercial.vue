@@ -59,13 +59,13 @@
         <li :class="$style.list__item">
           <div :class="$style.item">
             <span :class="$style.item__title">{{ mdl.area_full.title }}:</span>
-            <span :class="$style.item__value">{{ offer.area_full }}</span>
+            <span :class="$style.item__value">{{ offer.area_full }} м²</span>
           </div>
         </li>
         <li :class="$style.list__item" v-if="!!offer.minimal_area">
           <div :class="$style.item">
             <span :class="$style.item__title">{{ mdl.minimal_area.title }}:</span>
-            <span :class="$style.item__value">{{ offer.minimal_area }}</span>
+            <span :class="$style.item__value">{{ offer.minimal_area }} м²</span>
           </div>
         </li>
         <li :class="$style.list__item" v-if="!!offer.leaseAllBuilding">

@@ -28,25 +28,8 @@
   </div>
 </template>
 
-<style land="scss" module>
-  .report {
-    position: relative;
-  }
-
-  .report__row {
-    position: relative;
-    margin-bottom: 20px;
-  }
-
-  .report__actions {
-    position: relative;
-    text-align: right;
-  }
-
-</style>
-
 <script>
-
+  import Firebase from 'firebase';
   import firebase from '../../firebase.js';
   const ticketsRef = firebase.database().ref('tickets');
 
@@ -55,7 +38,9 @@
     props: {
       link: { default: '' },
       body: { default: '' },
-      author: { default: '' }
+      author: { default: '' },
+      targetUser: { default: '' },
+      targetCompany: { default: '' },
     },
     data() {
       return {
@@ -66,8 +51,19 @@
     methods: {
       send() {
         if ( !this.isDone ) return;
-        let prep = { link: this.localLink, message: this.localBody, author: this.author, status: 1 }
-        ticketsRef.push(prep)
+        let key = ticketsRef.push().key;
+        let prep = {
+          key,
+          created: Firebase.database.ServerValue.TIMESTAMP,
+          link: this.localLink,
+          message: this.localBody,
+          author: this.author,
+          answer: '',
+          targetUser: this.targetUser,
+          targetCompany: this.targetCompany,
+          status: 1 
+        };
+        ticketsRef.child(key).update(prep)
           .then( () => {
             this.$root.$children[0].$refs.notify.createSnackbar({
               message: 'Сообщение отправлено администратору',
@@ -87,3 +83,18 @@
     }
   }
 </script>
+
+<style lang="sass" module>
+
+  .report
+    position: relative
+
+  .report__row
+    position: relative
+    margin-bottom: 20px
+
+  .report__actions
+    position: relative
+    text-align: right
+
+</style>

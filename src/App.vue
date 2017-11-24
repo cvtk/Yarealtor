@@ -21,6 +21,7 @@
           <span :class="$style.notification__badge" v-if="!!notifications.length">{{ notifications.length }}</span>
           <ul :class="$style.user__dropdown">
             <router-link tag="li"
+              v-if="!!notifications.length"
               v-for="( notify, index ) in notifications"
               :key="index"
               :to="notify.link"
@@ -29,6 +30,9 @@
               <span :class="[$style.item__icon, $style._birthday]"></span>
               <span :class="$style.item__title">{{ notify.message }}</span>
             </router-link>
+            <li :class="$style.dropdown__item" v-if="!notifications.length">
+              <span :class="$style.item__title">Новых уведомлений нет</span>
+            </li>
           </ul>
         </div>
         <div :class="$style.menu__user" v-if="dataReady">
@@ -92,7 +96,8 @@
       <ul :class="$style.sidebar__panel">
         <router-link tag="li" :to="{ name: 'codex' }" :class="[$style.panel__item, $style._rules]" title="Кодекс риэлтора"></router-link>
         <router-link tag="li" :to="{ name: 'rules'}" :class="[$style.panel__item, $style._help]" title="Правила пользования порталом"></router-link>
-        <li @click="$refs.reportModal.open()" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></li>
+        <li v-if="!isAdmin" @click="$refs.reportModal.open()" :class="[$style.panel__item, $style._feedback]" title="Сообщение администратору"></li>
+        <router-link v-else tag="li" :to="{ name: 'tickets'}" :class="[$style.panel__item, $style._feedback]" title="Обращения пользователей"></router-link>
       </ul>
     </aside>
     <ui-modal ref="reportModal" title="Сообщение администратору">
@@ -158,7 +163,7 @@
     width: 100%;
     top: 115px;
     right: -10px;
-    z-index: 9999;
+    z-index: 7999;
   }
 
   .app__header {
@@ -538,6 +543,9 @@ export default {
         })
       }
     });
+  },
+  computed: {
+    isAdmin() { return this.user.role === 1 }
   },
   methods: {
     checkBirthday(snapshot) {

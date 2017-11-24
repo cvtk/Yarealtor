@@ -23,7 +23,7 @@
         <li :class="$style.list__item">
           <div :class="$style.item">
             <span :class="$style.item__title">Предложение:</span>
-            <span :class="$style.item__value">Сдать коммерческую</span>
+            <span :class="$style.item__value">Сдать, {{ humanize('cottage_type', offer.cottage_type) }}</span>
           </div>
         </li>
         <li :class="$style.list__item">
@@ -46,38 +46,32 @@
         </li>
         <li :class="$style.list__item">
           <div :class="$style.item">
-            <span :class="$style.item__title">Тип:</span>
-            <span :class="$style.item__value">{{ commercialFields }}</span>
+            <span :class="$style.item__title">{{ mdl.cottage_type.title }}:</span>
+            <span :class="$style.item__value">{{ humanize('cottage_type', offer.cottage_type) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item">
+        <li :class="$style.list__item" v-if="!!offer.floors">
           <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.floor.title }}:</span>
-            <span :class="$style.item__value">{{ offer.floor || '*' }}/{{ offer.floors }}</span>
+            <span :class="$style.item__title">{{ mdl.floors.title }}:</span>
+            <span :class="$style.item__value">{{ offer.floors }}</span>
           </div>
         </li>
-        <li :class="$style.list__item">
+        <li :class="$style.list__item" v-if="!!offer.rooms">
           <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.area_full.title }}:</span>
-            <span :class="$style.item__value">{{ offer.area_full }}</span>
+            <span :class="$style.item__title">{{ mdl.rooms.title }}:</span>
+            <span :class="$style.item__value">{{ offer.rooms }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!offer.minimal_area">
+        <li :class="$style.list__item" v-if="!!offer.cottage_area">
           <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.minimal_area.title }}:</span>
-            <span :class="$style.item__value">{{ offer.minimal_area }}</span>
+            <span :class="$style.item__title">{{ mdl.cottage_area.title }}:</span>
+            <span :class="$style.item__value">{{ offer.cottage_area }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!offer.leaseAllBuilding">
+        <li :class="$style.list__item" v-if="!!offer.nationality">
           <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.leaseAllBuilding.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('leaseAllBuilding', offer.leaseAllBuilding) }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item" v-if="!!offer.parking">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.parking.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('parking', offer.parking) }}</span>
+            <span :class="$style.item__title">{{ mdl.nationality.title }}:</span>
+            <span :class="$style.item__value">{{ humanize('nationality', offer.nationality) }}</span>
           </div>
         </li>
         <li :class="$style.list__item" v-if="!!offer.leaseAddPayments">
@@ -92,16 +86,10 @@
             <span :class="$style.item__value">{{ humanize('leaseType', offer.leaseType) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!offer.communalPaymentsSummer">
+        <li :class="$style.list__item" v-if="!!offer.businessTrip">
           <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.communalPaymentsSummer.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('communalPaymentsSummer', offer.communalPaymentsSummer) }}</span>
-          </div>
-        </li>
-        <li :class="$style.list__item" v-if="!!offer.communalPaymentsWinter">
-          <div :class="$style.item">
-            <span :class="$style.item__title">{{ mdl.communalPaymentsWinter.title }}:</span>
-            <span :class="$style.item__value">{{ humanize('communalPaymentsWinter', offer.communalPaymentsWinter) }}</span>
+            <span :class="$style.item__title">{{ mdl.businessTrip.title }}:</span>
+            <span :class="$style.item__value">{{ humanize('businessTrip', offer.businessTrip) }}</span>
           </div>
         </li>
         <li :class="$style.list__item" v-if="!!addFields.length">
@@ -124,13 +112,8 @@
     props: ['offer', 'company', 'author', 'ghostMode'],
     filters: AppFilters,
     computed: {
-      commercialFields() {
-        let commercial = [ 'commercial_retail', 'commercial_office', 'commercial_industrial', 'commercial_warehouse', 'commercial_business', 'commercial_land', 'commercial_apartments' ];
-
-        return this.joinFields(commercial);
-      },
       addFields() {
-        let adds = [ 'roomFurniture', 'phone', 'internet', 'security_alarm', 'fire_alarm', 'accessSystem' ];
+        let adds = [ 'roomFurniture', 'phone', 'internet', 'television', 'washingMachine', 'refrigerator' ];
 
         return this.joinFields(adds);
       },

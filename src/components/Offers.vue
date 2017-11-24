@@ -20,13 +20,17 @@
     <div :class="$style.offers__toolbar">
       <h1 :class="$style.toolbar__title">Предложения<span :class="$style._small">актуальные объекты</span></h1>
       <div :class="$style.toolbar__actions">
-        <span :class="[ $style.actions__author_filter, authorFilter === 'my' && $style._active ]" @click="authorFilter = 'my'">Мои</span>
-        <span :class="[ $style.actions__author_filter, authorFilter === 'yasr' && $style._active ]" @click="authorFilter = 'yasr'">Ан ЯСР</span>
-        <span :class="[ $style.actions__author_filter, authorFilter === 'all' && $style._active ]" @click="authorFilter = 'all'">Все</span>
+
+        <ui-radio-group name="authorFilter"
+          :options="authorFilterOptions"
+          :class="$style.actions__author_filter"
+          v-model="authorFilter"
+        ></ui-radio-group>
         
         <div :class="$style.actions__filter">
           <ui-switch v-model="filterToggled">Фильтр</ui-switch>
         </div>
+
         <div :class="$style.actions__create">
           <ui-fab
             @click="$router.push({ name: 'new-offer' })"
@@ -36,6 +40,7 @@
             size="small"
           ></ui-fab>
         </div>
+
       </div>
     </div>
     
@@ -53,6 +58,9 @@
               <list-layout-item :offer="offer" :ghostMode="ghostMode" />
               <app-ad-banner v-if="(index + 1) % 10 === 0"></app-ad-banner>
             </li>
+            <div :class="$style.list__loadmore">
+              <ui-button size="small" v-if="isDataFulfilled" @click="loadMore">Загрузить еще</ui-button>
+            </div>
           </ul>
           <ul :class="$style.content__grid" v-else>
             <grid-layout-item  :offer="offer" :ghostMode="ghostMode" v-for="( offer, index ) in filteredOffers" :key="offer.key" />
@@ -273,10 +281,8 @@
 
   .actions__author_filter {
     display: inline-block;
-    margin-right: 10px;
-    cursor: pointer;
-    color: #32c5d2;
-    &:hover, &._active { text-decoration: underline }
+    vertical-align: middle;
+    margin-right: 25px;
   }
 
   .offers {
@@ -314,13 +320,18 @@
       return {
         dataReady: false,
         currentLayout: true,
-        filterToggled: false,
-        authorFilter: 'my',
+        filterToggled: true,
+        authorFilter: 'all',
         ref: '',
         offers: [],
         companies: {},
         data: {},
-        offerLimit: 15
+        offerLimit: 15,
+        authorFilterOptions : [
+          { label: 'Мои', value: 'my' },
+          { label: 'ЯСР', value: 'yasr' },
+          { label: 'Все', value: 'all' }
+        ]
       }
     },
     created() {

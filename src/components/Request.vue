@@ -1,7 +1,12 @@
 <template>
   <div :class="$style.request" v-if="dataReady">
     <ui-modal ref="reportModal" title="Жалоба на заявку">
-      <app-report :link="'/requests/' + request.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
+      <app-report
+        :link="'/requests/' + request.key"
+        :author="user.key"
+        :targetUser="request.author"
+        :targetCompany="request.company"
+        @close="$refs.reportModal.close()"></app-report>
     </ui-modal>
     <ui-confirm
       confirm-button-icon="delete"

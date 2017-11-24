@@ -3,11 +3,11 @@
     <div :class="$style.object__row">
       <div :class="$style.row">
         <div :class="$style.row__50">
-          <span :class="$style.validation" v-if="currentField === 'building_type'"></span>
-          <default-select v-model="local.building_type"
-            :label="mdl.building_type.title"
-            :options="mdl.building_type.options"
-            :validate="validation.building_type"
+          <span :class="$style.validation" v-if="currentField === 'placement_type'"></span>
+          <default-select v-model="local.placement_type"
+            :label="mdl.placement_type.title"
+            :options="mdl.placement_type.options"
+            :validate="validation.placement_type"
             msg="Выберите тип дома"
             nameField="title"
           /> 
@@ -184,7 +184,7 @@
     computed: {
       validation: function () {
         return {
-          building_type: !!this.local.building_type,
+          building_type: !!this.local.placement_type,
           rooms: !!this.local.rooms,
           area_full: !!this.local.area_full,
           floor: !!this.local.floor,

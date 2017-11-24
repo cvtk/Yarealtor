@@ -1,7 +1,13 @@
 <template>
   <div :class="$style.timeline_post" v-if="dataReady && user.active" :id="post.key">
     <ui-modal ref="reportModal" title="Жалоба на публикацию">
-      <app-report :link="'/posts/#' + post.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
+      <app-report
+        :link="'/news/#' + post.key"
+        :author="user.key"
+        :targetUser="post.author"
+        :targetCompany="post.company"
+        @close="$refs.reportModal.close()">
+      </app-report>
     </ui-modal>
     <div :class="$style.timeline_post_wrapper">
 

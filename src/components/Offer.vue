@@ -1,7 +1,13 @@
 <template>
   <div :class="$style.offer" v-if="dataReady">
     <ui-modal ref="reportModal" title="Жалоба на предложение">
-      <app-report :link="'/offers/' + offer.key" :author="user.key" @close="$refs.reportModal.close()"></app-report>
+      <app-report 
+        :link="'/offers/' + offer.key" 
+        :author="user.key"
+        :targetUser="offer.author"
+        :targetCompany="offer.company"
+        @close="$refs.reportModal.close()">  
+      </app-report>
     </ui-modal>
     <ui-confirm
       confirm-button-icon="delete"
@@ -432,7 +438,7 @@
           case 1: return `${this.offer.rooms}-к квартира, ${this.offer.area_full} м², ${this.offer.floor}/${this.offer.floors} эт.`;
           case 2: return `Комната, ${this.offer.area_full} м², ${this.offer.floor}/${this.offer.floors} эт.`;
           case 3: return `Коммерческая, ${this.commercialType()}, ${this.offer.area_full} м²`;
-          case 4: return `${ this.humanize( 'cottage_type', this.offer.cottage_type) }, ${this.offer.area_full} м², ${this.offer.floors} этажа`;
+          case 4: return `${ this.humanize( 'cottage_type', this.offer.cottage_type) }, ${this.offer.cottage_area} м², ${this.offer.floors} этажа`;
           case 5: return `Гараж, ${ this.humanize( 'garage_material', this.offer.garage_material) }, ${this.offer.area_full} м²`;
           case 6: return `Участок ${ this.humanize( 'land_type', this.offer.land_type) }, ${this.offer.cottage_area} сот.`;
         }

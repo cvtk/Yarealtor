@@ -7,9 +7,11 @@
     <div :class="$style.offers__toolbar">
       <h1 :class="$style.toolbar__title">Спрос<span :class="$style._small">актуальные объекты</span></h1>
       <div :class="$style.toolbar__actions">
-        <span :class="[ $style.actions__author_filter, authorFilter === 'my' && $style._active ]" @click="authorFilter = 'my'">Мои</span>
-        <span :class="[ $style.actions__author_filter, authorFilter === 'yasr' && $style._active ]" @click="authorFilter = 'yasr'">Ан ЯСР</span>
-        <span :class="[ $style.actions__author_filter, authorFilter === 'all' && $style._active ]" @click="authorFilter = 'all'">Все</span>
+        <ui-radio-group name="authorFilter"
+          :options="authorFilterOptions"
+          :class="$style.actions__author_filter"
+          v-model="authorFilter"
+        ></ui-radio-group>
         <div :class="$style.actions__filter">
           <ui-switch v-model="filterToggled">Фильтр</ui-switch>
         </div>
@@ -44,7 +46,7 @@
         <span v-else> По Вашему запросу ничего не найдено, попробуйте изменить условия поиска </span>
       </div>
       <app-loader v-else></app-loader>
-      <app-ad-sidebar :class="$style.offers__ad"></app-ad-sidebar>
+      <app-ad-sidebar></app-ad-sidebar>
     </div>
   </div>
 </template>
@@ -244,12 +246,10 @@
     vertical-align: middle;
   }
 
-  .actions__author_filter {
+ .actions__author_filter {
     display: inline-block;
-    margin-right: 10px;
-    cursor: pointer;
-    color: #32c5d2;
-    &:hover, &._active { text-decoration: underline }
+    vertical-align: middle;
+    margin-right: 25px;
   }
 
   .offers {
@@ -295,7 +295,12 @@
         ref: '',
         requests: {},
         companies: {},
-        data: []
+        data: [],
+        authorFilterOptions : [
+          { label: 'Мои', value: 'my' },
+          { label: 'ЯСР', value: 'yasr' },
+          { label: 'Все', value: 'all' }
+        ]
       }
     },
     created() {

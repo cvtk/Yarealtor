@@ -22,7 +22,7 @@
           <lease-details-room :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 2" />
           <lease-details-commercial :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 3" />
           <lease-details-cottage :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 4" />
-          <sale-details-garage :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 5" />
+          <lease-details-garage :offer="offer" :company="company" :author="author" :ghostMode="ghostMode" v-if="offer.object === 5" />
         </div>
       </div>
     </div>
@@ -49,6 +49,7 @@
   import LeaseDetailsRoom from './offer-details/lease-room.vue';
   import LeaseDetailsCommercial from './offer-details/lease-commercial.vue';
   import LeaseDetailsCottage from './offer-details/lease-cottage.vue';
+  import LeaseDetailsGarage from './offer-details/lease-garage.vue';
 
   import OfferImages from './offer-images.vue';
   import OfferMap from './offer-map.vue';
@@ -67,7 +68,7 @@
   export default {
     name: 'offer-content',
     props: ['auth', 'user', 'offer', 'ghostMode'],
-    components: { SaleDetailsApartment, SaleDetailsRoom, SaleDetailsCommercial, SaleDetailsCottage, SaleDetailsGarage, SaleDetailsLand, LeaseDetailsApartment, LeaseDetailsRoom, LeaseDetailsCommercial, LeaseDetailsCottage, OfferImages, OfferMap
+    components: { SaleDetailsApartment, SaleDetailsRoom, SaleDetailsCommercial, SaleDetailsCottage, SaleDetailsGarage, SaleDetailsLand, LeaseDetailsApartment, LeaseDetailsRoom, LeaseDetailsCommercial, LeaseDetailsCottage, LeaseDetailsGarage, OfferImages, OfferMap
     },
     data() {
       return {

@@ -20,6 +20,7 @@ import Yasr from './components/Yasr.vue';
 import Company from './components/Company.vue';
 import List from './components/List.vue';
 import Profile from './components/Profile.vue';
+import Tickets from './components/Tickets.vue';
 import AppAuth from './components/App-auth.vue';
 import NotFound from './components/App-404.vue';
 
@@ -66,6 +67,7 @@ const router = new VueRouter({
     { path: '/404', component: NotFound, name: '404' },
     { path: '/registration', component: Registration, name: 'registration' },
     { path: '/login', component: Login, name: 'login' },
+    { path: '/tickets', component: Tickets, name: 'tickets' },
     { path: '/recovery', component: Recovery, name: 'recovery' }
   ]
 });
