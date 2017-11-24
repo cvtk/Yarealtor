@@ -207,7 +207,7 @@
       },
 
       redirect(user) {
-        this.$router.push(this.$route.query.redirect || { name: 'user', params: { page: user.uid } });
+        this.$router.push(this.$route.query.redirect || { name: 'user', params: { page: user.page } });
       }
     }
   }

@@ -215,7 +215,7 @@
     },
     methods: {
       sendResetEmail() {
-        let actionCodeSettings = { url: 'http://' + document.domain + '/login' }
+        let actionCodeSettings = { url: 'https://' + document.domain + '/login' }
         console.log(actionCodeSettings.url)
         firebase.auth().sendPasswordResetEmail(this.email, actionCodeSettings)
           .then( () => { this.emailSended = true } )

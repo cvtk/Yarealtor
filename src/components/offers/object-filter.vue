@@ -22,7 +22,7 @@
           @input="filterBy"
           type="number"
           :min=0
-          step=10000
+          step=5000
           :placeholder="mdl.price_from.title"
           v-model="general.price_from">
         </ui-textbox>
@@ -32,7 +32,7 @@
           @input="filterBy"
           type="number"
           :min=0
-          step=10000
+          step=5000
           :placeholder="mdl.price_to.title"
           v-model="general.price_to">
         </ui-textbox>
