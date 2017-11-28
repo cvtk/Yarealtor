@@ -34,7 +34,7 @@
           <div :class="$style.row__item">
             <default-text label="Должность" v-model="local.position" />
           </div>
-          <div :class="$style.row__item">
+          <div :class="$style.row__item" v-if="isModer || isAdmin">
             <default-text label="Страница на портале" v-model="local.page" />
           </div>
         </div>

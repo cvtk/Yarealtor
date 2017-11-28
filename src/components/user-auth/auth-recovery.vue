@@ -42,7 +42,7 @@
               <div :class="$style.row__icon">
                 <img :class="$style.icon" src="./done.svg" alt="Готово" />
               </div>
-              <div :class="$style.row__message">На адрес Вашей электронной почты отправлено письмо с дальнейшими инструкциями по восстановлению</div>
+              <div :class="$style.row__message">В течении 15 минут на адрес Вашей электронной почты будет отправлено письмо с дальнейшими инструкциями по восстановлению</div>
             </div>
             <div :class="$style.modal__row">
               <div :class="$style.row__submit">

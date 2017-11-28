@@ -44,43 +44,43 @@
             <span :class="$style.item__value">{{ map(request.district) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item">
+        <li :class="$style.list__item"  v-if="isNotEmpty(request.area_from) || isNotEmpty(request.area_to)">
           <div :class="$style.item">
             <span :class="$style.item__title">Площадь:</span>
             <span :class="$style.item__value">{{ request.area_from }} − {{ request.area_to }} м²</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!request.rooms.length">
+        <li :class="$style.list__item" v-if="isNotEmpty(request.rooms)">
           <div :class="$style.item">
             <span :class="$style.item__title">Комнат:</span>
             <span :class="$style.item__value">{{ map(request.rooms) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!request.type.length">
+        <li :class="$style.list__item" v-if="isNotEmpty(request.type)">
           <div :class="$style.item">
             <span :class="$style.item__title">Тип:</span>
             <span :class="$style.item__value">{{ map(request.type) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!request.material.length">
+        <li :class="$style.list__item" v-if="isNotEmpty(request.material)">
           <div :class="$style.item">
             <span :class="$style.item__title">Материал дома:</span>
             <span :class="$style.item__value">{{ map(request.material) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!request.furnish.length">
+        <li :class="$style.list__item" v-if="isNotEmpty(request.furnish)">
           <div :class="$style.item">
             <span :class="$style.item__title">Отделка:</span>
             <span :class="$style.item__value">{{ map(request.furnish) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!request.bath.length">
+        <li :class="$style.list__item" v-if="isNotEmpty(request.bath)">
           <div :class="$style.item">
             <span :class="$style.item__title">Санузел:</span>
             <span :class="$style.item__value">{{ map(request.bath) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item" v-if="!!request.floor.value">
+        <li :class="$style.list__item" v-if="isNotEmpty(request.floor)">
           <div :class="$style.item">
             <span :class="$style.item__title">Этаж:</span>
             <span :class="$style.item__value">{{ request.floor.label }}</span>
@@ -119,6 +119,9 @@
       }
     },
     methods: {
+      isNotEmpty(value) {
+        return typeof value !== 'undefined' && !!value.length && !!value;
+      },
       map(arr) {
         return arr.map( e => e.label ).join(', ');
       }

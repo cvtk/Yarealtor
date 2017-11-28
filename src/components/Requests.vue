@@ -272,12 +272,9 @@
 </style>
 
 <script>
-  import AppLoader from './app-loader.vue';
   import firebase from '../firebase.js';
   import ListLayoutItem from './requests/list-layout-item.vue';
-  import AppInput from './modules/inputs.vue';
-  import RequestsFilter from './apartments/requests-filter.vue'
-  import Breadcrumbs from './page-blocks/breadcrumbs.vue';
+  import RequestsFilter from './requests/object-filter.vue'
 
   const requestsRef = firebase.database().ref('requests');
   const companiesRef = firebase.database().ref('companies');
@@ -285,13 +282,13 @@
   export default {
     name: 'requests',
     props: ['auth', 'ghostMode', 'user'],
-    components: { AppLoader, ListLayoutItem, AppInput, RequestsFilter, Breadcrumbs },
+    components: { ListLayoutItem, RequestsFilter },
     data() {
       return {
         dataReady: false,
         currentLayout: true,
-        filterToggled: false,
-        authorFilter: 'my',
+        filterToggled: true,
+        authorFilter: 'all',
         ref: '',
         requests: {},
         companies: {},

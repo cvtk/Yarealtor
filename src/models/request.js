@@ -420,7 +420,364 @@ fields.land = {
   },
 }
 
+fields.apartment_lease = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
+    ]
+  },
+  rooms: { title: 'Комнат', default: [], 
+    options: [
+      { label: '1', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 },
+      { label: '>7', value: 7 },
+    ]
+  },
+  roomFurniture: { title: 'Наличие мебели', default: [], 
+    options: [
+      { label: 'да', value: true },
+      { label: 'нет', value: false }
+    ]
+  },
+  infra: { title: 'Инфраструктура', default: [], 
+    options: [
+      { label: 'Телефон', value: 1 },
+      { label: 'Интернет', value: 2 },
+      { label: 'Телевизор', value: 3 },
+      { label: 'Стиральная машина', value: 4 },
+      { label: 'Холодильник', value: 5 },
+      { label: 'Интернет', value: 6 },
+    ]
+  },
+  leaseType: { title: 'Тип аренды', default: [], 
+    options: [
+      { label: 'долгосрочная', value: 1 },
+      { label: 'краткосрочная', value: 2 },
+      { label: 'на сутки', value: 3 }
+    ]
+  },
+  conditions: { title: 'Условия', default: [], 
+    options: [
+      { label: 'Только для славян', value: 1 },
+      { label: 'Местная регистрация', value: 2 },
+      { label: 'С детьми', value: 3 },
+      { label: 'С животными', value: 4 },
+      { label: 'Для командировки', value: 5 }
+    ]
+  },
 
+  area_from: { title: 'Площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  type: { title: 'Тип дома', default: [], 
+    options: [
+      { label: 'вторичное', value: 1 },
+      { label: 'новостройка', value: 2 }
+    ]
+  },
+  floor: { title: 'Этаж', default: [], 
+    options: [
+      { label: 'первый', value: 1 },
+      { label: 'не первый', value: 2 },
+      { label: 'не последний', value: 3 },
+      { label: 'кроме крайних', value: 4 }
+    ]
+  },
+}
+
+fields.room_lease = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
+    ]
+  },
+  rooms: { title: 'Всего комнат', default: [], 
+    options: [
+      { label: '1', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 },
+      { label: '>7', value: 7 },
+    ]
+  },
+  roomFurniture: { title: 'Наличие мебели', default: [], 
+    options: [
+      { label: 'да', value: true },
+      { label: 'нет', value: false }
+    ]
+  },
+  infra: { title: 'Инфраструктура', default: [], 
+    options: [
+      { label: 'Телефон', value: 1 },
+      { label: 'Интернет', value: 2 },
+      { label: 'Телевизор', value: 3 },
+      { label: 'Стиральная машина', value: 4 },
+      { label: 'Холодильник', value: 5 },
+      { label: 'Интернет', value: 6 },
+    ]
+  },
+  leaseType: { title: 'Тип аренды', default: [], 
+    options: [
+      { label: 'долгосрочная', value: 1 },
+      { label: 'краткосрочная', value: 2 },
+      { label: 'на сутки', value: 3 }
+    ]
+  },
+  conditions: { title: 'Условия', default: [], 
+    options: [
+      { label: 'Только для славян', value: 1 },
+      { label: 'Местная регистрация', value: 2 },
+      { label: 'С детьми', value: 3 },
+      { label: 'С животными', value: 4 },
+      { label: 'Для командировки', value: 5 }
+    ]
+  },
+  accommodation: { title: 'Проживание', default: [], 
+    options: [
+      { label: 'с соседями', value: 1 },
+      { label: 'с хозяевами', value: 2 }
+    ]
+  },
+
+  area_from: { title: 'Площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  type: { title: 'Тип помещения', default: [], 
+    options: [
+      { label: 'в доме', value: 1 },
+      { label: 'в квартире', value: 2 },
+      { label: 'в коммуналке', value: 3 },
+      { label: 'в общежитии', value: 4 },
+      { label: 'коридорного типа', value: 5 }
+    ]
+  },
+  floor: { title: 'Этаж', default: [], 
+    options: [
+      { label: 'первый', value: 1 },
+      { label: 'не первый', value: 2 },
+      { label: 'не последний', value: 3 },
+      { label: 'кроме крайних', value: 4 }
+    ]
+  },
+}
+
+fields.commercial_lease = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
+    ]
+  },
+
+  area_from: { title: 'Площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  type: { title: 'Вид', default: [], 
+    options: [
+      { label: 'торговое', value: 1 },
+      { label: 'офисное', value: 2 },
+      { label: 'производственное', value: 3 },
+      { label: 'складское', value: 4 },
+      { label: 'готовый бизнес', value: 5 },
+      { label: 'земельный участок', value: 6 },
+      { label: 'квартиры под перевод', value: 7 }
+    ]
+  },
+  floor: { title: 'Этаж', default: [], 
+    options: [
+      { label: 'первый', value: 1 },
+      { label: 'не первый', value: 2 },
+      { label: 'не последний', value: 3 },
+      { label: 'кроме крайних', value: 4 }
+    ]
+  },
+  leaseType: { title: 'Тип аренды', default: [], 
+    options: [
+      { label: 'долгосрочная', value: 1 },
+      { label: 'краткосрочная', value: 2 },
+      { label: 'на сутки', value: 3 }
+    ]
+  },
+  roomFurniture: { title: 'Наличие мебели', default: [], 
+    options: [
+      { label: 'да', value: true },
+      { label: 'нет', value: false }
+    ]
+  },
+  infra: { title: 'Инфраструктура', default: [], 
+    options: [
+      { label: 'Телефон', value: 1 },
+      { label: 'Интернет', value: 2 },
+      { label: 'Пропускная система', value: 3 },
+      { label: 'Сигнализация охранная', value: 4 },
+      { label: 'Сигнализация пожарная', value: 5 }
+    ]
+  },
+}
+
+fields.cottage_lease = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
+    ]
+  },
+  rooms: { title: 'Комнат в доме', default: [], 
+    options: [
+      { label: '1', value: 1 },
+      { label: '2', value: 2 },
+      { label: '3', value: 3 },
+      { label: '4', value: 4 },
+      { label: '5', value: 5 },
+      { label: '6', value: 6 },
+      { label: '>7', value: 7 },
+    ]
+  },
+  roomFurniture: { title: 'Наличие мебели', default: [], 
+    options: [
+      { label: 'да', value: true },
+      { label: 'нет', value: false }
+    ]
+  },
+  infra: { title: 'Инфраструктура', default: [], 
+    options: [
+      { label: 'Телефон', value: 1 },
+      { label: 'Интернет', value: 2 },
+      { label: 'Телевизор', value: 3 },
+      { label: 'Стиральная машина', value: 4 },
+      { label: 'Холодильник', value: 5 },
+      { label: 'Интернет', value: 6 },
+    ]
+  },
+  leaseType: { title: 'Тип аренды', default: [], 
+    options: [
+      { label: 'долгосрочная', value: 1 },
+      { label: 'краткосрочная', value: 2 },
+      { label: 'на сутки', value: 3 }
+    ]
+  },
+  conditions: { title: 'Условия', default: [], 
+    options: [
+      { label: 'Только для славян', value: 1 },
+      { label: 'Местная регистрация', value: 2 },
+      { label: 'С детьми', value: 3 },
+      { label: 'С животными', value: 4 },
+      { label: 'Для командировки', value: 5 }
+    ]
+  },
+
+  area_from: { title: 'Площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  type: { title: 'Тип', default: [], 
+    options: [
+      { label: 'дача', value: 1 },
+      { label: 'дом', value: 2 },
+      { label: 'таунхаус', value: 3 }
+    ]
+  },
+  floor_from: { title: 'Этажность от', default: null, options: [] },
+
+  floor_to: { title: 'до', default: null, options: [] },
+
+  cottage_area_from: { title: 'Площадь участка от', default: null, options: [] },
+
+  cottage_area_to: { title: 'до', default: null, options: [] },
+}
+
+fields.garage_lease = {
+  locality: { title: 'Населенный пункт', default: '', options: [] },
+  localityType: { title: 'Тип населенного пункта', default: '', options: [] },
+  localityId: { title: 'Идентификатор населенного пункта', default: '', options: [] },
+  district: { title: 'Район', default: [], 
+    options: [
+      { label: 'Дзержинский', value: 1 },
+      { label: 'Заволжский', value: 2 },
+      { label: 'Кировский', value: 3 },
+      { label: 'Красноперекопский', value: 4 },
+      { label: 'Ленинский', value: 5 },
+      { label: 'Ярославский', value: 6 },
+      { label: 'Ярославская область', value: 7 },
+      { label: 'Фрунзенский', value: 8 }
+    ]
+  },
+  material: { title: 'Материал', default: [], 
+    options: [
+      { label: 'блоки', value: 1 },
+      { label: 'кирпич', value: 2 },
+      { label: 'металл', value: 3 }
+    ]
+  },
+
+  leaseType: { title: 'Тип аренды', default: [], 
+    options: [
+      { label: 'долгосрочная', value: 1 },
+      { label: 'краткосрочная', value: 2 },
+      { label: 'на сутки', value: 3 }
+    ]
+  },
+
+  area_from: { title: 'Площадь от', default: null, options: [] },
+
+  area_to: { title: 'до', default: null, options: [] },
+
+  type: { title: 'Тип', default: [], 
+    options: [
+      { label: 'в ГСК', value: 1 },
+      { label: 'в жилом доме', value: 2 },
+      { label: 'отдельно стоящее', value: 3 },
+      { label: 'парковочное место', value: 4 }
+    ]
+  },
+}
 export default {
 
   model(modelsSet) {

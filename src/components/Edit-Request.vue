@@ -71,36 +71,63 @@
                   </div>
                 </div>
               </div>
-              <div :class="$style.col_resp">
-                <request-apartment 
+              <div :class="$style.col_resp" v-if="request.op.value === 1">
+                <sale-apartment 
                   @stateChange="onStateChange"
                   v-model="request"
                   v-if="request.object.value === 1"
                 />
-                <request-room 
+                <sale-room 
                   @stateChange="onStateChange"
                   v-model="request"
                   v-if="request.object.value === 2"
                 />
-                <request-commercial
+                <sale-commercial
                   @stateChange="onStateChange"
                   v-model="request"
                   v-if="request.object.value === 3"
                 />
-                <request-cottage
+                <sale-cottage
                   @stateChange="onStateChange"
                   v-model="request"
                   v-if="request.object.value === 4"
                 />
-                <request-garage
+                <sale-garage
                   @stateChange="onStateChange"
                   v-model="request"
                   v-if="request.object.value === 5"
                 />
-                <request-land
+                <sale-land
                   @stateChange="onStateChange"
                   v-model="request"
                   v-if="request.object.value === 6"
+                />
+              </div>
+              <div :class="$style.col_resp" v-else-if="request.op.value === 2">
+                <lease-apartment 
+                  @stateChange="onStateChange"
+                  v-model="request"
+                  v-if="request.object.value === 1"
+                />
+                <lease-room 
+                  @stateChange="onStateChange"
+                  v-model="request"
+                  v-if="request.object.value === 2"
+                />
+                <lease-commercial
+                  @stateChange="onStateChange"
+                  v-model="request"
+                  v-if="request.object.value === 3"
+                />
+                <lease-cottage
+                  @stateChange="onStateChange"
+                  v-model="request"
+                  v-if="request.object.value === 4"
+                />
+                <lease-garage
+                  @stateChange="onStateChange"
+                  v-model="request"
+                  v-if="request.object.value === 5"
                 />
               </div>
             </div>
@@ -282,22 +309,24 @@
   import mdl from '../models/request.js';
   import Firebase from 'firebase';
   import firebase from '../firebase.js';
-  import AppLoader from './app-loader.vue';
-  import Breadcrumbs from './page-blocks/breadcrumbs.vue'
-  import Toolbar from './page-blocks/toolbar.vue'
-  import RequestApartment from './new-request/request-apartment.vue';
-  import RequestRoom from './new-request/request-room.vue';
-  import RequestCommercial from './new-request/request-commercial.vue';
-  import RequestCottage from './new-request/request-cottage.vue';
-  import RequestGarage from './new-request/request-garage.vue';
-  import RequestLand from './new-request/request-land.vue';
+  import SaleApartment from './new-request/sale-apartment.vue';
+  import SaleRoom from './new-request/sale-room.vue';
+  import SaleCommercial from './new-request/sale-commercial.vue';
+  import SaleCottage from './new-request/sale-cottage.vue';
+  import SaleGarage from './new-request/sale-garage.vue';
+  import SaleLand from './new-request/sale-land.vue';
+  import LeaseApartment from './new-request/lease-apartment.vue';
+  import LeaseRoom from './new-request/lease-room.vue';
+  import LeaseCommercial from './new-request/lease-commercial.vue';
+  import LeaseCottage from './new-request/lease-cottage.vue';
+  import LeaseGarage from './new-request/lease-garage.vue';
 
   const requestsRef = firebase.database().ref('requests');
 
   export default {
-    name: 'new-request',
+    name: 'edit-request',
     props: ['auth', 'user'],
-    components: { AppLoader, Breadcrumbs, Toolbar, RequestApartment, RequestRoom, RequestCommercial, RequestCottage, RequestGarage, RequestLand },
+    components: { SaleApartment, SaleRoom, SaleCommercial, SaleCottage, SaleGarage, SaleLand, LeaseApartment, LeaseRoom, LeaseCommercial, LeaseCottage, LeaseGarage },
     data() {
       return {
         dataReady: false,

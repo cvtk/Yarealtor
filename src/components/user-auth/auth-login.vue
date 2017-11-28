@@ -201,13 +201,23 @@
               case 'auth/user-disabled': this.notify = 'Пользователь заблокирован'; break;
               case 'auth/user-not-found': this.notify = 'Пользователь не найден'; break;
               case 'auth/wrong-password': this.notify = 'Неверный пароль'; break;
-              default: this.notify = 'Сетевая ошибка (loginUser)';
+              default: this.notify = 'Сетевая ошибка (loginUser, ' + error.code + '): ' + error.message;
             }
           })
       },
 
-      redirect(user) {
-        this.$router.push(this.$route.query.redirect || { name: 'user', params: { page: user.page } });
+      redirect(auth) {
+        firebase.database().ref('users').child(auth.uid).once('value')
+          .then( snapshot => {
+            let user = snapshot.val();
+            if ( user.deleted ) {
+              firebase.auth().signOut();
+              this.notify = 'Аккаунт ' + auth.email + ' удален. Обратитесь к администратору портала';
+              return;
+            }
+            this.$router.push(this.$route.query.redirect || { name: 'user', params: { page: user.page } });
+          })
+          .catch( error => { this.notify = 'Сетевая ошибка (loginUser, ' + error.code + '): ' + error.message })
       }
     }
   }

@@ -53,7 +53,7 @@
             <div :class="$style.main__settings">
               <profile-settings :profile="local" :user="user" />
               <div :class="$style.settings__save">
-                <default-button label="Сохранить" @click="saveUser" />
+                <ui-button :loading="savingUser" @click="saveUser">Сохранить</ui-button>
               </div>
             </div>
           </div>
@@ -64,6 +64,82 @@
   </div>
   <app-loader v-else></app-loader>
 </template>
+
+<script>
+  import firebase from '../firebase.js';
+  import Firebase from 'firebase';
+  import AppInput from './modules/inputs.vue';
+  import AppUploadImage from './modules/upload-images.vue';
+  import TimelinePost from './timeline/timeline-post.vue';
+  import TimelineNewPost from './timeline/timeline-new-post.vue';
+  import ProfileSettings from './profile/profile-settings.vue';
+  import ProfileOverview from './profile/profile-overview.vue';
+
+  const usersRef = firebase.database().ref('users');
+  const companiesRef = firebase.database().ref('companies');
+  const commentsRef = firebase.database().ref('comments');
+  const postsRef = firebase.database().ref('posts');
+
+  export default {
+    name: 'profile',
+    props: ['auth', 'user'],
+    components: { AppUploadImage, TimelinePost, TimelineNewPost, ProfileSettings, ProfileOverview },
+    data() {
+      return { dataReady: false, currentTab: 'profile', profile: {}, local: {}, posts: {}, savingUser: false }
+    },
+    destroyed() {
+      // \\
+    },
+    created() {
+      usersRef.orderByChild('page').equalTo(this.$route.params.page).once('value', (data) => {
+        if ( data.exists() ) {
+          data.forEach( (profile) => {
+            this.profile = profile.val();
+            this.local = profile.val();
+            companiesRef.child(this.profile.company).once('value', company => {
+              this.$set(this.profile, 'company', company.val());
+            })
+            postsRef.orderByChild('author').equalTo(this.profile.key).on('value', posts => {
+              posts.forEach( post => {
+                this.$set( this.posts, post.key, post.val() );
+              });
+              this.dataReady = true;
+            })
+          });
+        }
+        else {
+          this.$router.push({ name: '404', query: { redirect: this.$route.params.page } });
+        }
+      });
+      postsRef.on('child_removed', post => this.$delete(this.posts, post.key));
+    },
+    computed: {
+      postsByTimestamp: function() {
+        let arr = Object.keys(this.posts).map(key => this.posts[key] );
+        return arr.sort((x, y) => y.created - x.created);
+      },
+      isAdmin() { return ( this.user.role <= 5 && this.user.company.key === this.profile.company.key ) || this.user.role === 1 },
+      isUser() { return this.user.key === this.profile.key }
+    },
+    methods: {
+      saveUser() {
+        this.savingUser = true;
+        usersRef.child(this.profile.key).update(this.local)
+          .then( ()=> {
+            this.$router.push({ name: 'user', params: { page: this.local.page } });
+            this.currentTab = 'profile';
+            this.savingUser = false;
+          })
+      },
+      updProfileField(el) {
+        usersRef.child(this.profile['.key']).update({[el.name]: el.value}, () => {
+          el.value = '';
+          el.blur();
+        });
+      }
+    }
+  }
+</script>
 
 <style lang="scss" module>
 
@@ -246,80 +322,3 @@
   }
     
 </style>
-
-<script>
-  import firebase from '../firebase.js';
-  import Firebase from 'firebase';
-  import AppInput from './modules/inputs.vue';
-  import AppUploadImage from './modules/upload-images.vue';
-  import TimelinePost from './timeline/timeline-post.vue';
-  import TimelineNewPost from './timeline/timeline-new-post.vue';
-  import DefaultText from './default-inputs/default-text.vue';
-  import DefaultNumber from './default-inputs/default-number.vue';
-  import DefaultButton from './default-inputs/default-button.vue';
-  import ProfileSettings from './profile/profile-settings.vue';
-  import ProfileOverview from './profile/profile-overview.vue';
-
-  const usersRef = firebase.database().ref('users');
-  const companiesRef = firebase.database().ref('companies');
-  const commentsRef = firebase.database().ref('comments');
-  const postsRef = firebase.database().ref('posts');
-
-  export default {
-    name: 'profile',
-    props: ['auth', 'user'],
-    components: { AppUploadImage, TimelinePost, TimelineNewPost, DefaultText, DefaultNumber, DefaultButton, ProfileSettings, ProfileOverview },
-    data() {
-      return { dataReady: false, currentTab: 'profile', profile: {}, local: {}, posts: {} }
-    },
-    destroyed() {
-      // \\
-    },
-    created() {
-      usersRef.orderByChild('page').equalTo(this.$route.params.page).once('value', (data) => {
-        if ( data.exists() ) {
-          data.forEach( (profile) => {
-            this.profile = profile.val();
-            this.local = profile.val();
-            companiesRef.child(this.profile.company).once('value', company => {
-              this.$set(this.profile, 'company', company.val());
-            })
-            postsRef.orderByChild('author').equalTo(this.profile.key).on('value', posts => {
-              posts.forEach( post => {
-                this.$set( this.posts, post.key, post.val() );
-              });
-              this.dataReady = true;
-            })
-          });
-        }
-        else {
-          this.$router.push({ name: '404', query: { redirect: this.$route.params.page } });
-        }
-      });
-      postsRef.on('child_removed', post => this.$delete(this.posts, post.key));
-    },
-    computed: {
-      postsByTimestamp: function() {
-        let arr = Object.keys(this.posts).map(key => this.posts[key] );
-        return arr.sort((x, y) => y.created - x.created);
-      },
-      isAdmin() { return ( this.user.role <= 5 && this.user.company.key === this.profile.company.key ) || this.user.role === 1 },
-      isUser() { return this.user.key === this.profile.key }
-    },
-    methods: {
-      saveUser() {
-        usersRef.child(this.profile.key).update(this.local)
-          .then( ()=> {
-            this.$router.push({ name: 'user', params: { page: this.local.page } });
-            this.currentTab = 'profile'; 
-          })
-      },
-      updProfileField(el) {
-        usersRef.child(this.profile['.key']).update({[el.name]: el.value}, () => {
-          el.value = '';
-          el.blur();
-        });
-      }
-    }
-  }
-</script>

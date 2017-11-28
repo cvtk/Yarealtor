@@ -70,36 +70,63 @@
                   </div>
                 </div>
               </div>
-              <div :class="$style.col_resp">
-                <request-apartment 
+              <div :class="$style.col_resp" v-if="general.op.value === 1">
+                <sale-apartment 
                   @stateChange="onStateChange"
                   v-model="object"
                   v-if="general.object.value === 1"
                 />
-                <request-room 
+                <sale-room 
                   @stateChange="onStateChange"
                   v-model="object"
                   v-if="general.object.value === 2"
                 />
-                <request-commercial
+                <sale-commercial
                   @stateChange="onStateChange"
                   v-model="object"
                   v-if="general.object.value === 3"
                 />
-                <request-cottage
+                <sale-cottage
                   @stateChange="onStateChange"
                   v-model="object"
                   v-if="general.object.value === 4"
                 />
-                <request-garage
+                <sale-garage
                   @stateChange="onStateChange"
                   v-model="object"
                   v-if="general.object.value === 5"
                 />
-                <request-land
+                <sale-land
                   @stateChange="onStateChange"
                   v-model="object"
                   v-if="general.object.value === 6"
+                />
+              </div>
+              <div :class="$style.col_resp" v-else-if="general.op.value === 2">
+                <lease-apartment 
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 1"
+                />
+                <lease-room 
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 2"
+                />
+                <lease-commercial
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 3"
+                />
+                <lease-cottage
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 4"
+                />
+                <lease-garage
+                  @stateChange="onStateChange"
+                  v-model="object"
+                  v-if="general.object.value === 5"
                 />
               </div>
             </div>
@@ -119,6 +146,147 @@
     </div>
   </div>
 </template>
+
+<script>
+
+  import mdl from '../models/request.js';
+  import Firebase from 'firebase';
+  import firebase from '../firebase.js';
+  import SaleApartment from './new-request/sale-apartment.vue';
+  import SaleRoom from './new-request/sale-room.vue';
+  import SaleCommercial from './new-request/sale-commercial.vue';
+  import SaleCottage from './new-request/sale-cottage.vue';
+  import SaleGarage from './new-request/sale-garage.vue';
+  import SaleLand from './new-request/sale-land.vue';
+  import LeaseApartment from './new-request/lease-apartment.vue';
+  import LeaseRoom from './new-request/lease-room.vue';
+  import LeaseCommercial from './new-request/lease-commercial.vue';
+  import LeaseCottage from './new-request/lease-cottage.vue';
+  import LeaseGarage from './new-request/lease-garage.vue';
+
+  const requestsRef = firebase.database().ref('requests');
+
+  export default {
+    name: 'new-request',
+    props: ['auth', 'user'],
+    components: { SaleApartment, SaleRoom, SaleCommercial, SaleCottage, SaleGarage, SaleLand, LeaseApartment, LeaseRoom, LeaseCommercial, LeaseCottage, LeaseGarage },
+    data() {
+      return {
+        dataReady: false,
+        mdl: mdl.model(['meta', 'general']),
+        general: {},
+        meta: {},
+        object: {},
+        saving: false,
+        objectState: false
+      }
+    },
+    created() {
+      this.initData();
+      this.dataReady = true;
+    },
+    watch: {
+      'general.object': function(object) {
+        this.initModel();
+      },
+      'general.op': function(object) {
+        this.initModel();
+      }
+    },
+
+    computed: {
+      validation: function () {
+        return {
+          op: !!this.general.op.value,
+          object: !!this.general.object.value,
+          price_from: parseInt(this.general.price_from) > 1000,
+          price_to: parseInt(this.general.price_to) > parseInt(this.general.price_from)
+        }
+      },
+      isValid: function () {
+        let validation = this.validation
+        return Object.keys(validation).every(function (key) {
+          return validation[key]
+        }) && this.objectState;
+      },
+      currentField: function() {
+        let validation = this.validation;
+        for ( let key in validation ) {
+          if ( !validation[key] ) return key;
+        }
+      }
+    },
+
+    methods: {
+      onStateChange(state) {
+        this.objectState = state;
+      },
+      getModelName(op, object) {
+        if ( op === 1 ) {
+          return [ '', 'apartment', 'room', 'commercial', 'cottage', 'garage', 'land' ][object];
+        } else {
+          return [ '', 'apartment_lease', 'room_lease', 'commercial_lease', 'cottage_lease', 'garage_lease', 'land_lease' ][object];
+        }
+      },
+      initData() {
+        this.general = mdl.init('general');
+        this.meta = mdl.init('meta');
+        this.meta.author = this.user.key;
+        this.meta.company = this.user.company.key;
+        this.initModel();
+      },
+      initModel() {
+        let op = this.general.op.value,
+            object = this.general.object.value;
+        let modelName = this.getModelName(op, object);
+        this.object = mdl.init(modelName);
+        this.object.locality = 'Ярославль';
+        this.object.localityId = '7600000100000';
+        this.object.localityType = 'г';
+      },
+      onSave() {
+        if ( !this.isValid ) {
+          this.$parent.$refs.notify.createSnackbar({
+            message: 'Заполните все необходимые поля (отмечены красным индикатором)',
+          });
+          return;
+        }
+        this.saving = true;
+        let unix = Firebase.database.ServerValue.TIMESTAMP;
+        this.meta.key = this.meta.key || requestsRef.push().key;
+
+        if ( !this.meta.created ) {
+          this.meta.created = unix;
+        } else {
+          this.meta.modified = unix;
+        }
+
+        let prep = {};
+        Object.assign(prep, this.meta, this.general, this.object);
+
+        for ( let field in prep ) {
+          if ( typeof prep[field] !== 'undefined' && typeof prep[field] === 'object' ) {
+            if ( prep[field].length === 0 ) { prep[field] = '' }
+          }
+        }
+
+        requestsRef.child(this.meta.key).update(prep)
+          .then( () => {
+            this.$parent.$refs.notify.createSnackbar({
+              message: 'Создана новая заявка',
+            });
+            this.initData();
+            this.saving = false;
+            this.$router.push({name: 'requests'});
+          })
+          .catch( error => console.log('Request save error: ', error) );
+        
+      },
+
+    }
+  }
+</script>
+
 <style>
   .fade-enter-active, .fade-leave-active { transition: opacity .5s }
   .fade-enter, .fade-leave-to { opacity: 0 }
@@ -275,129 +443,3 @@
   }
 
 </style>
-
-<script>
-
-  import mdl from '../models/request.js';
-  import Firebase from 'firebase';
-  import firebase from '../firebase.js';
-  import AppLoader from './app-loader.vue';
-  import Breadcrumbs from './page-blocks/breadcrumbs.vue'
-  import Toolbar from './page-blocks/toolbar.vue'
-  import RequestApartment from './new-request/request-apartment.vue';
-  import RequestRoom from './new-request/request-room.vue';
-  import RequestCommercial from './new-request/request-commercial.vue';
-  import RequestCottage from './new-request/request-cottage.vue';
-  import RequestGarage from './new-request/request-garage.vue';
-  import RequestLand from './new-request/request-land.vue';
-
-  const requestsRef = firebase.database().ref('requests');
-
-  export default {
-    name: 'new-request',
-    props: ['auth', 'user'],
-    components: { AppLoader, Breadcrumbs, Toolbar, RequestApartment, RequestRoom, RequestCommercial, RequestCottage, RequestGarage, RequestLand },
-    data() {
-      return {
-        dataReady: false,
-        mdl: mdl.model(['meta', 'general']),
-        general: {},
-        meta: {},
-        object: {},
-        saving: false,
-        objectState: false
-      }
-    },
-    created() {
-      this.initData();
-      this.dataReady = true;
-    },
-    watch: {
-      'general.object': function(object) {
-        this.initModel(object);
-      }
-    },
-
-    computed: {
-      validation: function () {
-        return {
-          op: !!this.general.op.value,
-          object: !!this.general.object.value,
-          price_from: parseInt(this.general.price_from) > 1000,
-          price_to: parseInt(this.general.price_to) > parseInt(this.general.price_from)
-        }
-      },
-      isValid: function () {
-        let validation = this.validation
-        return Object.keys(validation).every(function (key) {
-          return validation[key]
-        }) && this.objectState;
-      },
-      currentField: function() {
-        let validation = this.validation;
-        for ( let key in validation ) {
-          if ( !validation[key] ) return key;
-        }
-      }
-    },
-
-    methods: {
-      onStateChange(state) {
-        this.objectState = state;
-      },
-      initData() {
-        this.general = mdl.init('general');
-        this.meta = mdl.init('meta');
-        this.meta.author = this.user.key;
-        this.meta.company = this.user.company.key;
-        this.initModel(this.general.object);
-      },
-      initModel(object) {
-        let type = [ '', 'apartment', 'room', 'commercial', 'cottage', 'garage', 'land' ][object.value];
-        this.object = mdl.init(type);
-        this.object.locality = 'Ярославль';
-        this.object.localityId = '7600000100000';
-        this.object.localityType = 'г';
-      },
-      onSave() {
-        if ( !this.isValid ) {
-          this.$parent.$refs.notify.createSnackbar({
-            message: 'Заполните все необходимые поля (отмечены красным индикатором)',
-          });
-          return;
-        }
-        this.saving = true;
-        let unix = Firebase.database.ServerValue.TIMESTAMP;
-        this.meta.key = this.meta.key || requestsRef.push().key;
-
-        if ( !this.meta.created ) {
-          this.meta.created = unix;
-        } else {
-          this.meta.modified = unix;
-        }
-
-        let prep = {};
-        Object.assign(prep, this.meta, this.general, this.object);
-
-        for ( let field in prep ) {
-          if ( typeof prep[field] !== 'undefined' && typeof prep[field] === 'object' ) {
-            if ( prep[field].length === 0 ) { prep[field] = '' }
-          }
-        }
-
-        requestsRef.child(this.meta.key).update(prep)
-          .then( () => {
-            this.$parent.$refs.notify.createSnackbar({
-              message: 'Создана новая заявка',
-            });
-            this.initData();
-            this.saving = false;
-            this.$router.push({name: 'requests'});
-          })
-          .catch( error => console.log('Request save error: ', error) );
-        
-      },
-
-    }
-  }
-</script>
