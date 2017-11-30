@@ -89,13 +89,18 @@
         <li :class="$style.list__item" v-if="isNotEmpty(request.roomFurniture)">
           <div :class="$style.item">
             <span :class="$style.item__title">Наличие мебели:</span>
-            <span :class="$style.item__value">{{ request.roomFurniture.label }}</span>
+            <span :class="$style.item__value">{{ (request.roomFurniture.length >= 2)? 'любое': map(request.roomFurniture) }}</span>
           </div>
         </li>
         <li :class="$style.list__item" v-if="isNotEmpty(request.leaseType)">
           <div :class="$style.item">
             <span :class="$style.item__title">Тип аренды:</span>
             <span :class="$style.item__value">{{ request.leaseType.label }}</span>
+          </div>
+        </li>
+        <li :class="$style.list__item" v-if="isNotEmpty(request.infra)">
+          <div :class="$style.item">
+            <span :class="$style.item__value_wo_title">Дополнительно: {{ map(request.infra) }}</span>
           </div>
         </li>
       </ul>
@@ -132,7 +137,8 @@
     },
     methods: {
       isNotEmpty(value) {
-        return typeof value !== 'undefined' && !!value.length && !!value;
+        if ( typeof(value) === 'object' ) return !( Object.keys(value).length === 0 && value.constructor === Object );
+        return typeof(value) !== 'undefined' && !!value.length && !!value;
       },
       map(arr) {
         return arr.map( e => e.label ).join(', ');

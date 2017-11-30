@@ -4,6 +4,12 @@ const functions = require('firebase-functions');
 const mkdirp = require('mkdirp-promise');
 // Include a Service Account Key to use a Signed URL
 const gcs = require('@google-cloud/storage')();
+gcs.interceptors.push({
+    request: function(reqOpts) {
+        reqOpts.forever = false
+        return reqOpts
+    }
+});
 const admin = require('firebase-admin');
 admin.initializeApp(functions.config().firebase);
 const spawn = require('child-process-promise').spawn;
@@ -59,7 +65,7 @@ exports.generateThumbnail = functions.storage.object().onChange(event => {
   return mkdirp(tempLocalDir).then(() => {
     return file.download({destination: tempLocalFile});
   }).then(() => {
-    if ( fs.existsSync(tempLogoPath) ) return;
+    //if ( fs.existsSync(tempLogoPath) ) return;
     console.log('Downloading to: ', tempLogoPath);
     return logo.download({destination: tempLogoPath});
   }).catch((err) => {

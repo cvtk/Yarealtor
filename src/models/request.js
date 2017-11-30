@@ -42,9 +42,9 @@ fields.apartment = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
   rooms: { title: 'Комнат', default: [], 
@@ -116,9 +116,9 @@ fields.room = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
   rooms: { title: 'Всего комнат', default: [], 
@@ -193,9 +193,9 @@ fields.commercial = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
 
@@ -235,9 +235,9 @@ fields.cottage = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
 
@@ -332,9 +332,9 @@ fields.garage = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
 
@@ -371,9 +371,9 @@ fields.land = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
   type: { title: 'Тип', default: [], 
@@ -431,9 +431,9 @@ fields.apartment_lease = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
   rooms: { title: 'Комнат', default: [], 
@@ -459,8 +459,7 @@ fields.apartment_lease = {
       { label: 'Интернет', value: 2 },
       { label: 'Телевизор', value: 3 },
       { label: 'Стиральная машина', value: 4 },
-      { label: 'Холодильник', value: 5 },
-      { label: 'Интернет', value: 6 },
+      { label: 'Холодильник', value: 5 }
     ]
   },
   leaseType: { title: 'Тип аренды', default: [], 
@@ -511,9 +510,9 @@ fields.room_lease = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
   rooms: { title: 'Всего комнат', default: [], 
@@ -539,8 +538,7 @@ fields.room_lease = {
       { label: 'Интернет', value: 2 },
       { label: 'Телевизор', value: 3 },
       { label: 'Стиральная машина', value: 4 },
-      { label: 'Холодильник', value: 5 },
-      { label: 'Интернет', value: 6 },
+      { label: 'Холодильник', value: 5 }
     ]
   },
   leaseType: { title: 'Тип аренды', default: [], 
@@ -600,9 +598,9 @@ fields.commercial_lease = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
 
@@ -664,9 +662,9 @@ fields.cottage_lease = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
   rooms: { title: 'Комнат в доме', default: [], 
@@ -744,9 +742,9 @@ fields.garage_lease = {
       { label: 'Кировский', value: 3 },
       { label: 'Красноперекопский', value: 4 },
       { label: 'Ленинский', value: 5 },
-      { label: 'Ярославский', value: 6 },
-      { label: 'Ярославская область', value: 7 },
-      { label: 'Фрунзенский', value: 8 }
+      { label: 'Фрунзенский', value: 6 },
+      { label: 'Ярославский', value: 7 },
+      { label: 'Ярославская область', value: 8 }
     ]
   },
   material: { title: 'Материал', default: [], 

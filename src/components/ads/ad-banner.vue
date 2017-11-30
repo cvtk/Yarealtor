@@ -11,8 +11,7 @@
     position: relative
     width: 100%
     height: auto
-    background-color: #fff
-    margin: 20px 0;
+    margin: 20px 0
 
   .banner__content
     text-align: center;
@@ -20,6 +19,7 @@
   .image
     display: block
     max-width: 100%
+    margin: 0 auto
 </style>
   
 <script>

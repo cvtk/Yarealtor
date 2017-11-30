@@ -63,7 +63,9 @@
       <div :class="$style.main__content">
         <request-content :request="request" :model="mdl" :ghostMode="ghostMode" />
       </div>
-    <div :class="$style.main__h_ad"><img src="/static/ad_2.gif" alt="" ></div>
+      <div :class="$style.main__content">
+        <app-ad-banner></app-ad-banner>
+      </div>
     <app-ad-sidebar :class="$style.main__ad"></app-ad-sidebar>
     </div>
   </div>

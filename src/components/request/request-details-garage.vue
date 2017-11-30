@@ -44,7 +44,7 @@
             <span :class="$style.item__value">{{ map(request.district) }}</span>
           </div>
         </li>
-        <li :class="$style.list__item">
+        <li :class="$style.list__item" v-if="isNotEmpty(request.area_from) || isNotEmpty(request.area_to)">
           <div :class="$style.item">
             <span :class="$style.item__title">Площадь:</span>
             <span :class="$style.item__value">{{ request.area_from }} − {{ request.area_to }} м²</span>
@@ -95,6 +95,9 @@
       }
     },
     methods: {
+      isNotEmpty(value) {
+        return typeof value !== 'undefined' && !!value.length && !!value;
+      },
       map(arr) {
         return arr.map( e => e.label ).join(', ');
       }

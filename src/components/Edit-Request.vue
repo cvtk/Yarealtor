@@ -400,7 +400,7 @@
               message: 'Заявка изменена',
             });
             this.saving = false;
-            this.$router.push({ name: 'requests'});
+            this.$router.push({ name: 'request', params: { id: this.request.key } });
           })
           .catch( error => {
             this.$parent.$refs.notify.createSnackbar({

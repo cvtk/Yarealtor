@@ -3,7 +3,7 @@
     <div :class="[$style.row, $style._shadow ]">
     
       <div :class="$style.offer__map">
-        <offer-map :address="[ request.locality ]" />
+        <offer-map :address="[ request.locality, request.district[0].label + ' район' ]" />
       </div>
       <div :class="$style.offer__details">
         <request-details-apartment :author="author" :request="request" :company="company" :ghostMode="ghostMode" v-if="request.object.value === 1" />
@@ -107,11 +107,6 @@
         dataReady: false,
         author: {},
         company: {}
-      }
-    },
-    computed: {
-      imagesAvailable() {
-        return !!this.offer.images.length;
       }
     },
     created() {

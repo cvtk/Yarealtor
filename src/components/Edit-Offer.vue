@@ -223,7 +223,7 @@
             this.$parent.$refs.notify.createSnackbar({
               message: 'Предложение изменено',
             });
-            this.$router.push({ name: 'offers'});
+            this.$router.push({ name: 'offer', params: { id: this.offer.key } });
           })
           .catch( error => {
             this.$parent.$refs.notify.createSnackbar({

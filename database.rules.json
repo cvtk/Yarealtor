@@ -3,7 +3,8 @@
     ".read": "auth != null",
     ".write": "auth != null",
     "companies": {
-      ".read": true
+      ".read": true,
+      ".indexOn": ["page"]
     },
     "users": {
       ".indexOn": ["company", "page"]

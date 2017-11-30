@@ -41,6 +41,7 @@
                             <ui-textbox floating-label
                               type="number"
                               :min=1000
+                              step=1000
                               :label="mdl.price_from.title"
                               v-model="general.price_from">
                             </ui-textbox>
@@ -49,7 +50,8 @@
                             <span :class="$style.validation" v-if="currentField === 'price_to'"></span>
                             <ui-textbox floating-label
                               type="number"
-                              :min=0
+                              :min=1000
+                              step=1000
                               :label="mdl.price_to.title"
                               v-model="general.price_to">
                             </ui-textbox>

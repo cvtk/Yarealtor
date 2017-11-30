@@ -28,9 +28,9 @@ let defs = {
       { value: 3, title: 'Кировский район' },
       { value: 4, title: 'Красноперекопский район' },
       { value: 5, title: 'Ленинский район' },
-      { value: 6, title: 'Ярославский район' },
-      { value: 7, title: 'Ярославская область' },
-      { value: 8, title: 'Фрунзенский район' }
+      { value: 6, title: 'Фрунзенский район' },
+      { value: 7, title: 'Ярославский район' },
+      { value: 8, title: 'Ярославская область' }
     ]
   },
   houseType : {
@@ -174,9 +174,9 @@ fields.address = {
       { value: 3, title: 'Кировский' },
       { value: 4, title: 'Красноперекопский' },
       { value: 5, title: 'Ленинский' },
-      { value: 6, title: 'Ярославский' },
-      { value: 7, title: 'Ярославская область' },
-      { value: 8, title: 'Фрунзенский' }
+      { value: 6, title: 'Фрунзенский' },
+      { value: 7, title: 'Ярославский' },
+      { value: 8, title: 'Ярославская область' }
     ]
   },
   waymark: { title: 'Ориентир', default: '', options: [] },

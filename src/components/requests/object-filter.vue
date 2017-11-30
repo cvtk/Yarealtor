@@ -23,17 +23,7 @@
           type="number"
           :min=0
           step=5000
-          :placeholder="mdl.price_from.title"
-          v-model="general.price_from">
-        </ui-textbox>
-      </div>
-      <div :class="$style.filter__option">
-        <ui-textbox
-          @input="filterBy"
-          type="number"
-          :min=0
-          step=5000
-          :placeholder="mdl.price_to.title"
+          placeholder="Цена до"
           v-model="general.price_to">
         </ui-textbox>
       </div>
@@ -216,8 +206,7 @@
       iterateFields(obj) {
         return this.isEqual( obj.op.value, this.general.op.value ) &&
                 this.isEqual( obj.object.value, this.general.object.value ) &&
-                this.inRange( obj.price_from, parseInt(this.general.price_from), parseInt(this.general.price_to) ) &&
-                this.inRange( obj.price_to, parseInt(this.general.price_from), parseInt(this.general.price_to) ) &&
+                ( parseInt(this.general.price_to) <= parseInt(obj.price_to) || this.isEmpty(this.general.price_to) ) &&
                 this.isEqual( obj.locality, this.object.locality ) &&
                 this.inArr( obj.district, this.object.district ) &&
                 this.inRange( obj.area_from, parseInt(this.object.area_from), parseInt(this.object.area_to) ) &&
