@@ -32,16 +32,16 @@
                 size="small"
                 tooltip="Проверить выгрузку"
                 tooltipPosition="top right"
-                :loading="currentCompany === index && feedIsLoading" 
+                :loading="currentCompanyIndex === index && feedIsLoading" 
               ></ui-icon-button></th>
             </tr>
           </tbody>
         </table>
 
-        <div :class="$style.content__data" v-if="!feedIsLoading && currentCompany !== null">
+        <div :class="$style.content__data" v-if="!feedIsLoading && currentCompanyIndex !== null">
           <div :class="$style.data">
             <div :class="$style.data__toolbar">
-              <toolbar :title="companies[currentCompany].name" sub="актуальные объекты (созданы менее 120 дней)"></toolbar>
+              <toolbar :title="companies[currentCompanyIndex].name" sub="актуальные объекты (созданы менее 120 дней)"></toolbar>
             </div>
             <table>
               <thead>
@@ -98,7 +98,7 @@
       return {
         dataReady: false,
         companies: [],
-        currentCompany: null,
+        currentCompanyIndex: null,
         feedIsLoading: false,
         offers: ''
       }
@@ -110,8 +110,18 @@
       companiesRef.orderByChild('yml').on('value', this.companiesWithYrl);
       
     },
-    computed: {},
+    computed: {
+      currentCompany() {
+        return this.companies[this.currentCompanyIndex];
+      }
+    },
     methods: {
+      isSamePerson(user, externalUser) {
+        let _phn = (number) => number.replace(/\D/g,'').slice(-10);
+        return user.email.toLowerCase() === externalUser.email.toLowerCase() ||
+                  _phn(user.mobile) === _phn(externalUser.phone) ||
+                     _phn(user.phone) === _phn(externalUser.phone);
+      },
       getAgentsList(offers) {
         return [...new Set(offers.map( offer => offer['sales-agent'].email ))];
       },
@@ -156,16 +166,28 @@
               .sort( (a, b) => this.sortFeedOffersByDate(a, b) )
               .filter( offer => this.offerIsActual(offer) );
 
-        this.getAgentsList(tmp).reduce( (email, promises) => {
-          
-        })
+        usersRef.orderByChild('company')
+          .equalTo(this.currentCompany.key).once('value')
+          .then(snapshot => {
+            let users = snapshot.val();
+            tmp = tmp.filter( offer => {
+              let externalUser = offer['sales-agent'];
+              for ( let key in users ) {
+                if (users.hasOwnProperty(key)) {
+                  let user = users[key];
+                  return isSamePerson(user, externalUser)
+                }
+                console.log(users[prop])
+              }
+            })
+          })
         
       },
       checkFeed(index) {
-        if ( this.currentCompany === index && this.feedIsLoading ) return false;
+        if ( this.currentCompanyIndex === index && this.feedIsLoading ) return false;
 
         this.feedIsLoading = true;
-        this.currentCompany = index;
+        this.currentCompanyIndex = index;
         let url = this.companies[index].yml;
         xhr(url, ( err, data ) => {
           if ( err ) {  console.log('checkFeed error: ' + err); return }
