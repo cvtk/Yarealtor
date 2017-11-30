@@ -24,6 +24,8 @@ import Tickets from './components/Tickets.vue';
 import AppAuth from './components/App-auth.vue';
 import NotFound from './components/App-404.vue';
 
+import YrlImport from './components/YrlImport.vue';
+
 // auth-components
 import Registration from './components/user-auth/auth-registration.vue';
 import Login from './components/user-auth/auth-login.vue';
@@ -68,7 +70,8 @@ const router = new VueRouter({
     { path: '/registration', component: Registration, name: 'registration' },
     { path: '/login', component: Login, name: 'login' },
     { path: '/tickets', component: Tickets, name: 'tickets' },
-    { path: '/recovery', component: Recovery, name: 'recovery' }
+    { path: '/recovery', component: Recovery, name: 'recovery' },
+    { path: '/yrl-import', component: YrlImport, name: 'yrl-import' }
   ]
 });
 
