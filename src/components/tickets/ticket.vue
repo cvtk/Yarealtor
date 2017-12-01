@@ -52,7 +52,7 @@
                 <ui-icon-button
                   v-if="!!ticket.targetCompany && !!ticket.status"
                   color="red"
-                  :tooltip="'Предупреждение компании: ' + company.name"
+                  :tooltip="'Предупреждение компании: ' + targetCompany.name"
                   tooltipPosition="bottom right"
                   icon="people"
                   size="small"

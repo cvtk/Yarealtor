@@ -37,7 +37,23 @@
             </tr>
           </tbody>
         </table>
-
+        <div :class="$style.content__data" v-if="!!logData.length && currentCompanyIndex !== null">
+          <div :class="$style.data">
+            <div :class="$style.data__toolbar">
+              <toolbar title="Журнал" sub=""></toolbar>
+            </div>
+            <table>
+              <thead><tr><th>№№</th><th>Время</th><th>Сообщений</th></tr></thead>
+              <tbody>
+                <tr v-for="( item, index ) in logData" :key="index">
+                  <th>{{ index }}</th>
+                  <th>{{ dateToLog(item.time) }}</th>
+                  <th>{{ item.message }}</th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div :class="$style.content__data" v-if="!feedIsLoading && currentCompanyIndex !== null">
           <div :class="$style.data">
             <div :class="$style.data__toolbar">
@@ -50,6 +66,12 @@
                   <th>ID</th>
                   <th>Создан</th>
                   <th>Изменен</th>
+                  <th>Тип предл.</th>
+                  <th>Категория</th>
+                  <th>Цена</th>
+                  <th>Город</th>
+                  <th>Улица</th>
+                  <th>Строение</th>
                   <th>Действия</th>
                 </tr>
               </thead>
@@ -57,8 +79,14 @@
                 <tr v-for="( offer, index ) in offers" :key="offer['_internal-id']">
                   <th>{{ index }}</th>
                   <th>{{ offer['_internal-id'] }}</th>
-                  <th>{{ dateToHuman(offer['creation-date']) }}</th>
-                  <th>{{ offer['last-update-date'] }}</th>
+                  <th>{{ dateToHuman(offer.created) }}</th>
+                  <th>{{ dateToHuman(offer.modified) }}</th>
+                  <th>{{ offer.type }}</th>
+                  <th>{{ offer.object }}</th>
+                  <th>{{ offer.price }}</th>
+                  <th>{{ offer.localityType }} {{ offer.locality }}</th>
+                  <th>{{ offer.streetType }} {{ offer.street }}</th>
+                  <th>{{ offer.buildingType }} {{ offer.building }}</th>
                   <th><ui-icon-button
                     icon="add"
                     size="small"
@@ -81,14 +109,13 @@
   import firebase from '../firebase.js';
   import Firebase from 'firebase';
   import xhr from './helpers/xhr.js';
+  import seam from './yrl-import/seam.js';
 
   const moment = require('moment');
   const X2JS = require('./helpers/xml2json.js');
 
   const usersRef = firebase.database().ref('users');
   const companiesRef = firebase.database().ref('companies');
-  const commentsRef = firebase.database().ref('comments');
-  const postsRef = firebase.database().ref('posts');
 
   export default {
     name: 'yrl-import',
@@ -100,7 +127,8 @@
         companies: [],
         currentCompanyIndex: null,
         feedIsLoading: false,
-        offers: ''
+        offers: '',
+        logData: []
       }
     },
     destroyed() {
@@ -116,11 +144,32 @@
       }
     },
     methods: {
+      log(message) {
+        if ( typeof(message) === 'undefined' ) return;
+        let time = new Date();
+        this.logData.push({ time, message });
+      },
       isSamePerson(user, externalUser) {
-        let _phn = (number) => number.replace(/\D/g,'').slice(-10);
-        return user.email.toLowerCase() === externalUser.email.toLowerCase() ||
-                  _phn(user.mobile) === _phn(externalUser.phone) ||
-                     _phn(user.phone) === _phn(externalUser.phone);
+        let _phn = (number) => {
+          if ( typeof(number) === 'undefined' ) return;
+          number.replace(/\D/g,'').slice(-10);
+        }
+        let _isEqual = ( field, extField ) => {
+          if ( typeof(field) === 'undefined' || typeof(extField) === 'undefined' ) return false;
+          return field === extField;
+        }
+        let extPhone = externalUser.phone,
+            extEmail = externalUser.email.toLowerCase(),
+            mobile = user.mobile,
+            phone = user.phone,
+            email = user.email.toLowerCase();
+
+        if ( typeof(extPhone) === 'object' ) {
+          return extPhone.some( p => {
+            return _isEqual( _phn(p), _phn(phone) ) || _isEqual( _phn(p), _phn(mobile) ) || _isEqual( email, extEmail );
+          })
+        }
+        return _isEqual( _phn(extPhone), _phn(phone) ) || _isEqual( _phn(extPhone), _phn(mobile) ) || _isEqual( email, extEmail );
       },
       getAgentsList(offers) {
         return [...new Set(offers.map( offer => offer['sales-agent'].email ))];
@@ -136,8 +185,11 @@
 
         return this.daysFrom(date) <= 120;
       },
+      dateToLog(date) {
+        return moment(date).format('HH:mm:ss.SSS');
+      },
       dateToHuman(date) {
-        return moment(date).calendar();
+        return moment(date * 1000).calendar();
       },
       isYrlExists(company) {
         return typeof(company.yml) !== 'undefined' && !!company.yml;
@@ -162,42 +214,45 @@
         return parser.xml_str2json(data);
       },
       prepareOffers(json) {
-        let tmp = json['realty-feed']['offer']
-              .sort( (a, b) => this.sortFeedOffersByDate(a, b) )
-              .filter( offer => this.offerIsActual(offer) );
-
-        usersRef.orderByChild('company')
-          .equalTo(this.currentCompany.key).once('value')
-          .then(snapshot => {
+        return json['realty-feed']['offer']
+                .sort( (a, b) => this.sortFeedOffersByDate(a, b) )
+                .filter( offer => this.offerIsActual(offer) );        
+      },
+      checkFeed(index) {
+        if ( this.currentCompanyIndex === index && this.feedIsLoading ) return false;
+        this.feedIsLoading = true;
+        this.currentCompanyIndex = index;
+        this.logData = [];
+        let url = this.companies[index].yml,
+            offers = [];
+        new Promise( (resolve, reject) => {
+          this.log('Загрузка фида: ' + this.currentCompany.name + ' ,запрос данных по ссылке: ' + url);
+          xhr(url, ( err, data ) => {
+            if ( err ) { reject(err) } else { resolve(data) }
+          });
+        }).then( xml => {
+          let json = this.xmlLoad(xml);
+          this.log('Фид загружен, найдено: ' + json['realty-feed']['offer'].length + ' предл.');
+          offers = this.prepareOffers( json );
+          this.log('Выборка актуальных предложений (не старше 120 дн.), найдено: ' + offers.length + ' предл.');
+          return usersRef.orderByChild('company').equalTo(this.currentCompany.key).once('value');
+        }).then(snapshot => {
             let users = snapshot.val();
-            tmp = tmp.filter( offer => {
+            this.offers = offers.filter( offer => {
               let externalUser = offer['sales-agent'];
               for ( let key in users ) {
                 if (users.hasOwnProperty(key)) {
                   let user = users[key];
-                  return isSamePerson(user, externalUser)
+                  return true;
+                  //return this.isSamePerson(user, externalUser)
                 }
-                console.log(users[prop])
               }
-            })
+            }).map( offer => seam(offer) );
+
+            this.log('Поиск сотрудников на портале для связи с предложениями, найдено для: ' + offers.length + ' предл.');
+
+            this.feedIsLoading = false;
           })
-        
-      },
-      checkFeed(index) {
-        if ( this.currentCompanyIndex === index && this.feedIsLoading ) return false;
-
-        this.feedIsLoading = true;
-        this.currentCompanyIndex = index;
-        let url = this.companies[index].yml;
-        xhr(url, ( err, data ) => {
-          if ( err ) {  console.log('checkFeed error: ' + err); return }
-          else {
-            let json = this.xmlLoad(data);
-            this.offers = this.prepareOffers(json);
-          }
-          this.feedIsLoading = false;
-        });
-
       }
     }
   }
