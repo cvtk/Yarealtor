@@ -37,6 +37,10 @@ export default function(offer) {
   let address = offer.location['address'];
   // lets fuckin dance with meta
 
+  this.key = function() {
+    return offer['_internal-id'];
+  };
+
   this.created = function() {
     return _isEmpty(offer['creation-date']) ||
             moment(offer['creation-date']).unix();
@@ -116,39 +120,156 @@ export default function(offer) {
   };
 
   this.district = function() {
+    let dstr = {
+      1: 'Дзержинский',
+      2: 'Заволжский',
+      3: 'Кировский',
+      4: 'Красноперекопский',
+      5: 'Ленинский',
+      6: 'Фрунзенский',
+      7: 'Ярославский',
+      8: 'Ярославская область',
+    }
 
-  }
-  // author: 'required',
-  // key: 'required',
-  // company: 'required',
-  // created: 'creation-date',
-  // modified: 'last-update-date',
-  // type: 'required',
-  // object: 'required',
-  // price: 'required',
-  // agent_pay: 'optional',
-  // images: 'optional',
-  // description: 'optional',
-  // locality: 'required',
-  // localityType: 'optional',
-  // localityId: 'optional',
-  // street: 'required',
-  // streetType: 'optional',
-  // streetId: 'optional',
-  // building: 'required',
-  // buildingId: 'optional',
-  // buildingType: 'optional',
-  // district : 'required', 
-  // waymark: 'optional',
-  // building_type: 'required',
-  // material: 'required',
-  // rooms: 'required',
-  // floor: 'required',
-  // floors: 'required',
-  // area_full: 'required',
-  // area_living: 'required',
-  // area_kitchen: 'required',
-  // furnish: 'optional',
-  // bath: 'required',
-  // balcony: 'required'
+    for ( let option in dstr ) {
+      if ( dstr.hasOwnProperty(option) &&
+          dstr[option] === offer.location['sub-locality-name'] )
+        return option;
+    }
+  };
+
+  this.building_type = function() {
+    let obj = {
+      1: ['прямая продажа', 'sale', 'первичная продажа вторички', 
+            'primary sale of secondary', 'встречная продажа',
+              'countersale'],
+      2: ['первичная продажа', 'продажа от застройщика',
+            'переуступка', 'reassignment'],
+    };
+
+    for ( let option in obj ) {
+      if ( obj.hasOwnProperty(option) &&
+          obj[option].some( e => offer['deal-status'] === e ) )
+        return option;
+    }
+  };
+
+  this.material = function() {
+    let obj = {
+      1: 'блочный',
+      2: 'деревянный',
+      3: 'кирпичный',
+      4: 'монолит',
+      5: 'панельный',
+      6: 'кирпично-монолитный'
+    };
+
+    for ( let option in obj ) {
+      if ( obj.hasOwnProperty(option) &&
+          obj[option] === offer['building-type'] )
+        return option;
+    }
+  };
+
+  this.rooms = function() {
+    if ( _isEmpty(offer.rooms) ) return;
+    return parseInt(offer.rooms);
+  };
+
+  this.floor = function() {
+    if ( _isEmpty(offer.floor) ) return;
+    return parseInt(offer.floor);
+  };
+
+  this.floors = function() {
+    if ( _isEmpty(offer['floors-total']) ) return;
+    return parseInt(offer['floors-total']);
+  };
+
+  this.area_full = function() {
+    let area = offer['area'] || offer['room-space'];
+    if ( _isEmpty(area) ) return;
+    return parseFloat(area.value);
+  };
+
+  this.area_living = function() {
+    let area = offer['living-space'];
+    if ( _isEmpty(area) ) return;
+    return parseFloat(area.value);
+  };
+
+  this.area_kitchen = function() {
+    let area = offer['kitchen-space'];
+    if ( _isEmpty(area) ) return;
+    return parseFloat(area.value);
+  };
+
+  this.furnish = function() {
+    let obj = {
+      1: ['требует ремонта'],
+      2: ['черновая отделка'],
+      3: ['с отделкой'],
+      4: ['частичный ремонт'],
+      5: ['хороший'],
+      6: ['евро', 'дизайнерский']
+    };
+
+    for ( let option in obj ) {
+      if ( obj.hasOwnProperty(option) &&
+          obj[option].some( e => offer.renovation === e ) )
+        return option;
+    }
+  };
+
+  this.bath = function() {
+    let obj = {
+      1: ['требует ремонта'],
+      2: ['раздельный'],
+      3: ['совмещенный'],
+      4: ['частичный ремонт']
+    };
+
+    for ( let option in obj ) {
+      if ( obj.hasOwnProperty(option) &&
+          obj[option].some( e => offer['bathroom-unit'] === e ) )
+        return option;
+    }
+  };
+
+  this.balcony = function() {
+    return !!offer.balcony;
+  };
+
+  this.placement_type = function() {
+    // !!!not avaible in YANDEX!!!
+    return 2;
+  };
+
+  this.condition_room = function() {
+    // !!!not avaible in YANDEX!!!
+    let obj = {
+      1: ['нормальное', 'плохое'],
+      2: ['хорошее'],
+      3: ['отличное']
+    }
+    for ( let option in obj ) {
+      if ( obj.hasOwnProperty(option) &&
+          obj[option].some( e => offer.quality === e ) )
+        return option;
+    }
+  };
+
+  this.condition_bath = function() {
+    // !!!not avaible in YANDEX!!!
+    let obj = {
+      1: ['нормальное', 'плохое'],
+      2: ['хорошее'],
+      3: ['отличное']
+    }
+    for ( let option in obj ) {
+      if ( obj.hasOwnProperty(option) &&
+          obj[option].some( e => offer.quality === e ) )
+        return option;
+    }
+  };
 }

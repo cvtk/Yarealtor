@@ -72,13 +72,25 @@
                   <th>Город</th>
                   <th>Улица</th>
                   <th>Строение</th>
+                  <th>Район</th>
+                  <th>Тип дома</th>
+                  <th>Материал</th>
+                  <th>Комнат</th>
+                  <th>Этаж</th>
+                  <th>Этажей</th>
+                  <th>Общ. пл.</th>
+                  <th>Жил. пл.</th>
+                  <th>Пл. кухни</th>
+                  <th>Отделка</th>
+                  <th>Санузел</th>
+                  <th>Балкон</th>
                   <th>Действия</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="( offer, index ) in offers" :key="offer['_internal-id']">
+                <tr v-for="( offer, index ) in offers" :key="offer.key">
                   <th>{{ index }}</th>
-                  <th>{{ offer['_internal-id'] }}</th>
+                  <th>{{ offer.key }}</th>
                   <th>{{ dateToHuman(offer.created) }}</th>
                   <th>{{ dateToHuman(offer.modified) }}</th>
                   <th>{{ offer.type }}</th>
@@ -87,6 +99,18 @@
                   <th>{{ offer.localityType }} {{ offer.locality }}</th>
                   <th>{{ offer.streetType }} {{ offer.street }}</th>
                   <th>{{ offer.buildingType }} {{ offer.building }}</th>
+                  <th>{{ offer.district }}</th>
+                  <th>{{ offer.building_type }}</th>
+                  <th>{{ offer.material }}</th>
+                  <th>{{ offer.rooms }}</th>
+                  <th>{{ offer.floor }}</th>
+                  <th>{{ offer.floors }}</th>
+                  <th>{{ offer.area_full }}</th>
+                  <th>{{ offer.area_living }}</th>
+                  <th>{{ offer.area_kitchen }}</th>
+                  <th>{{ offer.furnish }}</th>
+                  <th>{{ offer.bath }}</th>
+                  <th>{{ offer.balcony }}</th>
                   <th><ui-icon-button
                     icon="add"
                     size="small"
@@ -110,6 +134,7 @@
   import Firebase from 'firebase';
   import xhr from './helpers/xhr.js';
   import seam from './yrl-import/seam.js';
+  import mdl from '../models/offer.js';
 
   const moment = require('moment');
   const X2JS = require('./helpers/xml2json.js');
@@ -127,7 +152,7 @@
         companies: [],
         currentCompanyIndex: null,
         feedIsLoading: false,
-        offers: '',
+        offers: [],
         logData: []
       }
     },
@@ -247,7 +272,18 @@
                   //return this.isSamePerson(user, externalUser)
                 }
               }
-            }).map( offer => seam(offer) );
+            }).reduce( (result, offer) => {
+              seam(offer, ( res, err ) => {
+                console.log(result);
+                if ( !err.length ) {
+                  result.push(res);
+                  return result;
+                } else {
+                  this.log(`Объект с идентификатором ${ res.key } не будет загружен. Отсутствуют обязательные поля: ${ err.reduce( (r, e) => r += mdl.getFieldTitle(e.field) + ', ', '' ) }`)
+                  return result;
+                }
+              });
+            }, []);
 
             this.log('Поиск сотрудников на портале для связи с предложениями, найдено для: ' + offers.length + ' предл.');
 

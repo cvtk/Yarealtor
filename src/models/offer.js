@@ -679,6 +679,16 @@ export default {
     // let items = model[key].default.items;
     // return items.reduce( ( acc, el ) => (el.value === item) ? el.title : acc, '') || false;
   },
+
+  getFieldTitle(field) {
+    for ( let group in fields ) {
+      if ( typeof fields[group][field] !== 'undefined' ) {
+        return fields[group][field].title;
+      }
+    }
+    return field;
+  },
+
   check(mdl) {
     if ( typeof mdl === 'undefined' ) return false;
     for ( let obj in model) {
