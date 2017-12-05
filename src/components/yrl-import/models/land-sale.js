@@ -1,1 +1,35 @@
-export default {};
+let landSale = {
+  author: 'required',
+  key: 'required',
+  company: 'required',
+  created: 'required',
+  modified: 'required',
+  type: 'required',
+  object: 'required',
+  price: 'required',
+  agent_pay: 'optional',
+  images: 'optional',
+  description: 'optional',
+  locality: 'required',
+  localityType: 'required',
+  localityId: 'optional',
+  district: 'optional',
+  waymark: 'optional',
+  cadastral_number: 'optional',
+  distance: 'optional',
+  direction: 'optional',
+  land_type: 'required',
+  disposition: 'optional',
+  cottage_area: 'required',
+  cottage_gas: 'optional',
+  cottage_power: 'optional',
+  cottage_water: 'optional',
+  cottage_sewer: 'optional',
+  internet: 'optional',
+  cottage_security: 'optional',
+  cottage_forest: 'optional',
+  cottage_entrance: 'optional',
+  cottage_bus: 'optional'
+}
+
+export default landSale;

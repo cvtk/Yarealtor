@@ -19,7 +19,7 @@ const apartmentSale = {
   building: 'required',
   buildingId: 'optional',
   buildingType: 'required',
-  district : 'required', 
+  district : 'required',
   waymark: 'optional',
   building_type: 'required',
   material: 'required',

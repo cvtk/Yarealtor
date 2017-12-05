@@ -241,7 +241,7 @@
       prepareOffers(json) {
         return json['realty-feed']['offer']
                 .sort( (a, b) => this.sortFeedOffersByDate(a, b) )
-                .filter( offer => this.offerIsActual(offer) );        
+                //.filter( offer => this.offerIsActual(offer) );        
       },
       checkFeed(index) {
         if ( this.currentCompanyIndex === index && this.feedIsLoading ) return false;
@@ -259,7 +259,7 @@
           let json = this.xmlLoad(xml);
           this.log('Фид загружен, найдено: ' + json['realty-feed']['offer'].length + ' предл.');
           offers = this.prepareOffers( json );
-          this.log('Выборка актуальных предложений (не старше 120 дн.), найдено: ' + offers.length + ' предл.');
+          this.log('Выборка актуальных предложений (согласно creation-date и last-update-date), найдено: ' + offers.length + ' предл.');
           return usersRef.orderByChild('company').equalTo(this.currentCompany.key).once('value');
         }).then(snapshot => {
             let users = snapshot.val();

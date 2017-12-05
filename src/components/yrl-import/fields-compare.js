@@ -1,5 +1,18 @@
 const moment = require('moment');
 
+function _boolean(value) {
+  let obj = {
+    true: ['да', 'true', '1', '+'],
+    false: ['нет', 'false', '0', '-'],
+  };
+
+  for ( let option in obj ) {
+    if ( obj.hasOwnProperty(option) &&
+        obj[option].some( e => value == e ) )
+      return option;
+  }
+}
+
 function _isEmpty(value) {
   return typeof(value) === 'undefined' || !value;
 }
@@ -271,5 +284,106 @@ export default function(offer) {
           obj[option].some( e => offer.quality === e ) )
         return option;
     }
+  };
+
+  this.commercial_retail = function() {
+    return offer['commercial-type'] === 'retail';
+  };
+
+  this.commercial_office = function() {
+    return offer['commercial-type'] === 'office';
+  };
+
+  this.commercial_industrial = function() {
+    return offer['commercial-type'] === 'manufacturing';
+  };
+
+  this.commercial_warehouse = function() {
+    return offer['commercial-type'] === 'warehouse';
+  };
+
+  this.commercial_business = function() {
+    return offer['commercial-type'] === 'business' ||
+      offer['commercial-type'] === 'auto repair' ||
+        offer['commercial-type'] === 'public catering';
+  };
+
+  this.commercial_land = function() {
+    return offer['commercial-type'] === 'land';
+  };
+
+  this.commercial_apartments = function() {
+    return offer['commercial-type'] === 'free purpose' ||
+      offer['commercial-type'] === 'legal address';
+  };
+
+  this.commercial_material = function() {
+    // !!!not avaible in YANDEX!!!
+    return 4;
+  };
+
+  this.commercial_material = function() {
+    // !!!not avaible in YANDEX!!!
+    return 4;
+  };
+
+  this.commercial_material = function() {
+    // !!!not avaible in YANDEX!!!
+    return;
+  };
+
+  this.minimal_area = function() {
+    // !!!not avaible in YANDEX!!!
+    return;
+  };
+
+  this.line = function() {
+    // !!!not avaible in YANDEX!!!
+    return;
+  };
+
+  this.planning = function() {
+    // !!!not avaible in YANDEX!!!
+    return;
+  };
+
+  this.ceilings_height = function() {
+    if ( _isEmpty(offer['ceiling-height']) ) return;
+    return parseInt(offer['ceiling-height']);
+  };
+
+  this.power = function() {
+    if ( _isEmpty(offer['electric-capacity']) ) return;
+    return parseInt(offer['electric-capacity']);
+  };
+
+  this.internet = function() {
+    return _boolean(offer['internet']);
+  };
+
+  this.security_alarm = function() {
+    return _boolean(offer['alarm']);
+  };
+
+  this.fire_alarm = function() {
+    return _boolean(offer['fire-alarm']);
+  };
+
+  this.shutters = function() {
+    // !!!not avaible in YANDEX!!!
+    return;
+  };
+
+  this.monument = function() {
+    // !!!not avaible in YANDEX!!!
+    return;
+  };
+
+  this.windows = function() {
+    return !!offer['internet'];
+  };
+
+  this.owner = function() {
+    return !!offer['internet'];
   };
 }

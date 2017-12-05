@@ -43,17 +43,17 @@ export default function(offer, callback) {
   for ( let field in model ) {
     if ( model.hasOwnProperty(field) &&
           typeof stapler[field] === 'function' ) {
-      // if ( isRequired( model[field] ) && isEmpty( stapler[field]() ) ) {
-      //   err.push({
-      //     message: 'Поле ' + field + ' является обязательным, объект не будет импортирован.',
-      //     field
-      //   });
-      //   continue;
-      // }
+      if ( isRequired( model[field] ) && isEmpty( stapler[field]() ) ) {
+        err.push({
+          message: 'Поле ' + field + ' является обязательным, объект не будет импортирован.',
+          field
+        });
+        continue;
+      }
       result[field] = stapler[field]();
     }
     
   }
-  callback(result, err);
+  if ( getMdlFilename(offer) === 'apartment-sale.js' ) callback(result, err);
   return result.length;
 }
