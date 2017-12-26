@@ -134,6 +134,7 @@
     watch: {
       'general.object': function(object) {
         this.initModel(object);
+        this.object.locality = 'Ярославль';
       },
       data() {
         this.local = this.data;

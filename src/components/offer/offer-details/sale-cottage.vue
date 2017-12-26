@@ -83,7 +83,7 @@
         <li :class="$style.list__item">
           <div :class="$style.item">
             <span :class="$style.item__title">{{ mdl.material.title }}:</span>
-            <span :class="$style.item__value">{{ offer.material }}</span>
+            <span :class="$style.item__value">{{ humanize('material', offer.material) }}</span>
           </div>
         </li>
         <li :class="$style.list__item">

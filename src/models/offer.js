@@ -143,7 +143,7 @@ fields.offer = {
       { value: 1, title: 'Квартира' },
       { value: 2, title: 'Комната' },
       { value: 3, title: 'Коммерческая недвижимость' },
-      { value: 4, title: 'Дом или дача' },
+      { value: 4, title: 'Дом, таунхаус, дача' },
       { value: 5, title: 'Гараж или хозблок' },
       { value: 6, title: 'Земельный участок' }
     ]

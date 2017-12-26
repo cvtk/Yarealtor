@@ -20,7 +20,7 @@ fields.general = {
       { label: 'Квартира', value: 1 },
       { label: 'Комната', value: 2 },
       { label: 'Коммерческая недвижимость', value: 3 },
-      { label: 'Дом или дача', value: 4 },
+      { label: 'Дом, таунхаус, дача', value: 4 },
       { label: 'Гараж или хозблок', value: 5 },
       { label: 'Земельный участок', value: 6 },
     ]

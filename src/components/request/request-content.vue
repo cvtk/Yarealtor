@@ -79,8 +79,8 @@
     position: relative;
   }
 
-  .description__waymark { margin: 10px }
-  .description__text { margin: 10px }
+  .description__waymark { margin: 10px; font-size: 16px }
+  .description__text { margin: 10px; font-size: 16px }
 
 </style>
 

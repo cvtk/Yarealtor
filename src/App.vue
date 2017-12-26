@@ -11,10 +11,10 @@
       </ui-snackbar-container>
     </div>
     <header :class="$style.app__header">
-      <div :class="$style.header__logo">
+      <router-link :class="$style.header__logo" :to="{ name: 'root' }">
         <img src="/static/logo.png" alt="Логотип" :class="$style.logo__pic">
         <button :class="$style.menu__toggler" @click.prevent="isToggled = !isToggled" v-if="user.active"></button>
-      </div>
+      </router-link>
       <div :class="$style.header__menu">
         <div :class="[ $style.menu__ghost_mode, !ghostMode || $style._active ]" @click="ghostMode=!ghostMode" title="Специальный режим" v-if="user.active"></div>
         <div :class="$style.menu__notification" v-if="user.active">
